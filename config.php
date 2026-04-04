@@ -77,6 +77,8 @@ $CFG->dboptions = [
     'dbsocket'         => false,
     'dbport'           => $_db_port,
     'dbhandlesoptions' => false,
+    'ssl'              => 'require',
+
 
                                             //   support. If you wish to use partial UTF-8
                                             //   (three bytes) then set this option to

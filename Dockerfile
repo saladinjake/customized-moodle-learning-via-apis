@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     curl \
     unzip \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure and install PHP extensions

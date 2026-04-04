@@ -17,6 +17,35 @@ echo "[Entrypoint] Waiting for database to be ready..."
 MAX_RETRIES=60
 RETRY=0
 
+# Pre-check for initial values (for logging)
+if [ -n "$DATABASE_URL" ]; then
+    # Improved extraction for postgres://user:pass@host:port/db
+    DB_P_HOST=$(echo "$DATABASE_URL" | sed -E 's/.*@([^:\/]+).*/\1/')
+    DB_P_PORT=$(echo "$DATABASE_URL" | sed -E 's/.*:([0-9]+)\/.*/\1/' | grep -E '^[0-9]+$' || echo "5432")
+    echo "[Entrypoint] Target host detected from URL: $DB_P_HOST:$DB_P_PORT"
+else
+    DB_P_HOST="${DB_HOST:-localhost}"
+    DB_P_PORT="${DB_PORT:-5432}"
+    echo "[Entrypoint] Target host detected from env: $DB_P_HOST:$DB_P_PORT"
+fi
+
+# Primary network check using pg_isready (installed in Dockerfile)
+echo "[Entrypoint] Probing network availability with pg_isready..."
+MAX_NETWORK_RETRIES=10
+for i in $(seq 1 $MAX_NETWORK_RETRIES); do
+  if pg_isready -h "$DB_P_HOST" -p "$DB_P_PORT" -t 5; then
+    echo "[Entrypoint] Network path to database is OPEN."
+    break
+  fi
+  echo "[Entrypoint] pg_isready: server at $DB_P_HOST:$DB_P_PORT not responding (attempt $i/$MAX_NETWORK_RETRIES)..."
+  if [ "$i" -eq "$MAX_NETWORK_RETRIES" ]; then
+    echo "[Entrypoint] ERROR: Database network path unreachable. Check Render private network / Region settings."
+    # We continue to the PHP check anyway to get the full error report
+  fi
+  sleep 3
+done
+
+echo "[Entrypoint] Proceeding to credential and SSL handshake..."
 until php -r "
   \$url = getenv('DATABASE_URL');
   if (\$url) {
@@ -33,15 +62,17 @@ until php -r "
     \$user = getenv('DB_USER');
     \$pass = getenv('DB_PASS');
   }
-  \$conn = @pg_connect(\"host=\$host port=\$port dbname=\$db user=\$user password=\$pass connect_timeout=3\");
+  // Remove '@' to show connection errors and add 'sslmode=require'
+  \$con_string = \"host='\$host' port='\$port' dbname='\$db' user='\$user' password='\$pass' connect_timeout=3 sslmode=require\";
+  \$conn = pg_connect(\$con_string);
   exit(\$conn ? 0 : 1);
-" 2>/dev/null; do
+"; do
   RETRY=$((RETRY + 1))
   if [ "$RETRY" -ge "$MAX_RETRIES" ]; then
     echo "[Entrypoint] ERROR: Database unreachable after $MAX_RETRIES attempts. Aborting."
     exit 1
   fi
-  echo "[Entrypoint] DB not ready yet (attempt $RETRY/$MAX_RETRIES)... retrying in 3s"
+  echo "[Entrypoint] DB not ready yet (attempt $RETRY/$MAX_RETRIES)..."
   sleep 3
 done
 
