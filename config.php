@@ -46,20 +46,11 @@ $CFG->dbuser    = getenv('DB_USER') ?: 'postgres';        // your database usern
 $CFG->dbpass    = getenv('DB_PASS') ?: 'saladin123';      // your database password
 $CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';          // prefix to use for all table names
 $CFG->dboptions = [
-    'dbpersist' => false,                   // Should persistent database connections be
-                                            //   used? Set to 'false' for the most stable
-                                            //   setting, 'true' can improve performance
-                                            //   sometimes
-    'dbsocket'  => false,                   // Should connection via UNIX socket be used?
-                                            //   if you set it to 'true' or custom path
-                                            //   here set dbhost to 'localhost',
-                                            //   (please note mysql is always using socket
-                                            //   if dbhost is 'localhost' - if you need
-                                            //   local port connection use '127.0.0.1')
-    'dbport'    => '5432',                      // The TCP port number to use when connecting
-                                            //   to the server. Keep empty string for the
-                                            //   default port
-    'dbhandlesoptions' => false,            // On PostgreSQL poolers like pgbouncer don't
+    'dbpersist' => false,
+    'dbsocket'  => false,
+    'dbport'    => getenv('DB_PORT') ?: '5432',
+    'dbhandlesoptions' => false,
+    'ssl'       => 'require',               // Render managed Postgres requires TLS
                                             //   support advanced options on connection.
                                             //   If you set those in the database then
                                             //   the advanced settings will not be sent.
