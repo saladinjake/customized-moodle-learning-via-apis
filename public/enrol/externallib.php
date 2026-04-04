@@ -319,6 +319,9 @@ class core_enrol_external extends external_api {
 
         // Get user data including last access to courses.
         $user = get_complete_user_data('id', $userid);
+        if (!$user) {
+             throw new moodle_exception('invaliduser', 'error');
+        }
         $sameuser = $USER->id == $userid;
 
         // Retrieve favourited courses (starred).
@@ -399,7 +402,7 @@ class core_enrol_external extends external_api {
             $overviewfiles = array();
             foreach ($courselist->get_course_overviewfiles() as $file) {
                 $fileurl = moodle_url::make_webservice_pluginfile_url($file->get_contextid(), $file->get_component(),
-                                                                        $file->get_filearea(), null, $file->get_filepath(),
+                                                                        $file->get_filearea(), 0, $file->get_filepath(),
                                                                         $file->get_filename())->out(false);
                 $overviewfiles[] = array(
                     'filename' => $file->get_filename(),

@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Headless Moodle API Gateway
+  description: >
+    Comprehensive REST API documentation for the decoupled Moodle architecture. 
+    This gateway leverages the "Strangler Fig" pattern to completely replace Moodle's 
+    monolithic Mustache rendering system with strict JSON endpoints. All routes are 
+    capability-checked and natively secure.
+  version: 1.0.0
+  contact:
+    name: API Architecture Team
+servers:
+  - url: http://localhost:8000/local/api
+    description: Local PHP Development Server
+  - url: https://api.moodle.local/local/api
+    description: Production Server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT/MoodleToken
+      description: Enter the Moodle Web Service Token or POC-TOKEN-123.
+security:
+  - bearerAuth: []
+paths:
+  /index.php?action=ping:
+    get:
+      summary: System Health Check
+      description: Verifies if the Headless API is online and whether authentication headers are strictly enforced.
+      security: []
+      responses:
+        '200':
+          description: Successful ping
+          content:
+            application/json:
+              example:
+                status: "success"
+                action: "ping"
+                timestamp: 1682837492
+                data:
+                  status: "Online"
+                  auth_enforced: true
+                  version: "4.1.2+"
+
+  /index.php?action=auth_login:
+    post:
+      summary: Moodle Native Authentication
+      description: Bypasses the monolithic Login UI. Generates a secure Bearer Token utilizing Moodle's `authenticate_user_login` function.
+      security: []
+      parameters:
+        - in: query
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Standard Moodle Username
+        - in: query
+          name: password
+          required: true
+          schema:
+            type: string
+          description: Standard Moodle Password
+      responses:
+        '200':
+          description: Successfully Authenticated
+          content:
+            application/json:
+              example:
+                status: "success"
+                data:
+                  user_id: 2
+                  username: "student"
+                  token: "POC-TOKEN-123"
+        '401':
+          description: Invalid Credentials
+
+  /index.php?action=core_course_get_courses:
+    get:
+      summary: Fetch Enrolled Catalog
+      description: Calls Moodle's `$DB` safely. Will throw an error if the authenticated user lacks the `moodle/course:view` capability.
+      responses:
+        '200':
+          description: JSON array of strictly accessible courses.
+          content:
+            application/json:
+              example:
+                status: "success"
+                action: "core_course_get_courses"
+                data:
+                  - id: 10
+                    fullname: "Advanced React Decoupling"
+                    shortname: "CS-401"
+        '403':
+          description: Access Denied / Lacking Capability
+
+  /index.php?action=core_user_update_profile:
+    post:
+      summary: Mutate User Profile Data
+      description: Demonstrates secure data mutation. Rejects any GET requests. Enforces capability `moodle/user:update` through Moodle's context logic before altering rows.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userid:
+                  type: integer
+                  example: 2
+                city:
+                  type: string
+                  example: "London"
+                country:
+                  type: string
+                  example: "UK"
+      responses:
+        '200':
+          description: Profile Successfully Mutated
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Profile for user 2 perfectly mutated via POST API."
+                data:
+                  id: 2
+                  city: "London"
+                  country: "UK"
+
+  /index.php?action=moodle_ws_proxy:
+    post:
+      summary: Universal Web Service Proxy (Dynamic Dispatch)
+      description: This "Silver Bullet" endpoint acts as a headless bridge connecting directly to Moodle's 600+ underlying `external_functions`. It dynamically executes APIs for Plugins, Quizzes, Grading, Forums, and H5P modules seamlessly.
+      parameters:
+        - in: query
+          name: wsfunction
+          required: true
+          schema:
+            type: string
+          description: The precise Moodle core external function name (e.g., `mod_assign_get_assignments`).
+      requestBody:
+        required: false
+        description: Any underlying parameters required by the specific `wsfunction`.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Dynamic Proxy Execution Result
+          content:
+            application/json:
+              example:
+                status: "success"
+                message: "Proxy authenticated. Executing mod_assign_get_assignments as user student"
+                meta:
+                  proxy: true
+                  wsfunction_executed: "mod_assign_get_assignments"
+        '404':
+          description: External function not registered.

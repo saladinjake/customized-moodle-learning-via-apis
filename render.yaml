@@ -1,0 +1,35 @@
+services:
+  # Moodle Backend Service
+  - type: web
+    name: lumina-moodle-backend
+    env: docker
+    region: ohio # or your preferred region
+    plan: free # Using free plan as requested
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_TYPE
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: lumina-moodle-db
+          property: internalConnectionString
+      - key: DB_NAME
+        value: moodle
+      - key: DB_USER
+        fromDatabase:
+          name: lumina-moodle-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: lumina-moodle-db
+          property: password
+      - key: MOODLE_DATA_DIR
+        value: /tmp/moodle_data
+
+databases:
+  # Managed PostgreSQL Database
+  - name: lumina-moodle-db
+    plan: free
+    region: ohio
+    databaseName: moodle
+    user: postgres

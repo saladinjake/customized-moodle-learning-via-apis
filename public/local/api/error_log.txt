@@ -1,0 +1,434 @@
+[2026-04-01 20:59:53] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 671
+[2026-04-01 20:59:53] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 671
+[2026-04-01 20:59:57] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 671
+[2026-04-01 20:59:57] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 671
+[2026-04-01 21:00:00] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 671
+[2026-04-01 21:00:00] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 671
+[2026-04-01 21:13:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:13:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:13:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:15:06] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:15:06] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:15:06] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:15:06] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:15:06] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:15:06] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:16:36] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:16:36] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:16:36] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:16:36] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:16:36] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:16:36] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:16:55] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 699
+[2026-04-01 21:16:55] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 699
+[2026-04-01 21:16:59] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 699
+[2026-04-01 21:16:59] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 699
+[2026-04-01 21:18:49] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:18:49] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:18:51] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:18:51] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:18:51] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:18:51] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:18:51] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:18:51] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:01] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:01] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:01] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:01] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:01] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:01] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:02] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:02] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:19] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:19] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:19] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:19] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:20] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:20] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:19:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 21:21:30] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:21:30] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:21:34] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:21:34] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:21:48] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:21:48] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:23:54] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:24:49] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:24:49] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:26:24] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:27:09] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:28:07] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:28:56] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:38:50] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:38:50] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:42:30] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:42:30] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:42:34] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:42:35] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:43:02] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:43:36] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:43:37] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:43:48] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:43:48] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:45:35] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:45:35] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:46:31] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:46:31] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:47:03] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 21:47:03] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-01 22:01:14] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:14] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:21] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:21] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:37] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:37] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:53] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:01:53] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:02:00] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:02:00] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:02:08] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:02:08] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:02:16] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:02:16] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-01 22:08:35] Error writing to database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 500
+[2026-04-01 22:09:23] Error writing to database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 500
+[2026-04-01 22:49:32] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 846
+[2026-04-01 22:49:32] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 846
+[2026-04-02 00:07:22] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1104
+[2026-04-02 00:07:22] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1104
+[2026-04-02 00:07:26] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1104
+[2026-04-02 00:07:26] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1104
+[2026-04-02 00:15:34] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 107
+[2026-04-02 00:16:08] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 107
+[2026-04-02 00:23:04] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1103
+[2026-04-02 00:23:04] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1103
+[2026-04-02 00:23:07] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1103
+[2026-04-02 00:23:08] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1103
+[2026-04-02 00:23:21] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1103
+[2026-04-02 00:23:21] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1103
+[2026-04-02 00:23:57] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1103
+[2026-04-02 00:23:57] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1103
+[2026-04-02 00:32:11] Short name is already used for another course (test) in /Users/test1/Downloads/moodle 2/public/course/lib.php on line 1916
+[2026-04-02 00:32:22] Short name is already used for another course (test) in /Users/test1/Downloads/moodle 2/public/course/lib.php on line 1916
+[2026-04-02 00:32:51] Short name is already used for another course (test2) in /Users/test1/Downloads/moodle 2/public/course/lib.php on line 1916
+[2026-04-02 07:59:07] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1280
+[2026-04-02 07:59:07] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1280
+[2026-04-02 08:33:45] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 111
+[2026-04-02 08:33:52] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 111
+[2026-04-02 08:33:59] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 111
+[2026-04-02 08:34:33] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 111
+[2026-04-02 08:34:37] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 111
+[2026-04-02 08:36:41] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:36:42] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:42:04] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:42:05] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:42:05] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:42:05] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:42:08] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:42:08] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:02] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:02] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:03] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:04] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:11] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:11] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:20] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:20] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:37] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:43:37] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:44:13] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:44:13] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:45:36] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:45:36] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:50:39] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 08:50:39] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1298
+[2026-04-02 13:20:43] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:20:43] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:20:43] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:20:43] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:20:47] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:20:47] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:21:09] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:21:09] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:21:19] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:21:19] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:21:32] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:21:32] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:21:40] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:21:40] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:29:47] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:29:47] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1341
+[2026-04-02 13:34:52] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 13:35:14] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 14:18:15] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 14:18:15] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 15:07:25] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:07:25] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:07:25] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:07:25] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:08:31] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:08:31] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:08:31] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:08:31] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:08:35] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:08:35] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:09:19] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:09:19] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:09:45] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:09:45] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:10:03] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:10:03] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:10:55] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:10:55] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:10:55] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:10:55] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:10:59] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:10:59] Failed opening required '/Users/test1/Downloads/moodle 2/public/completion/externallib.php' (include_path='/Users/test1/Downloads/moodle 2/public/lib/pear:.:/Applications/MAMP/bin/php/php8.3.30/lib/php') in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1155
+[2026-04-02 15:13:46] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:13:50] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:13:53] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:14:19] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:14:22] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:14:24] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:14:27] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:14:30] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:14:33] Attempt to assign property "progress" on array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1180
+[2026-04-02 15:29:46] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1386
+[2026-04-02 15:29:51] Cannot use object of type stdClass as array in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1386
+[2026-04-02 15:35:14] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:35:14] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:35:47] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:35:47] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:36:50] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:36:54] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:38:39] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:38:39] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:40:04] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 15:40:07] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1412
+[2026-04-02 16:21:00] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-02 16:27:01] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-02 17:48:50] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1444
+[2026-04-02 17:48:50] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1444
+[2026-04-02 17:51:37] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1444
+[2026-04-02 17:51:58] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1444
+[2026-04-02 17:51:58] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1444
+[2026-04-02 17:59:42] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1461
+[2026-04-02 17:59:42] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1461
+[2026-04-02 18:03:50] You cannot execute functions in the course context (course id:0). The context error message was: Invalid parameter value detected in /Users/test1/Downloads/moodle 2/public/group/externallib.php on line 307
+[2026-04-02 18:03:50] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 18:03:50] You cannot execute functions in the course context (course id:0). The context error message was: Invalid parameter value detected in /Users/test1/Downloads/moodle 2/public/group/externallib.php on line 307
+[2026-04-02 18:03:50] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 18:03:53] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 497
+[2026-04-02 18:03:53] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 497
+[2026-04-02 18:03:57] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 18:03:57] Invalid parameter value detected in /Users/test1/Downloads/moodle 2/public/lib/external/classes/external_api.php on line 362
+[2026-04-02 18:03:57] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 18:03:57] Invalid parameter value detected in /Users/test1/Downloads/moodle 2/public/lib/external/classes/external_api.php on line 362
+[2026-04-02 18:04:02] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-02 18:04:02] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 06:52:22] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1756
+[2026-04-03 06:52:26] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1756
+[2026-04-03 07:01:43] error/invalidmethod in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1454
+[2026-04-03 07:01:43] error/invalidmethod in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1454
+[2026-04-03 07:11:31] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:11:32] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:11:34] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:16:35] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:16:39] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:16:39] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:16:44] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:18:02] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:18:02] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:18:04] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:18:05] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:18:06] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:18:36] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:19:20] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 114
+[2026-04-03 07:34:06] error/invalidmethod in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1473
+[2026-04-03 07:34:06] error/invalidmethod in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 1473
+[2026-04-03 08:25:03] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:25:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:25:52] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:25:52] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:26:09] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:26:09] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:26:15] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:26:16] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:26:21] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:27:55] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:27:56] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:27:56] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:40:08] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:40:08] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:40:11] Coding error detected, it must be fixed by a programmer: clean() can not process arrays, please use clean_array() instead. in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 401
+[2026-04-03 08:48:50] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:48:50] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:54:45] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:54:45] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:55:18] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:55:18] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:55:21] Coding error detected, it must be fixed by a programmer: clean() can not process arrays, please use clean_array() instead. in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 401
+[2026-04-03 08:59:27] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 08:59:27] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 12:36:48] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 12:36:48] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:06:03] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 141
+[2026-04-03 16:29:02] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 141
+[2026-04-03 16:44:32] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:44:32] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:45:45] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:45:45] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:46:51] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:46:51] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:48:02] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:48:02] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 16:57:30] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 141
+[2026-04-03 20:14:09] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:14:09] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:14:16] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:14:16] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:15:15] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:15:15] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:21:11] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:21:11] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:21:14] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:21:14] Web service is not available. (It doesn't exist or might be disabled.) in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:21:15] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:21:15] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:21:17] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:21:17] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2259
+[2026-04-03 20:30:45] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:30:45] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:32:24] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:32:24] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:33:18] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:33:18] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:33:20] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:33:21] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:36:04] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:36:04] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:36:10] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:36:10] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2324
+[2026-04-03 20:42:50] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2493
+[2026-04-03 20:42:50] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2493
+[2026-04-03 20:45:44] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:45:46] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2493
+[2026-04-03 20:45:46] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2493
+[2026-04-03 20:47:46] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:47:47] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:48:01] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:48:01] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:48:30] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:48:30] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:48:42] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:48:42] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:48:48] Coding error detected, it must be fixed by a programmer: clean() can not process arrays, please use clean_array() instead. in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 401
+[2026-04-03 20:49:37] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:49:37] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:49:52] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:49:52] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:49:59] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:49:59] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:51:54] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:51:54] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:51:57] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:51:57] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:52:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:52:38] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2493
+[2026-04-03 20:52:38] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2493
+[2026-04-03 20:52:45] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:52:45] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:56:07] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:56:07] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:56:12] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 20:56:12] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 21:07:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-03 21:07:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 14:45:17] Coding error detected, it must be fixed by a programmer: clean() can not process arrays, please use clean_array() instead. in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 401
+[2026-04-04 14:46:12] Coding error detected, it must be fixed by a programmer: clean() can not process arrays, please use clean_array() instead. in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 401
+[2026-04-04 14:49:58] Coding error detected, it must be fixed by a programmer: clean() can not process arrays, please use clean_array() instead. in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 401
+[2026-04-04 14:49:59] Coding error detected, it must be fixed by a programmer: clean() can not process arrays, please use clean_array() instead. in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 401
+[2026-04-04 16:27:48] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:27:48] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:27:57] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:27:57] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:28:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:28:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:31:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:31:23] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:36:57] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:36:57] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:37:10] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:37:10] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:37:15] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:37:15] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:37:15] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:37:15] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:50:38] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:50:38] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:50:50] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:50:50] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 16:51:09] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:51:10] error/filesnotinstalled in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 642
+[2026-04-04 16:57:54] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:57:55] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:58:04] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:58:14] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:58:24] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:58:34] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:58:44] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:58:54] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:59:04] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 16:59:14] Error reading from database in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 497
+[2026-04-04 17:12:42] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:12:42] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:12:50] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:12:54] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:12:59] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:09] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:14] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:19] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:24] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:29] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:35] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:39] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:44] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:49] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:54] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:13:59] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:14:04] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:14:09] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:14:14] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:14:19] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:14:25] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:14:29] Can't find data record in database. in /Users/test1/Downloads/moodle 2/public/lib/dml/moodle_database.php on line 1653
+[2026-04-04 17:52:52] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2804
+[2026-04-04 17:56:26] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2804
+[2026-04-04 17:56:27] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2804
+[2026-04-04 18:32:48] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2900
+[2026-04-04 18:32:48] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2900
+[2026-04-04 18:32:57] A required parameter (preferences) was missing in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 574
+[2026-04-04 18:32:58] A required parameter (preferences) was missing in /Users/test1/Downloads/moodle 2/public/lib/classes/param.php on line 574
+[2026-04-04 18:34:17] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2900
+[2026-04-04 18:34:17] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2900
+[2026-04-04 19:58:56] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2900
+[2026-04-04 19:58:57] webservice/missingparam in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 2900
+[2026-04-04 20:19:09] webservice/missingtoken in /Users/test1/Downloads/moodle 2/public/local/api/index.php on line 141

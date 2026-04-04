@@ -1,5 +1,0 @@
-{
-  "parser": "babel",
-  "singleQuote": true,
-  "trailingComma": "all"
-}
