@@ -9,12 +9,32 @@ echo "[Entrypoint] Ensuring dataroot exists at $MOODLE_DATA..."
 mkdir -p "$MOODLE_DATA"
 chmod 777 "$MOODLE_DATA"
 
-# Give the DB a few seconds to map if this is a fresh start
-sleep 5
+# Give the DB a few seconds to be fully ready on first boot
+sleep 10
 
+# -------------------------------------------------------------------------
+# STEP 1: Install Moodle database (creates all mdl_* tables)
+# Only runs if the core config table doesn't exist yet (idempotent).
+# -------------------------------------------------------------------------
+echo "[Entrypoint] Checking if Moodle database is installed..."
+
+ADMIN_PASS="${MOODLE_ADMIN_PASS:-Admin1234!}"
+SITE_URL="${RENDER_EXTERNAL_URL:-http://localhost:8000}"
+
+php /var/www/html/public/admin/cli/install_database.php \
+    --agree-license \
+    --fullname="Lumina LMS" \
+    --shortname="lumina" \
+    --adminuser="admin" \
+    --adminpass="$ADMIN_PASS" \
+    --adminemail="admin@lumina.com" \
+    && echo "[Entrypoint] Moodle database installed successfully." \
+    || echo "[Entrypoint] Warn: install_database returned non-zero (may already be installed — continuing)."
+
+# -------------------------------------------------------------------------
+# STEP 2: Seed data (categories → cohorts → courses → grades/messages)
+# -------------------------------------------------------------------------
 echo "[Entrypoint] Running database seeders..."
-
-# Run seed scripts only if they exist and are accessible
 
 if [ -f "/var/www/html/seed_categories.php" ]; then
     php /var/www/html/seed_categories.php || echo "Warn: seed_categories failed or threw an error."

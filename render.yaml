@@ -13,6 +13,8 @@ services:
           property: internalConnectionString
       - key: MOODLE_DATA_DIR
         value: /var/moodledata
+      - key: MOODLE_ADMIN_PASS
+        value: Admin1234!   # Change this in Render dashboard before first deploy
 
 databases:
   # Managed PostgreSQL Database
