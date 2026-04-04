@@ -38,23 +38,33 @@ $CFG = new stdClass();
 // will be stored.  This database must already have been created         //
 // and a username/password created to access it.                         //
 
-$CFG->dbtype    = getenv('DB_TYPE') ?: 'pgsql';           // 'pgsql', 'mariadb', 'mysqli', 'auroramysql', or 'sqlsrv'
-$CFG->dblibrary = 'native';                               // 'native' only at the moment
-$CFG->dbhost    = getenv('DB_HOST') ?: 'localhost';       // eg 'localhost' or 'db.isp.com' or IP
-$CFG->dbname    = getenv('DB_NAME') ?: 'moodle';          // database name, eg moodle
-$CFG->dbuser    = getenv('DB_USER') ?: 'postgres';        // your database username
-$CFG->dbpass    = getenv('DB_PASS') ?: 'saladin123';      // your database password
-$CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';          // prefix to use for all table names
+$CFG->dbtype    = 'pgsql';
+$CFG->dblibrary = 'native';
+$CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';
+
+// Parse DATABASE_URL (Render internalConnectionString) if available,
+// otherwise fall back to individual env vars for local dev.
+$_db_url = getenv('DATABASE_URL');
+if ($_db_url) {
+    $_parsed      = parse_url($_db_url);
+    $CFG->dbhost  = $_parsed['host'];
+    $CFG->dbname  = ltrim($_parsed['path'] ?? '/moodle', '/');
+    $CFG->dbuser  = $_parsed['user'] ?? 'postgres';
+    $CFG->dbpass  = $_parsed['pass'] ?? '';
+    $_db_port     = (string)($_parsed['port'] ?? '5432');
+} else {
+    $CFG->dbhost  = getenv('DB_HOST') ?: 'localhost';
+    $CFG->dbname  = getenv('DB_NAME') ?: 'moodle';
+    $CFG->dbuser  = getenv('DB_USER') ?: 'postgres';
+    $CFG->dbpass  = getenv('DB_PASS') ?: 'saladin123';
+    $_db_port     = getenv('DB_PORT') ?: '5432';
+}
+
 $CFG->dboptions = [
-    'dbpersist' => false,
-    'dbsocket'  => false,
-    'dbport'    => getenv('DB_PORT') ?: '5432',
+    'dbpersist'        => false,
+    'dbsocket'         => false,
+    'dbport'           => $_db_port,
     'dbhandlesoptions' => false,
-    'ssl'       => 'require',               // Render managed Postgres requires TLS
-                                            //   support advanced options on connection.
-                                            //   If you set those in the database then
-                                            //   the advanced settings will not be sent.
-    'dbcollation' => 'utf8mb4_unicode_ci',  // MySQL has partial and full UTF-8
                                             //   support. If you wish to use partial UTF-8
                                             //   (three bytes) then set this option to
                                             //   'utf8_unicode_ci'. If using the recommended
