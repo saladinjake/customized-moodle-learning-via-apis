@@ -5,6 +5,7 @@ services:
     env: docker
     region: oregon
     plan: free
+    startTimeoutSeconds: 1200
     dockerfilePath: ./Dockerfile
     envVars:
       # Paste your connection strings into these in the Render Dashboard

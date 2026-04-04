@@ -25,8 +25,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN a2enmod rewrite
 
 # Configure PHP for Moodle via php.ini overrides
-RUN echo "max_execution_time = 600" > /usr/local/etc/php/conf.d/moodle.ini \
-    && echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/moodle.ini \
+RUN echo "max_execution_time = 3600" > /usr/local/etc/php/conf.d/moodle.ini \
+    && echo "memory_limit = 1024M" >> /usr/local/etc/php/conf.d/moodle.ini \
     && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/moodle.ini \
     && echo "upload_max_filesize = 100M" >> /usr/local/etc/php/conf.d/moodle.ini \
     && echo "max_input_vars = 5000" >> /usr/local/etc/php/conf.d/moodle.ini
