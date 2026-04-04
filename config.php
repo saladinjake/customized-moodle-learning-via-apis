@@ -75,7 +75,7 @@ if ($_db_url && ($_parsed = parse_url($_db_url)) && !empty($_parsed['host'])) {
     $_db_port    = getenv('DB_PORT') ?: '5432';
 } else {
     // Tier 3: local dev fallback only — never runs on Render
-    $CFG->dbhost = 'dpg-d78oelia214c73acn1gg-a.oregon-postgres.render.com';
+    $CFG->dbhost = 'dpg-d78oelia214c73acn1gg-a';
     $CFG->dbname = 'moodle_db_950m';
     $CFG->dbuser = 'moodle_db_user';
     $CFG->dbpass = '6eymxyyd44m2qyOtdGn2hPzIidilc7Du';

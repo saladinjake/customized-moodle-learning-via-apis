@@ -35,12 +35,11 @@ RETRY=0
 # Derive host and port for pg_isready network probe
 if [ -n "$DATABASE_URL" ]; then
     # Extract host:port from postgres://user:pass@host:port/db
-    # This handles both host:port and just host (defaulting to 5432)
     DB_P_HOST=$(echo "$DATABASE_URL" | sed -E 's/.*@([^:\/]+).*/\1/')
     DB_P_PORT=$(echo "$DATABASE_URL" | sed -E 's/.*:([0-9]+)\/.*/\1/' | grep -E '^[0-9]+$' || echo "5432")
 else
-    DB_P_HOST="$DB_HOST"
-    DB_P_PORT="${DB_PORT:-5432}"
+    DB_P_HOST="dpg-d78oelia214c73acn1gg-a"
+    DB_P_PORT="5432"
 fi
 
 echo "[Entrypoint] Probing network path to $DB_P_HOST:$DB_P_PORT..."
@@ -57,19 +56,19 @@ done
 echo "[Entrypoint] Network path is OPEN. Proceeding to credential handshake..."
 RETRY=0
 until php -r "
-  \$url = getenv('DATABASE_URL');
+  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_db_user:6eymxyyd44m2qyOtdGn2hPzIidilc7Du@dpg-d78oelia214c73acn1gg-a/moodle_db_950m';
   if (\$url && (\$p = parse_url(\$url))) {
-    \$host = \$p['host'] ?? '';
+    \$host = \$p['host'] ?? 'dpg-d78oelia214c73acn1gg-a';
     \$port = \$p['port'] ?? 5432;
-    \$db   = ltrim(\$p['path'] ?? '', '/');
-    \$user = urldecode(\$p['user'] ?? '');
-    \$pass = urldecode(\$p['pass'] ?? '');
+    \$db   = ltrim(\$p['path'] ?? 'moodle_db_950m', '/');
+    \$user = urldecode(\$p['user'] ?? 'moodle_db_user');
+    \$pass = urldecode(\$p['pass'] ?? '6eymxyyd44m2qyOtdGn2hPzIidilc7Du');
   } else {
-    \$host = getenv('DB_HOST');
-    \$port = getenv('DB_PORT') ?: 5432;
-    \$db   = getenv('DB_NAME') ?: 'moodle';
-    \$user = getenv('DB_USER');
-    \$pass = getenv('DB_PASS');
+    \$host = 'dpg-d78oelia214c73acn1gg-a';
+    \$port = 5432;
+    \$db   = 'moodle_db_950m';
+    \$user = 'moodle_db_user';
+    \$pass = '6eymxyyd44m2qyOtdGn2hPzIidilc7Du';
   }
   
   if (empty(\$host)) {

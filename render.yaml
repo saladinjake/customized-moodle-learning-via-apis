@@ -9,7 +9,7 @@ services:
     envVars:
       # Paste your connection strings into these in the Render Dashboard
       - key: DATABASE_URL
-        # Set this value in the Render dashboard (Settings -> Environment)
+        value: postgresql://moodle_db_user:6eymxyyd44m2qyOtdGn2hPzIidilc7Du@dpg-d78oelia214c73acn1gg-a/moodle_db_950m
       - key: MOODLE_DATA_DIR
         value: /var/moodledata
       - key: MOODLE_ADMIN_PASS
