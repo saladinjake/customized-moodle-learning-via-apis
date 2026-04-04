@@ -3,23 +3,48 @@ services:
   - type: web
     name: lumina-moodle-backend
     env: docker
-    region: ohio # or your preferred region
-    plan: free # Using free plan as requested
+    region: ohio
+    plan: free
     dockerfilePath: ./Dockerfile
     envVars:
+      # Primary connection — Render injects the full internal postgres:// URL
       - key: DATABASE_URL
         fromDatabase:
           name: lumina-moodle-db
           property: internalConnectionString
+
+      # Individual credentials (for debugging / fallback)
+      - key: DB_HOST
+        fromDatabase:
+          name: lumina-moodle-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: lumina-moodle-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: lumina-moodle-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: lumina-moodle-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: lumina-moodle-db
+          property: password
+
       - key: MOODLE_DATA_DIR
         value: /var/moodledata
       - key: MOODLE_ADMIN_PASS
-        value: Admin1234!   # Change this in Render dashboard before first deploy
+        value: Admin1234!
 
 databases:
   # Managed PostgreSQL Database
+  # NOTE: Do NOT set user: postgres — Render reserves that superuser.
+  # Render auto-generates a secure username which is injected via fromDatabase above.
   - name: lumina-moodle-db
     plan: free
     region: ohio
     databaseName: moodle
-    user: postgres
