@@ -45,9 +45,12 @@ COPY . /var/www/html/
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Ensure moodledata gets created if testing locally or gracefully handled
-RUN mkdir -p /tmp/moodle_data && chown -R www-data:www-data /tmp/moodle_data
+# Create moodledata OUTSIDE /tmp — /tmp is a tmpfs on Render and gets wiped at runtime
+RUN mkdir -p /var/moodledata && chown -R www-data:www-data /var/moodledata
 RUN chown -R www-data:www-data /var/www/html
+
+# Bake the env var so PHP getenv() and bash both always agree on the path
+ENV MOODLE_DATA_DIR=/var/moodledata
 
 EXPOSE 80
 

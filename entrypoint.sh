@@ -3,8 +3,8 @@ set -e
 
 echo "[Entrypoint] Initializing headless Moodle..."
 
-# Ensure moodledata directory exists at runtime (tmpfs /tmp is wiped between builds and boots)
-MOODLE_DATA="${MOODLE_DATA_DIR:-/tmp/moodle_data}"
+# Ensure moodledata dir exists and is writable (safety net — already baked in Dockerfile)
+MOODLE_DATA="${MOODLE_DATA_DIR:-/var/moodledata}"
 echo "[Entrypoint] Ensuring dataroot exists at $MOODLE_DATA..."
 mkdir -p "$MOODLE_DATA"
 chmod 777 "$MOODLE_DATA"

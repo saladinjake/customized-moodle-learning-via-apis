@@ -24,7 +24,7 @@ services:
           name: lumina-moodle-db
           property: password
       - key: MOODLE_DATA_DIR
-        value: /tmp/moodle_data
+        value: /var/moodledata
 
 databases:
   # Managed PostgreSQL Database
