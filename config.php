@@ -31,12 +31,22 @@ unset($CFG);  // Ignore this line
 global $CFG;  // This is necessary here for PHPUnit execution
 $CFG = new stdClass();
 
-//=========================================================================
-// 1. DATABASE SETUP
-//=========================================================================
-// First, you need to configure the database where all Moodle data       //
-// will be stored.  This database must already have been created         //
-// and a username/password created to access it.                         //
+// -------------------------------------------------------------------------
+// Load .env file if it exists (prioritize Render dashboard vars)
+// -------------------------------------------------------------------------
+if (file_exists(__DIR__ . '/.env')) {
+    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (strpos($line, '#') === 0 || !strpos($line, '=')) continue;
+        list($name, $value) = explode('=', $line, 2);
+        $name = trim($name);
+        $value = trim($value);
+        if (!getenv($name)) {
+            putenv("$name=$value");
+        }
+    }
+}
 
 $CFG->dbtype    = 'pgsql';
 $CFG->dblibrary = 'native';
@@ -65,10 +75,10 @@ if ($_db_url && ($_parsed = parse_url($_db_url)) && !empty($_parsed['host'])) {
     $_db_port    = getenv('DB_PORT') ?: '5432';
 } else {
     // Tier 3: local dev fallback only — never runs on Render
-    $CFG->dbhost = 'localhost';
-    $CFG->dbname = 'moodle';
-    $CFG->dbuser = 'postgres';
-    $CFG->dbpass = 'saladin123';
+    $CFG->dbhost = 'dpg-d78oelia214c73acn1gg-a.oregon-postgres.render.com';
+    $CFG->dbname = 'moodle_db_950m';
+    $CFG->dbuser = 'moodle_db_user';
+    $CFG->dbpass = '6eymxyyd44m2qyOtdGn2hPzIidilc7Du';
     $_db_port    = '5432';
 }
 
