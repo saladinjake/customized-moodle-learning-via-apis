@@ -10,51 +10,60 @@ mkdir -p "$MOODLE_DATA"
 chmod 777 "$MOODLE_DATA"
 
 # -------------------------------------------------------------------------
+# STEP 0: Environment Audit (Debugging)
+# -------------------------------------------------------------------------
+echo "[Entrypoint] --- Environment Audit ---"
+echo "DATABASE_URL: $([ -n "$DATABASE_URL" ] && echo "PRESENT (masked)" || echo "MISSING")"
+echo "DB_HOST: ${DB_HOST:-MISSING}"
+echo "DB_USER: ${DB_USER:-MISSING}"
+echo "RENDER_EXTERNAL_URL: ${RENDER_EXTERNAL_URL:-NOT SET}"
+echo "---------------------------------------"
+
+if [ -z "$DATABASE_URL" ] && [ -z "$DB_HOST" ]; then
+  echo "[Entrypoint] ERROR: No database configuration found (DATABASE_URL and DB_HOST are empty)."
+  echo "[Entrypoint] Please ensure the Render Blueprint has correctly linked the database."
+  exit 1
+fi
+
+# -------------------------------------------------------------------------
 # STEP 1: Wait for the database to actually be reachable
-# Retries every 3 seconds, up to 60 attempts (3 minutes max)
 # -------------------------------------------------------------------------
 echo "[Entrypoint] Waiting for database to be ready..."
 MAX_RETRIES=60
 RETRY=0
 
-# Pre-check for initial values (for logging)
+# Derive host and port for pg_isready network probe
 if [ -n "$DATABASE_URL" ]; then
-    # Improved extraction for postgres://user:pass@host:port/db
+    # Extract host:port from postgres://user:pass@host:port/db
+    # This handles both host:port and just host (defaulting to 5432)
     DB_P_HOST=$(echo "$DATABASE_URL" | sed -E 's/.*@([^:\/]+).*/\1/')
     DB_P_PORT=$(echo "$DATABASE_URL" | sed -E 's/.*:([0-9]+)\/.*/\1/' | grep -E '^[0-9]+$' || echo "5432")
-    echo "[Entrypoint] Target host detected from URL: $DB_P_HOST:$DB_P_PORT"
 else
-    DB_P_HOST="${DB_HOST:-localhost}"
+    DB_P_HOST="$DB_HOST"
     DB_P_PORT="${DB_PORT:-5432}"
-    echo "[Entrypoint] Target host detected from env: $DB_P_HOST:$DB_P_PORT"
 fi
 
-# Primary network check using pg_isready (installed in Dockerfile)
-echo "[Entrypoint] Probing network availability with pg_isready..."
-MAX_NETWORK_RETRIES=10
-for i in $(seq 1 $MAX_NETWORK_RETRIES); do
-  if pg_isready -h "$DB_P_HOST" -p "$DB_P_PORT" -t 5; then
-    echo "[Entrypoint] Network path to database is OPEN."
-    break
+echo "[Entrypoint] Probing network path to $DB_P_HOST:$DB_P_PORT..."
+until pg_isready -h "$DB_P_HOST" -p "$DB_P_PORT" -t 5; do
+  RETRY=$((RETRY + 1))
+  if [ "$RETRY" -ge "$MAX_RETRIES" ]; then
+    echo "[Entrypoint] ERROR: Network path unreachable after $MAX_RETRIES attempts."
+    exit 1
   fi
-  echo "[Entrypoint] pg_isready: server at $DB_P_HOST:$DB_P_PORT not responding (attempt $i/$MAX_NETWORK_RETRIES)..."
-  if [ "$i" -eq "$MAX_NETWORK_RETRIES" ]; then
-    echo "[Entrypoint] ERROR: Database network path unreachable. Check Render private network / Region settings."
-    # We continue to the PHP check anyway to get the full error report
-  fi
+  echo "[Entrypoint] Network path not open yet (attempt $RETRY/$MAX_RETRIES)..."
   sleep 3
 done
 
-echo "[Entrypoint] Proceeding to credential and SSL handshake..."
+echo "[Entrypoint] Network path is OPEN. Proceeding to credential handshake..."
+RETRY=0
 until php -r "
   \$url = getenv('DATABASE_URL');
-  if (\$url) {
-    \$p = parse_url(\$url);
-    \$host = \$p['host'];
+  if (\$url && (\$p = parse_url(\$url))) {
+    \$host = \$p['host'] ?? '';
     \$port = \$p['port'] ?? 5432;
-    \$db   = ltrim(\$p['path'], '/');
-    \$user = urldecode(\$p['user']);
-    \$pass = urldecode(\$p['pass']);
+    \$db   = ltrim(\$p['path'] ?? '', '/');
+    \$user = urldecode(\$p['user'] ?? '');
+    \$pass = urldecode(\$p['pass'] ?? '');
   } else {
     \$host = getenv('DB_HOST');
     \$port = getenv('DB_PORT') ?: 5432;
@@ -62,21 +71,31 @@ until php -r "
     \$user = getenv('DB_USER');
     \$pass = getenv('DB_PASS');
   }
-  // Remove '@' to show connection errors and add 'sslmode=require'
+  
+  if (empty(\$host)) {
+    fwrite(STDERR, \"PHP Error: Derived host is empty\n\");
+    exit(1);
+  }
+
   \$con_string = \"host='\$host' port='\$port' dbname='\$db' user='\$user' password='\$pass' connect_timeout=3 sslmode=require\";
   \$conn = pg_connect(\$con_string);
-  exit(\$conn ? 0 : 1);
+  if (!\$conn) {
+     fwrite(STDERR, \"PHP Error: \" . pg_last_error() . \"\n\");
+     exit(1);
+  }
+  exit(0);
 "; do
   RETRY=$((RETRY + 1))
   if [ "$RETRY" -ge "$MAX_RETRIES" ]; then
-    echo "[Entrypoint] ERROR: Database unreachable after $MAX_RETRIES attempts. Aborting."
+    echo "[Entrypoint] ERROR: Credential handshake failed after $MAX_RETRIES attempts."
     exit 1
   fi
-  echo "[Entrypoint] DB not ready yet (attempt $RETRY/$MAX_RETRIES)..."
+  echo "[Entrypoint] DB handshake failed (attempt $RETRY/$MAX_RETRIES)..."
   sleep 3
 done
 
-echo "[Entrypoint] Database is ready!"
+echo "[Entrypoint] Database is fully ready!"
+
 
 # -------------------------------------------------------------------------
 # STEP 2: Install Moodle database schema (creates all mdl_* tables)
