@@ -242,6 +242,7 @@ for ($i = 1; $i <= 500; $i++) {
             log_seed("Updating existing node: $shortname");
             if (!$existing->visible) {
                 $DB->set_field('course', 'visible', 1, ['id' => $existing->id]);
+                rebuild_course_cache($existing->id, true);
             }
             $course_id = $existing->id;
         } else {
