@@ -61,10 +61,43 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
         $mod_record->type = 'general';
         $mod_record->forcesubscribe = 0;
     }
+    if ($type === 'page') {
+        // page table requires content + contentformat — no DB default exists
+        $mod_record->content = isset($extra['intro']) ? $extra['intro'] : '';
+        $mod_record->contentformat = FORMAT_HTML;
+        $mod_record->displayoptions = '';
+    }
     if ($type === 'scorm') {
-        $mod_record->version = 'SCORM_1.2';
-        $mod_record->maxgrade = 100;
-        $mod_record->reference = "INTERNAL_GAME_V1";
+        // All non-nullable scorm columns that have no DB default must be set explicitly
+        $mod_record->scormtype     = 'local';
+        $mod_record->reference     = '';
+        $mod_record->version       = 'SCORM_1.2';
+        $mod_record->md5hash       = '';
+        $mod_record->sha1hash      = '';
+        $mod_record->maxgrade      = 100;
+        $mod_record->grademethod   = 0;
+        $mod_record->maxattempt    = 1;
+        $mod_record->whatgrade     = 0;
+        $mod_record->skipview      = 1;
+        $mod_record->hidebrowse    = 0;
+        $mod_record->hidetoc       = 0;
+        $mod_record->nav           = 1;
+        $mod_record->navpositionleft  = -100;
+        $mod_record->navpositiontop   = -100;
+        $mod_record->auto          = 0;
+        $mod_record->popup         = 0;
+        $mod_record->options       = '';
+        $mod_record->width         = 100;
+        $mod_record->height        = 600;
+        $mod_record->timeopen      = 0;
+        $mod_record->timeclose     = 0;
+        $mod_record->displayattemptstatus    = 1;
+        $mod_record->displaycoursestructure  = 0;
+        $mod_record->updatefreq    = 0;
+        $mod_record->forcecompleted   = 0;
+        $mod_record->forcenewattempt  = 0;
+        $mod_record->lastattemptlock  = 0;
+        $mod_record->launch        = 0;
     }
     
     // Inject custom HTML intro if provided for POC validation

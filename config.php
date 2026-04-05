@@ -53,12 +53,12 @@ $CFG->dblibrary = 'native';
 $CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';
 
 // -------------------------------------------------------------------------
-// DB connection: Hardcoded for dpg-d78vuapr0fns73e6n420-a instance
+// DB connection: Hardcoded for dpg-d791f8lactks73ctvgag-a instance
 // -------------------------------------------------------------------------
-$CFG->dbhost = 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
-$CFG->dbname = 'moodle_d4ws';
-$CFG->dbuser = 'moodle_d4ws_user';
-$CFG->dbpass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
+$CFG->dbhost = 'dpg-d791f8lactks73ctvgag-a';
+$CFG->dbname = 'moodle_mnm7';
+$CFG->dbuser = 'moodle_mnm7_user';
+$CFG->dbpass = 'wi0n2hFg025lR8V79TZGknzAjltcYcL1';
 $_db_port    = '5432';
 
 $CFG->dboptions = [

@@ -38,7 +38,7 @@ MAX_RETRIES=60
 RETRY=0
 
 # FORCED: Using new Oregon region credentials
-DB_P_HOST="dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com"
+DB_P_HOST="dpg-d791f8lactks73ctvgag-a"
 DB_P_PORT="5432"
 
 echo "[Entrypoint] Probing network path to $DB_P_HOST:$DB_P_PORT..."
@@ -55,11 +55,11 @@ done
 echo "[Entrypoint] Network path is OPEN. Proceeding to credential handshake..."
 RETRY=0
 until php -r "
-  \$host = 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
+  \$host = 'dpg-d791f8lactks73ctvgag-a';
   \$port = 5432;
-  \$db   = 'moodle_d4ws';
-  \$user = 'moodle_d4ws_user';
-  \$pass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
+  \$db   = 'moodle_mnm7';
+  \$user = 'moodle_mnm7_user';
+  \$pass = 'wi0n2hFg025lR8V79TZGknzAjltcYcL1';
   
   \$con_string = \"host='\$host' port='\$port' dbname='\$db' user='\$user' password='\$pass' connect_timeout=3 sslmode=require\";
   \$conn = pg_connect(\$con_string);
@@ -87,11 +87,11 @@ echo "[Entrypoint] Database is fully ready!"
 # Check if Moodle tables already exist specifically in mdl_config
 echo "[Entrypoint] Checking if Moodle is already installed..."
 ALREADY_INSTALLED=$(php -r "
-  \$host = 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
+  \$host = 'dpg-d791f8lactks73ctvgag-a';
   \$port = 5432;
-  \$db   = 'moodle_d4ws';
-  \$user = 'moodle_d4ws_user';
-  \$pass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
+  \$db   = 'moodle_mnm7';
+  \$user = 'moodle_mnm7_user';
+  \$pass = 'wi0n2hFg025lR8V79TZGknzAjltcYcL1';
   
   \$conn = @pg_connect(\"host=\$host port=\$port dbname=\$db user=\$user password=\$pass connect_timeout=3 sslmode=require\");
   if (!\$conn) exit(0); // If can't connect yet, assume not installed

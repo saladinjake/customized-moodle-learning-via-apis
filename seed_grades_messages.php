@@ -7,12 +7,29 @@ echo "Initiating Grade and Message Seeding for Victor...\n";
 global $DB, $CFG;
 require_once($CFG->dirroot . '/message/lib.php');
 require_once($CFG->dirroot . '/lib/gradelib.php');
+require_once($CFG->dirroot . '/user/lib.php');
+require_once($CFG->dirroot . '/course/lib.php');
+
+// Defensive: ensure Victor personas exist even if seed_moodle failed mid-run
+foreach (['victor_student' => 'Student', 'victor_instructor' => 'Instructor'] as $uname => $lname) {
+    if (!$DB->record_exists('user', ['username' => $uname])) {
+        echo "[Fallback] Creating missing user: $uname\n";
+        $u = new stdClass();
+        $u->username  = $uname;
+        $u->email     = "$uname@lumina.example.com";
+        $u->firstname = 'Victor';
+        $u->lastname  = $lname;
+        $u->confirmed = 1;
+        $u->mnethostid = $CFG->mnet_localhost_id;
+        user_create_user($u, false, false);
+    }
+}
 
 $transaction = $DB->start_delegated_transaction();
 
 try {
-    // 1. Get Users
-    $victor_student = $DB->get_record('user', ['username' => 'victor_student'], '*', MUST_EXIST);
+    // 1. Get Users (guaranteed to exist due to defensive block above)
+    $victor_student    = $DB->get_record('user', ['username' => 'victor_student'],    '*', MUST_EXIST);
     $victor_instructor = $DB->get_record('user', ['username' => 'victor_instructor'], '*', MUST_EXIST);
     $admin = get_admin();
 
