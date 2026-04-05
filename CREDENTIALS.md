@@ -22,29 +22,19 @@ Below are the default identities provisioned by the **Master Seeder**. These are
 ### 🚀 Management Tools
 
 #### 1. Remote Seeding (HTTP)
-Trigger the seeding pipeline via authenticated `curl`. The endpoint is located in the `local/api` folder.
-
-
+Trigger the seeding pipeline via authenticated `curl`. The endpoint is located in the `api-seeder` folder to ensure stability.
 
 **Master Suite (Recommended):**
 ```bash
-curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
+curl -X POST "https://lumina-moodle-backend.onrender.com/api-seeder/run_seed.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
      -d "run=master" \
      --no-buffer
 ```
 
-**Engagement/Grades Suite:**
-```bash
-curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
-     -H "X-Seed-Token: lumina-seed-2026" \
-     -d "run=categories" \
-     --no-buffer
-```
-
 **Legacy 500-Course Matrix:**
 ```bash
-curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
+curl -X POST "https://lumina-moodle-backend.onrender.com/api-seeder/run_seed.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
      -d "run=courses" \
      --no-buffer
@@ -52,7 +42,7 @@ curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php"
 
 **Engagement/Grades Suite:**
 ```bash
-curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
+curl -X POST "https://lumina-moodle-backend.onrender.com/api-seeder/run_seed.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
      -d "run=grades" \
      --no-buffer
@@ -62,16 +52,16 @@ curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php"
 Verify live database state via these endpoints:
 ```bash
 # Audit Users
-curl "https://lumina-moodle-backend.onrender.com/local/api/audit_users.php"
+curl "https://lumina-moodle-backend.onrender.com/api-seeder/audit_users.php"
 
 # Audit Catalog (Visibility & Categories)
-curl "https://lumina-moodle-backend.onrender.com/local/api/audit_catalog.php"
+curl "https://lumina-moodle-backend.onrender.com/api-seeder/audit_catalog.php"
 ```
 
 #### 3. Manual Execution (Render Shell)
 If you are logged into the Render web shell:
 ```bash
-cd /var/www/html/public/local/api
+cd /var/www/html/public/api-seeder
 php seed_master.php
 ```
 
