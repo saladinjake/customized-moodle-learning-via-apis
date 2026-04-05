@@ -19,6 +19,18 @@ Below are the default identities provisioned by the **Master Seeder**. These are
 
 ---
 
+
+Definitive Admin/Instructor List:
+
+admin (Pass: Admin1234!)
+victor_instructor (Pass: Victor123!)
+Definitive Student List:
+
+victor_student (enrolled)
+student_alpha, student_zeta, student_omega, student_theta (un-enrolled)
+All student passwords: Victor123!
+
+
 ### 🚀 Management Tools
 
 #### 1. Reseed Trigger (HTTP)
