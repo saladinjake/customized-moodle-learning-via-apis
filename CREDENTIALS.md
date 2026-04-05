@@ -2,21 +2,20 @@
 
 Below are the default identities provisioned by the **Master Seeder**. These are used to validate the headless frontend across different access tiers.
 
+### 🛡️ Staff & Administration
 | Role | Username | Password | Email |
 | :--- | :--- | :--- | :--- |
 | **System Admin** | `admin` | `Admin1234!` | `admin@lumina.com` |
 | **Victor Instructor** | `victor_instructor` | `Victor123!` | `victor_instructor@lumina.example.com` |
-| **Victor Student** | `victor_student` | `Victor123!` | `victor_student@lumina.example.com` |
 
-#### 🎓 Prospect Students (Un-enrolled)
-These accounts are activated but have no course associations, useful for testing empty dashboards and enrollment flows.
-
-| Name | Username | Password | Email |
+### 🎓 Learner Access
+| Type | Username | Password | Email |
 | :--- | :--- | :--- | :--- |
-| **Alpha Scholar** | `student_alpha` | `Victor123!` | `student_alpha@lumina.example.com` |
-| **Zeta Scholar** | `student_zeta` | `Victor123!` | `student_zeta@lumina.example.com` |
-| **Omega Scholar** | `student_omega` | `Victor123!` | `student_omega@lumina.example.com` |
-| **Theta Scholar** | `student_theta` | `Victor123!` | `student_theta@lumina.example.com` |
+| **Enrolled Student** | `victor_student` | `Victor123!` | `victor_student@lumina.example.com` |
+| **Prospect Alpha** | `student_alpha` | `Victor123!` | `student_alpha@lumina.example.com` |
+| **Prospect Zeta** | `student_zeta` | `Victor123!` | `student_zeta@lumina.example.com` |
+| **Prospect Omega** | `student_omega` | `Victor123!` | `student_omega@lumina.example.com` |
+| **Prospect Theta** | `student_theta` | `Victor123!` | `student_theta@lumina.example.com` |
 
 ---
 
@@ -25,10 +24,10 @@ These accounts are activated but have no course associations, useful for testing
 #### 1. Reseed Trigger (HTTP)
 If you need to re-provision the environment from scratch without a full deployment:
 
-##### Single-Section & Full Setup
+##### Single-Section & Full Setup (Recommended)
 ```bash
 curl -X POST "https://lumina-moodle-backend.onrender.com/run_seed.php" \
-     -H "X-Seed-Token: lumina-seed-2026" \
+     -H "H-Seed-Token: lumina-seed-2026" \
      -d "run=master" \
      --no-buffer
 ```
