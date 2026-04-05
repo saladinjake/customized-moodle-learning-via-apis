@@ -7,7 +7,7 @@
  * for every curriculum node to validate high-fidelity media playback.
  */
 
-define('CLI_SCRIPT', true);
+// define('CLI_SCRIPT', true); // Removed to allow HTTP triggering
 require_once(__DIR__ . '/config.php');
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -212,7 +212,10 @@ foreach($victors as $v_username) {
         $user->firstname = 'Victor';
         $user->lastname = ($v_username == 'victor_instructor' ? 'Instructor' : 'Student');
         $user->confirmed = 1;
-        $user->mnethostid = $CFG->mnet_localhost_id;
+        $user->lang = 'en';
+        $user->timezone = '99';
+        $user->calendartype = 'gregorian';
+        $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
         user_create_user($user);
     }
 }
@@ -254,6 +257,9 @@ for ($i = 1; $i <= 500; $i++) {
             $course_data->numsections = 4;
             $course_data->visible = 1; // FORCED VISIBILITY
             $course_data->summary = "An intensive curriculum covering $topic. Anchored in the $cat_name specialty registry.";
+            $course_data->summaryformat = FORMAT_HTML;
+            $course_data->timecreated = time();
+            $course_data->timemodified = time();
             
             $new_course = create_course($course_data);
             $course_id = $new_course->id;

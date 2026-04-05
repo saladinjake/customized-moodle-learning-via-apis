@@ -94,32 +94,23 @@ foreach ($to_run as $step => $script_path) {
         continue;
     }
 
-    // Run in a subprocess so each seeder gets its own CLI_SCRIPT define
-    $cmd = "php " . escapeshellarg($script_path) . " 2>&1";
-    $proc = popen($cmd, 'r');
-
-    if (!$proc) {
-        echo "ERROR: Could not start process for $step\n\n";
+    // Run via direct inclusion (safe now that CLI_SCRIPT is removed)
+    try {
+        ob_start();
+        include($script_path);
+        echo ob_get_clean();
+        echo "\n--- $step finished (Success) ---\n\n";
+    } catch (Exception $e) {
         $overall_success = false;
+        echo "EXCEPTION in $step: " . $e->getMessage() . "\n";
+        echo "Trace: " . $e->getTraceAsString() . "\n\n";
         flush();
-        continue;
-    }
-
-    while (!feof($proc)) {
-        $line = fgets($proc, 4096);
-        if ($line !== false) {
-            echo $line;
-            flush();
-        }
-    }
-
-    $exit_code = pclose($proc);
-    echo "\n--- $step finished (exit: $exit_code) ---\n\n";
-
-    if ($exit_code !== 0) {
+    } catch (Error $e) {
         $overall_success = false;
+        echo "CRITICAL ERROR in $step: " . $e->getMessage() . "\n";
+        echo "Line: " . $e->getLine() . " in " . $e->getFile() . "\n\n";
+        flush();
     }
-
     flush();
 }
 
