@@ -1,5 +1,5 @@
-<?php 
-require_once(__DIR__ . '/config.php');<?php
+<?php
+require_once(__DIR__ . '/config.php');
 /**
  * Remote Seed Trigger Endpoint
  *
@@ -51,11 +51,11 @@ if (!in_array($run, $valid_steps)) {
 
 // ─── Map step names to script files ──────────────────────────────────────────
 $scripts = [
-    'master'     => __DIR__ . '/seed_master.php',
+    'master' => __DIR__ . '/seed_master.php',
     'categories' => __DIR__ . '/seed_categories.php',
-    'cohorts'    => __DIR__ . '/seed_cohorts.php',
-    'courses'    => __DIR__ . '/seed_moodle.php',
-    'grades'     => __DIR__ . '/seed_grades_messages.php',
+    'cohorts' => __DIR__ . '/seed_cohorts.php',
+    'courses' => __DIR__ . '/seed_moodle.php',
+    'grades' => __DIR__ . '/seed_grades_messages.php',
 ];
 
 if ($run === 'all') {
