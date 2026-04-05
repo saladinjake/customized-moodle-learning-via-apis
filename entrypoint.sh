@@ -43,7 +43,7 @@ if [ -n "$DATABASE_URL" ]; then
     DB_P_HOST=$(echo "$DATABASE_URL" | sed -E 's/.*@([^:\/]+).*/\1/')
     DB_P_PORT=$(echo "$DATABASE_URL" | sed -E 's/.*:([0-9]+)\/.*/\1/' | grep -E '^[0-9]+$' || echo "5432")
 else
-    DB_P_HOST="dpg-d78vuapr0fns73e6n420-a"
+    DB_P_HOST="dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com"
     DB_P_PORT="5432"
 fi
 
@@ -61,15 +61,15 @@ done
 echo "[Entrypoint] Network path is OPEN. Proceeding to credential handshake..."
 RETRY=0
 until php -r "
-  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a/moodle_d4ws';
+  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com/moodle_d4ws';
   if (\$url && (\$p = parse_url(\$url))) {
-    \$host = \$p['host'] ?? 'dpg-d78vuapr0fns73e6n420-a';
+    \$host = \$p['host'] ?? 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
     \$port = \$p['port'] ?? 5432;
     \$db   = ltrim(\$p['path'] ?? 'moodle_d4ws', '/');
     \$user = urldecode(\$p['user'] ?? 'moodle_d4ws_user');
     \$pass = urldecode(\$p['pass'] ?? 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b');
   } else {
-    \$host = 'dpg-d78vuapr0fns73e6n420-a';
+    \$host = 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
     \$port = 5432;
     \$db   = 'moodle_d4ws';
     \$user = 'moodle_d4ws_user';
@@ -107,7 +107,7 @@ echo "[Entrypoint] Database is fully ready!"
 # Check if Moodle tables already exist specifically in mdl_config
 echo "[Entrypoint] Checking if Moodle is already installed..."
 ALREADY_INSTALLED=$(php -r "
-  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a/moodle_d4ws';
+  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com/moodle_d4ws';
   \$p = parse_url(\$url);
   \$host = \$p['host'];
   \$port = \$p['port'] ?? 5432;

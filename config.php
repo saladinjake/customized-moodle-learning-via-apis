@@ -55,7 +55,7 @@ $CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';
 // -------------------------------------------------------------------------
 // DB connection: Hardcoded for dpg-d78vuapr0fns73e6n420-a instance
 // -------------------------------------------------------------------------
-$CFG->dbhost = 'dpg-d78vuapr0fns73e6n420-a';
+$CFG->dbhost = 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
 $CFG->dbname = 'moodle_d4ws';
 $CFG->dbuser = 'moodle_d4ws_user';
 $CFG->dbpass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
