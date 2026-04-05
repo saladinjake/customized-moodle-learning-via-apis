@@ -14,7 +14,7 @@
  * - FULL IDEMPOTENCY (Safe to re-run)
  */
 
-define('CLI_SCRIPT', true);
+// define('CLI_SCRIPT', true); // Removed to allow HTTP triggering
 require_once(__DIR__ . '/config.php');
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -109,7 +109,15 @@ foreach ($victors as $v) {
         $user->firstname = $v['firstname'];
         $user->lastname = $v['lastname'];
         $user->confirmed = 1;
-        $user->mnethostid = $CFG->mnet_localhost_id;
+        $user->lang = 'en';
+        $user->timezone = '99';
+        $user->calendartype = 'gregorian';
+        $user->mailformat = 1;
+        $user->maildisplay = 1;
+        $user->maildigest = 0;
+        $user->autosubscribe = 1;
+        $user->trackforums = 0;
+        $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
         $uid = user_create_user($user, false, false);
         log_m("Created user: {$v['username']} (ID: $uid)");
     }
@@ -125,7 +133,15 @@ foreach ($prospects as $v) {
         $user->firstname = $v['firstname'];
         $user->lastname = $v['lastname'];
         $user->confirmed = 1;
-        $user->mnethostid = $CFG->mnet_localhost_id;
+        $user->lang = 'en';
+        $user->timezone = '99';
+        $user->calendartype = 'gregorian';
+        $user->mailformat = 1;
+        $user->maildisplay = 1;
+        $user->maildigest = 0;
+        $user->autosubscribe = 1;
+        $user->trackforums = 0;
+        $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
         $uid = user_create_user($user, false, false);
         log_m("Created prospect: {$v['username']} (ID: $uid)");
     }
@@ -136,10 +152,13 @@ log_m("Syncing Categories...");
 $cats = ['Software Architecture', 'Machine Learning', 'Cybersecurity', 'Financial Engineering', 'UX Research', 'Blockchain'];
 foreach ($cats as $name) {
     if (!$DB->record_exists('course_categories', ['name' => $name])) {
-        $cat = new stdClass();
-        $cat->name = $name;
-        $cat->parent = 0;
-        $cat->visible = 1; // FORCED VISIBILITY
+        $cat = (object)[
+            'name' => $name,
+            'parent' => 0,
+            'visible' => 1,
+            'description' => "Category for $name curricular nodes.",
+            'descriptionformat' => FORMAT_HTML
+        ];
         core_course_category::create($cat);
         log_m("Created category: $name");
     } else {
@@ -183,7 +202,11 @@ for ($i = 1; $i <= 50; $i++) { // Reduced to 50 for stability, can be increased
         $course->category = $cat_ids[array_rand($cat_ids)];
         $course->format = 'topics';
         $course->numsections = 4;
-        $course->visible = 1; // FORCED VISIBILITY
+        $course->visible = 1;
+        $course->summary = "Strategic curriculum node for $shortname.";
+        $course->summaryformat = FORMAT_HTML;
+        $course->timecreated = time();
+        $course->timemodified = time();
         $course_obj = create_course($course);
         log_m("Created course: $shortname");
     } else {
