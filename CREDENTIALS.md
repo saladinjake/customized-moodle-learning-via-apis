@@ -22,7 +22,7 @@ Below are the default identities provisioned by the **Master Seeder**. These are
 ### 🚀 Management Tools
 
 #### 1. Remote Seeding (HTTP)
-Trigger the seeding pipeline via authenticated `curl`. These endpoints are prefixed with `local_` and reside in the web root for absolute accessibility.
+Trigger the seeding pipeline via authenticated `curl`. These endpoints reside directly in the web root for maximum accessibility.
 
 **Master Suite (Recommended):**
 ```bash
@@ -34,7 +34,7 @@ curl -X POST "https://lumina-moodle-backend.onrender.com/local_run_seed.php" \
 
 **Legacy 500-Course Matrix:**
 ```bash
-curl -X POST "https://lumina-moodle-backend.onrender.com/local_run_seed.php" \
+curl -X POST "https://lumina-moodle-backend.onrender.com/local_seed_moodle.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
      -d "run=courses" \
      --no-buffer
@@ -42,7 +42,7 @@ curl -X POST "https://lumina-moodle-backend.onrender.com/local_run_seed.php" \
 
 **Engagement/Grades Suite:**
 ```bash
-curl -X POST "https://lumina-moodle-backend.onrender.com/local_run_seed.php" \
+curl -X POST "https://lumina-moodle-backend.onrender.com/local_seed_grades_messages.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
      -d "run=grades" \
      --no-buffer
