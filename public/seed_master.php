@@ -139,8 +139,15 @@ foreach ($cats as $name) {
         $cat = new stdClass();
         $cat->name = $name;
         $cat->parent = 0;
+        $cat->visible = 1; // FORCED VISIBILITY
         core_course_category::create($cat);
         log_m("Created category: $name");
+    } else {
+        $cat = $DB->get_record('course_categories', ['name' => $name]);
+        if (!$cat->visible) {
+            $DB->set_field('course_categories', 'visible', 1, ['id' => $cat->id]);
+            log_m("Repaired visibility for category: $name");
+        }
     }
 }
 
@@ -176,10 +183,15 @@ for ($i = 1; $i <= 50; $i++) { // Reduced to 50 for stability, can be increased
         $course->category = $cat_ids[array_rand($cat_ids)];
         $course->format = 'topics';
         $course->numsections = 4;
+        $course->visible = 1; // FORCED VISIBILITY
         $course_obj = create_course($course);
         log_m("Created course: $shortname");
     } else {
         $course_obj = $DB->get_record('course', ['shortname' => $shortname]);
+        if (!$course_obj->visible) {
+            $DB->set_field('course', 'visible', 1, ['id' => $course_obj->id]);
+            log_m("Repaired visibility for course: $shortname");
+        }
     }
 
     // High-Fidelity Asset Provisioning (Multi-Section)
