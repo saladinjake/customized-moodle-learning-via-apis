@@ -38,7 +38,7 @@ if [ -n "$DATABASE_URL" ]; then
     DB_P_HOST=$(echo "$DATABASE_URL" | sed -E 's/.*@([^:\/]+).*/\1/')
     DB_P_PORT=$(echo "$DATABASE_URL" | sed -E 's/.*:([0-9]+)\/.*/\1/' | grep -E '^[0-9]+$' || echo "5432")
 else
-    DB_P_HOST="dpg-d78pfqh4tr6s73cdloqg-a"
+    DB_P_HOST="dpg-d78vuapr0fns73e6n420-a"
     DB_P_PORT="5432"
 fi
 
@@ -56,19 +56,19 @@ done
 echo "[Entrypoint] Network path is OPEN. Proceeding to credential handshake..."
 RETRY=0
 until php -r "
-  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_db_user:lPLEBqlshzn2LU27FXnPtR0y0ANV9Wsg@dpg-d78pfqh4tr6s73cdloqg-a/moodle_rgjo';
+  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a/moodle_d4ws';
   if (\$url && (\$p = parse_url(\$url))) {
-    \$host = \$p['host'] ?? 'dpg-d78pfqh4tr6s73cdloqg-a';
+    \$host = \$p['host'] ?? 'dpg-d78vuapr0fns73e6n420-a';
     \$port = \$p['port'] ?? 5432;
-    \$db   = ltrim(\$p['path'] ?? 'moodle_rgjo', '/');
-    \$user = urldecode(\$p['user'] ?? 'moodle_db_user');
-    \$pass = urldecode(\$p['pass'] ?? 'lPLEBqlshzn2LU27FXnPtR0y0ANV9Wsg');
+    \$db   = ltrim(\$p['path'] ?? 'moodle_d4ws', '/');
+    \$user = urldecode(\$p['user'] ?? 'moodle_d4ws_user');
+    \$pass = urldecode(\$p['pass'] ?? 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b');
   } else {
-    \$host = 'dpg-d78pfqh4tr6s73cdloqg-a';
+    \$host = 'dpg-d78vuapr0fns73e6n420-a';
     \$port = 5432;
-    \$db   = 'moodle_rgjo';
-    \$user = 'moodle_db_user';
-    \$pass = 'lPLEBqlshzn2LU27FXnPtR0y0ANV9Wsg';
+    \$db   = 'moodle_d4ws';
+    \$user = 'moodle_d4ws_user';
+    \$pass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
   }
   
   if (empty(\$host)) {
@@ -97,27 +97,48 @@ echo "[Entrypoint] Database is fully ready!"
 
 
 # -------------------------------------------------------------------------
-# STEP 2: Install Moodle database schema (creates all mdl_* tables)
-# Exits 0 on success, non-zero if already installed — both are fine.
+# STEP 2: Optional Install (Skip if database already exists)
 # -------------------------------------------------------------------------
-echo "[Entrypoint] Running Moodle database installer..."
-ADMIN_PASS="${MOODLE_ADMIN_PASS:-Admin1234!}"
+# Check if Moodle tables already exist specifically in mdl_config
+echo "[Entrypoint] Checking if Moodle is already installed..."
+ALREADY_INSTALLED=$(php -r "
+  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a/moodle_d4ws';
+  \$p = parse_url(\$url);
+  \$host = \$p['host'];
+  \$port = \$p['port'] ?? 5432;
+  \$db   = ltrim(\$p['path'] ?? 'moodle_d4ws', '/');
+  \$user = urldecode(\$p['user'] ?? 'moodle_d4ws_user');
+  \$pass = urldecode(\$p['pass'] ?? 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b');
+  
+  \$conn = @pg_connect(\"host=\$host port=\$port dbname=\$db user=\$user password=\$pass connect_timeout=3 sslmode=require\");
+  if (!\$conn) exit(0); // If can't connect yet, assume not installed
+  \$res = @pg_query(\$conn, \"SELECT 1 FROM information_schema.tables WHERE table_name = 'mdl_config' LIMIT 1\");
+  \$row = pg_fetch_row(\$res);
+  exit(\$row ? 1 : 0);
+"; echo $?)
 
-set +e  # allow installer to return non-zero without aborting script
-php /var/www/html/admin/cli/install_database.php \
-    --agree-license \
-    --fullname="Lumina LMS" \
-    --shortname="lumina" \
-    --adminuser="admin" \
-    --adminpass="$ADMIN_PASS" \
-    --adminemail="admin@lumina.com"
-INSTALL_EXIT=$?
-set -e
-
-if [ "$INSTALL_EXIT" -eq 0 ]; then
-  echo "[Entrypoint] Moodle installed successfully."
+if [ "$ALREADY_INSTALLED" -eq 1 ]; then
+  echo "[Entrypoint] SKIPPING INSTALLER: Moodle database schema detected."
 else
-  echo "[Entrypoint] Installer exited with code $INSTALL_EXIT (already installed or non-fatal — continuing)."
+  echo "[Entrypoint] Running Moodle database installer (this may take up to 15 minutes)..."
+  ADMIN_PASS="${MOODLE_ADMIN_PASS:-Admin1234!}"
+  
+  set +e  # allow installer to return non-zero without aborting script
+  php /var/www/html/admin/cli/install_database.php \
+      --agree-license \
+      --fullname="Lumina LMS" \
+      --shortname="lumina" \
+      --adminuser="admin" \
+      --adminpass="$ADMIN_PASS" \
+      --adminemail="admin@lumina.com"
+  INSTALL_EXIT=$?
+  set -e
+  
+  if [ "$INSTALL_EXIT" -eq 0 ]; then
+    echo "[Entrypoint] Moodle installed successfully."
+  else
+    echo "[Entrypoint] Installer exited with code $INSTALL_EXIT (likely already installed — continuing)."
+  fi
 fi
 
 # -------------------------------------------------------------------------

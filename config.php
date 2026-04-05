@@ -53,34 +53,13 @@ $CFG->dblibrary = 'native';
 $CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';
 
 // -------------------------------------------------------------------------
-// DB connection: 3-tier resolution
-//  1. DATABASE_URL  — Render internalConnectionString (postgres://user:pass@host:port/db)
-//  2. DB_HOST / DB_USER / DB_PASS / DB_NAME / DB_PORT — individual Render env vars
-//  3. Local dev hardcoded fallbacks
+// DB connection: Hardcoded for dpg-d78vuapr0fns73e6n420-a instance
 // -------------------------------------------------------------------------
-$_db_url = getenv('DATABASE_URL');
-if ($_db_url && ($_parsed = parse_url($_db_url)) && !empty($_parsed['host'])) {
-    // Tier 1: full connection URL (Render managed DB internal route)
-    $CFG->dbhost = $_parsed['host'];
-    $CFG->dbname = ltrim($_parsed['path'] ?? '/moodle', '/');
-    $CFG->dbuser = urldecode($_parsed['user'] ?? '');
-    $CFG->dbpass = urldecode($_parsed['pass'] ?? '');
-    $_db_port    = (string)($_parsed['port'] ?? '5432');
-} elseif (getenv('DB_HOST')) {
-    // Tier 2: individual env vars injected by Render fromDatabase references
-    $CFG->dbhost = getenv('DB_HOST');
-    $CFG->dbname = getenv('DB_NAME') ?: 'moodle';
-    $CFG->dbuser = getenv('DB_USER');
-    $CFG->dbpass = getenv('DB_PASS');
-    $_db_port    = getenv('DB_PORT') ?: '5432';
-} else {
-    // Tier 3: local dev fallback only — never runs on Render
-    $CFG->dbhost = 'dpg-d78pfqh4tr6s73cdloqg-a';
-    $CFG->dbname = 'moodle_rgjo';
-    $CFG->dbuser = 'moodle_db_user';
-    $CFG->dbpass = 'lPLEBqlshzn2LU27FXnPtR0y0ANV9Wsg';
-    $_db_port    = '5432';
-}
+$CFG->dbhost = 'dpg-d78vuapr0fns73e6n420-a';
+$CFG->dbname = 'moodle_d4ws';
+$CFG->dbuser = 'moodle_d4ws_user';
+$CFG->dbpass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
+$_db_port    = '5432';
 
 $CFG->dboptions = [
     'dbpersist'        => false,
@@ -88,6 +67,22 @@ $CFG->dboptions = [
     'dbport'           => $_db_port,
     'dbhandlesoptions' => false,
     'ssl'              => 'require',
+];
+
+// -------------------------------------------------------------------------
+// EMAIL & OUTGOING MAIL
+// -------------------------------------------------------------------------
+// Silence email errors until Mailgun/SMTP is configured
+$CFG->noemailever = true; 
+
+/* 
+// FUTURE SMTP/MAILGUN CONFIGURATION (Uncomment and set these later)
+$CFG->noemailever = false;
+$CFG->smtphosts   = 'smtp.mailgun.org:587';
+$CFG->smtpuser    = 'postmaster@yourdomain.com';
+$CFG->smtppass    = 'your-mailgun-password';
+$CFG->smtpsecure  = 'tls';
+*/
 
 
                                             //   support. If you wish to use partial UTF-8
@@ -185,7 +180,6 @@ $CFG->dboptions = [
     More info available in lib/dml/moodle_read_replica_trait.php where the feature is implemented.
     ]
     */
-];
 
 
 //=========================================================================

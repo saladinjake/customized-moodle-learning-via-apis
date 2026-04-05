@@ -5,12 +5,12 @@ services:
     env: docker
     region: oregon
     plan: free
-    startTimeoutSeconds: 1200
+    startTimeoutSeconds: 1800
     dockerfilePath: ./Dockerfile
     envVars:
       # Paste your connection strings into these in the Render Dashboard
       - key: DATABASE_URL
-        value: postgresql://moodle_db_user:lPLEBqlshzn2LU27FXnPtR0y0ANV9Wsg@dpg-d78pfqh4tr6s73cdloqg-a/moodle_rgjo
+        value: postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a/moodle_d4ws
       - key: MOODLE_DATA_DIR
         value: /var/moodledata
       - key: MOODLE_ADMIN_PASS
