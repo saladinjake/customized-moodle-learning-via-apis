@@ -26,7 +26,12 @@ require_once($CFG->dirroot . '/enrol/manual/lib.php');
 require_once($CFG->dirroot . '/course/modlib.php');
 require_once($CFG->dirroot . '/calendar/lib.php');
 
-global $DB, $CFG;
+global $DB, $CFG, $PAGE;
+// Initialize $PAGE to prevent "get_navigation_overflow_state on null" in web context
+$PAGE->set_url(new moodle_url('/local_run_seed.php'));
+$PAGE->set_context(context_system::instance());
+$PAGE->set_pagelayout('admin'); 
+
 
 function log_m($msg) { echo "[MASTER SEEDER] " . $msg . PHP_EOL; flush(); }
 
