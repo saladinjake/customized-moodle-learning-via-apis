@@ -37,15 +37,9 @@ echo "[Entrypoint] Waiting for database to be ready..."
 MAX_RETRIES=60
 RETRY=0
 
-# Derive host and port for pg_isready network probe
-if [ -n "$DATABASE_URL" ]; then
-    # Extract host:port from postgres://user:pass@host:port/db
-    DB_P_HOST=$(echo "$DATABASE_URL" | sed -E 's/.*@([^:\/]+).*/\1/')
-    DB_P_PORT=$(echo "$DATABASE_URL" | sed -E 's/.*:([0-9]+)\/.*/\1/' | grep -E '^[0-9]+$' || echo "5432")
-else
-    DB_P_HOST="dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com"
-    DB_P_PORT="5432"
-fi
+# FORCED: Using new Oregon region credentials
+DB_P_HOST="dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com"
+DB_P_PORT="5432"
 
 echo "[Entrypoint] Probing network path to $DB_P_HOST:$DB_P_PORT..."
 until pg_isready -h "$DB_P_HOST" -p "$DB_P_PORT" -t 5; do
@@ -61,26 +55,12 @@ done
 echo "[Entrypoint] Network path is OPEN. Proceeding to credential handshake..."
 RETRY=0
 until php -r "
-  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com/moodle_d4ws';
-  if (\$url && (\$p = parse_url(\$url))) {
-    \$host = \$p['host'] ?? 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
-    \$port = \$p['port'] ?? 5432;
-    \$db   = ltrim(\$p['path'] ?? 'moodle_d4ws', '/');
-    \$user = urldecode(\$p['user'] ?? 'moodle_d4ws_user');
-    \$pass = urldecode(\$p['pass'] ?? 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b');
-  } else {
-    \$host = 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
-    \$port = 5432;
-    \$db   = 'moodle_d4ws';
-    \$user = 'moodle_d4ws_user';
-    \$pass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
-  }
+  \$host = 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
+  \$port = 5432;
+  \$db   = 'moodle_d4ws';
+  \$user = 'moodle_d4ws_user';
+  \$pass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
   
-  if (empty(\$host)) {
-    fwrite(STDERR, \"PHP Error: Derived host is empty\n\");
-    exit(1);
-  }
-
   \$con_string = \"host='\$host' port='\$port' dbname='\$db' user='\$user' password='\$pass' connect_timeout=3 sslmode=require\";
   \$conn = pg_connect(\$con_string);
   if (!\$conn) {
@@ -107,13 +87,11 @@ echo "[Entrypoint] Database is fully ready!"
 # Check if Moodle tables already exist specifically in mdl_config
 echo "[Entrypoint] Checking if Moodle is already installed..."
 ALREADY_INSTALLED=$(php -r "
-  \$url = getenv('DATABASE_URL') ?: 'postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com/moodle_d4ws';
-  \$p = parse_url(\$url);
-  \$host = \$p['host'];
-  \$port = \$p['port'] ?? 5432;
-  \$db   = ltrim(\$p['path'] ?? 'moodle_d4ws', '/');
-  \$user = urldecode(\$p['user'] ?? 'moodle_d4ws_user');
-  \$pass = urldecode(\$p['pass'] ?? 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b');
+  \$host = 'dpg-d78vuapr0fns73e6n420-a.oregon-postgres.render.com';
+  \$port = 5432;
+  \$db   = 'moodle_d4ws';
+  \$user = 'moodle_d4ws_user';
+  \$pass = 'fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b';
   
   \$conn = @pg_connect(\"host=\$host port=\$port dbname=\$db user=\$user password=\$pass connect_timeout=3 sslmode=require\");
   if (!\$conn) exit(0); // If can't connect yet, assume not installed
