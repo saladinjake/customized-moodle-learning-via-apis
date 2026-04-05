@@ -127,7 +127,7 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     if ($type === 'quiz') setup_quiz_questions($instance_id);
     if ($type === 'forum') setup_forum_discussion($instance_id, $course_id);
 
-    rebuild_course_cache($course_id, true);
+    // rebuild_course_cache($course_id, true); // Removed from here for performance
     log_seed("Provisioned $type: $name in $course_id S$section_num");
     return $cmid;
 }
@@ -229,75 +229,91 @@ if (empty($cat_ids)) {
 }
 
 for ($i = 1; $i <= 500; $i++) {
-    $topic = $topics[array_rand($topics)];
-    $cat_id = $cat_ids[array_rand($cat_ids)];
-    $cat_name = $cats[$cat_id]->name ?? 'General';
+    try {
+        $topic = $topics[array_rand($topics)];
+        $cat_id = $cat_ids[array_rand($cat_ids)];
+        $cat_name = $cats[$cat_id]->name ?? 'General';
 
-    $fullname = "[$i] $topic Specialization ($cat_name)";
-    $shortname = "MX-500-$i";
-    
-    $existing = $DB->get_record('course', ['shortname' => $shortname]);
-    if ($existing) {
-        log_seed("Updating existing node: $shortname");
-        $course_id = $existing->id;
-    } else {
-        $course_data = new stdClass();
-        $course_data->fullname = $fullname;
-        $course_data->shortname = $shortname;
-        $course_data->category = $cat_id;
-        $course_data->format = 'topics';
-        $course_data->numsections = 4;
-        $course_data->summary = "An intensive curriculum covering $topic. Anchored in the $cat_name specialty registry.";
+        $fullname = "[$i] $topic Specialization ($cat_name)";
+        $shortname = "MX-500-$i";
         
-        $new_course = create_course($course_data);
-        $course_id = $new_course->id;
-        log_seed("Course anchored: $shortname in Cat:$cat_id");
-    }
+        $existing = $DB->get_record('course', ['shortname' => $shortname]);
+        if ($existing) {
+            log_seed("Updating existing node: $shortname");
+            $course_id = $existing->id;
+        } else {
+            $course_data = new stdClass();
+            $course_data->fullname = $fullname;
+            $course_data->shortname = $shortname;
+            $course_data->category = $cat_id;
+            $course_data->format = 'topics';
+            $course_data->numsections = 4;
+            $course_data->summary = "An intensive curriculum covering $topic. Anchored in the $cat_name specialty registry.";
+            
+            $new_course = create_course($course_data);
+            $course_id = $new_course->id;
+            log_seed("Course anchored: $shortname in Cat:$cat_id");
+        }
 
-    // Mass Enrolment Victor Persona
-    $enrol_p = enrol_get_plugin('manual');
-    $instance = $DB->get_record('enrol', ['courseid' => $course_id, 'enrol' => 'manual'], '*', MUST_EXIST);
-    
-    foreach(['editingteacher' => 'victor_instructor', 'student' => 'victor_student'] as $role => $uname) {
-        $r_obj = $DB->get_record('role', ['shortname' => $role], '*', MUST_EXIST);
-        $u_obj = $DB->get_record('user', ['username' => $uname], '*', MUST_EXIST);
-        $enrol_p->enrol_user($instance, $u_obj->id, $r_obj->id);
-    }
+        // Mass Enrolment Victor Persona
+        $enrol_p = enrol_get_plugin('manual');
+        $instance = $DB->get_record('enrol', ['courseid' => $course_id, 'enrol' => 'manual']);
+        if (!$instance) {
+            $inst_id = $enrol_p->add_instance($DB->get_record('course', ['id' => $course_id]));
+            $instance = $DB->get_record('enrol', ['id' => $inst_id], '*', MUST_EXIST);
+        }
+        
+        foreach(['editingteacher' => 'victor_instructor', 'student' => 'victor_student'] as $role => $uname) {
+            $r_obj = $DB->get_record('role', ['shortname' => $role], '*', MUST_EXIST);
+            $u_obj = $DB->get_record('user', ['username' => $uname], '*', MUST_EXIST);
+            // Only enrol if not already enrolled to avoid duplicates or errors
+            if (!$DB->record_exists('user_enrolments', ['enrolid' => $instance->id, 'userid' => $u_obj->id])) {
+                $enrol_p->enrol_user($instance, $u_obj->id, $r_obj->id);
+                log_seed("Enrolled $uname as $role in CS:$course_id");
+            }
+        }
 
-    // High-Fidelity Asset Provisioning
-    course_create_sections_if_missing($course_id, [1, 2, 3, 4]);
-    
-    // SECTION 1: VIDEO PREVIEW & HTML POC
-    $vid_url = $vids[array_rand($vids)];
-    provision_module($course_id, 1, 'url', "Phase 1: Curriculum Introduction (Video)", ['url' => $vid_url]);
-    
-    // HTML POC: Large Academic Syllabus Overview
-    $html_content = "
-        <div class='academy-poc'>
-            <h3>Academic Deep-Dive: Enterprise Orchestration v2.4</h3>
-            <p>This comprehensive module provides a high-fidelity overview of the modern curricular framework. It is intended to validate the <b>Academy Page</b> rendering capabilities of the Work Studio environment.</p>
-            <ul>
-                <li><b>Strategic Alignment</b>: Ensuring that all educational vectors are aligned with the primary industry standards.</li>
-                <li><b>Modular Architecture</b>: Discussing the decoupling of monolithic curriculum into agentic learning nodes.</li>
-                <li><b>Interactive Validation</b>: Utilizing high-density HTML previews to ensure perfect student comprehension.</li>
-            </ul>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <h4>Module Track Overview</h4>
-            <p>During this session, we will explore the intersection of <i>Agentic UX</i> and <i>Headless Moodle Architectures</i>. This involves a rigorous analysis of API stability and media rendering across non-standard local development ports.</p>
-            <blockquote>'The future of digital learning is not just in the content, but in the immersive precision of the player surface.' - Lumina Academy Design Principles</blockquote>
-        </div>
-    ";
-    provision_module($course_id, 1, 'page', "Proof of Concept: Strategic Overview", ['intro' => $html_content]);
-    
-    // SECTION 2: COMMUNITY & INTERACTIVE
-    provision_module($course_id, 2, 'forum', "Phase 2: Community Collaboration Hub");
-    provision_module($course_id, 2, 'scorm', "Phase 2: Interactive Strategy Simulator (Game)");
-    
-    // SECTION 3: KNOWLEDGE VALIDATION
-    provision_module($course_id, 3, 'quiz', "Phase 3: Curricular Mastery Assessment");
-    
-    // SECTION 4: CAPSTONE
-    provision_module($course_id, 4, 'assign', "Phase 4: Capstone Performance Milestone");
+        // High-Fidelity Asset Provisioning
+        course_create_sections_if_missing($course_id, [1, 2, 3, 4]);
+        
+        // SECTION 1: VIDEO PREVIEW & HTML POC
+        $vid_url = $vids[array_rand($vids)];
+        provision_module($course_id, 1, 'url', "Phase 1: Curriculum Introduction (Video)", ['url' => $vid_url]);
+        
+        // HTML POC: Large Academic Syllabus Overview
+        $html_content = "
+            <div class='academy-poc'>
+                <h3>Academic Deep-Dive: Enterprise Orchestration v2.4</h3>
+                <p>This comprehensive module provides a high-fidelity overview of the modern curricular framework. It is intended to validate the <b>Academy Page</b> rendering capabilities of the Work Studio environment.</p>
+                <ul>
+                    <li><b>Strategic Alignment</b>: Ensuring that all educational vectors are aligned with the primary industry standards.</li>
+                    <li><b>Modular Architecture</b>: Discussing the decoupling of monolithic curriculum into agentic learning nodes.</li>
+                    <li><b>Interactive Validation</b>: Utilizing high-density HTML previews to ensure perfect student comprehension.</li>
+                </ul>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <h4>Module Track Overview</h4>
+                <p>During this session, we will explore the intersection of <i>Agentic UX</i> and <i>Headless Moodle Architectures</i>. This involves a rigorous analysis of API stability and media rendering across non-standard local development ports.</p>
+                <blockquote>'The future of digital learning is not just in the content, but in the immersive precision of the player surface.' - Lumina Academy Design Principles</blockquote>
+            </div>
+        ";
+        provision_module($course_id, 1, 'page', "Proof of Concept: Strategic Overview", ['intro' => $html_content]);
+        
+        // SECTION 2: COMMUNITY & INTERACTIVE
+        provision_module($course_id, 2, 'forum', "Phase 2: Community Collaboration Hub");
+        provision_module($course_id, 2, 'scorm', "Phase 2: Interactive Strategy Simulator (Game)");
+        
+        // SECTION 3: KNOWLEDGE VALIDATION
+        provision_module($course_id, 3, 'quiz', "Phase 3: Curricular Mastery Assessment");
+        
+        // SECTION 4: CAPSTONE
+        provision_module($course_id, 4, 'assign', "Phase 4: Capstone Performance Milestone");
+
+        // Rebuild cache ONCE per course for performance
+        rebuild_course_cache($course_id, true);
+
+    } catch (Exception $e) {
+        log_seed("ERROR in course $i loop: " . $e->getMessage());
+    }
 }
 
 log_seed("MATRIX SEEDING COMPLETE: 500 CLUSTERS FULLY ANCHORED WITH BINARY PREVIEWS.");

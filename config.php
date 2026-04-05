@@ -53,12 +53,12 @@ $CFG->dblibrary = 'native';
 $CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';
 
 // -------------------------------------------------------------------------
-// DB connection: Hardcoded for dpg-d791f8lactks73ctvgag-a instance
+// DB connection: Hardcoded for dpg-d7922lk50q8c73f9u2m0-a instance
 // -------------------------------------------------------------------------
-$CFG->dbhost = 'dpg-d791f8lactks73ctvgag-a';
-$CFG->dbname = 'moodle_mnm7';
-$CFG->dbuser = 'moodle_mnm7_user';
-$CFG->dbpass = 'wi0n2hFg025lR8V79TZGknzAjltcYcL1';
+$CFG->dbhost = 'dpg-d7922lk50q8c73f9u2m0-a';
+$CFG->dbname = 'moodle_databases';
+$CFG->dbuser = 'moodle_databases_user';
+$CFG->dbpass = '83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti';
 $_db_port    = '5432';
 
 $CFG->dboptions = [
@@ -193,7 +193,18 @@ $CFG->smtpsecure  = 'tls';
 // If you need both intranet and Internet access please read
 // http://docs.moodle.org/en/masquerading
 
-$CFG->wwwroot   = getenv('RENDER_EXTERNAL_URL') ?: 'http://localhost:8000';
+// Strip any accidental trailing slash from the URL
+$CFG->wwwroot   = rtrim(getenv('RENDER_EXTERNAL_URL') ?: 'http://localhost:8000', '/');
+
+// -------------------------------------------------------------------------
+// REVERSE PROXY / SSL TERMINATION (Render-specific)
+// Render's load balancer handles HTTPS and forwards plain HTTP to the
+// container. Without these flags Moodle compares the incoming http://
+// request against the https:// wwwroot, detects a scheme mismatch, and
+// throws: "Unsupported redirect detected" (redirecterrordetected).
+// -------------------------------------------------------------------------
+$CFG->sslproxy      = true;   // Trust that the proxy is handling HTTPS
+$CFG->reverseproxy  = true;   // We are behind a reverse proxy
 
 //=========================================================================
 // 3. DATA FILES LOCATION

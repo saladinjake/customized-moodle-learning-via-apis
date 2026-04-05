@@ -36,31 +36,39 @@ try {
     // 2. Seed Messages (Conversations)
     echo "Seeding Messages...\n";
     
-    // Conversation 1: Admin -> Student
-    $conv_id_1 = \core_message\api::create_conversation(
-        \core_message\api::MESSAGE_CONVERSATION_TYPE_INDIVIDUAL,
-        [$admin->id, $victor_student->id]
-    )->id;
-    
-    \core_message\api::send_message_to_conversation(
-        $admin->id,
-        $conv_id_1,
-        'Identity migration to modern registry complete. Neutral link stabilized. Deployment sequence validated across all nodes.',
-        FORMAT_MOODLE
-    );
+    $message_data = [
+        ['from' => $admin, 'to' => $victor_student, 'msg' => 'Identity migration to modern registry complete. Neutral link stabilized. Deployment sequence validated across all nodes.'],
+        ['from' => $victor_instructor, 'to' => $victor_student, 'msg' => 'Your credentials have been verified for Phase 3 asset access. Please review the security protocols at your earliest convenience.']
+    ];
 
-    // Conversation 2: Instructor -> Student
-    $conv_id_2 = \core_message\api::create_conversation(
-        \core_message\api::MESSAGE_CONVERSATION_TYPE_INDIVIDUAL,
-        [$victor_instructor->id, $victor_student->id]
-    )->id;
+    foreach ($message_data as $data) {
+        try {
+            $conv = \core_message\api::get_conversation_between_users([$data['from']->id, $data['to']->id]);
+            if (!$conv) {
+                $conv = \core_message\api::create_conversation(
+                    \core_message\api::MESSAGE_CONVERSATION_TYPE_INDIVIDUAL,
+                    [$data['from']->id, $data['to']->id]
+                );
+            }
+            // Ensure members are in it (mostly defensive for corrupt legacy data)
+            if (!\core_message\api::is_user_in_conversation($data['from']->id, $conv->id)) {
+                 \core_message\api::add_members_to_conversation([$data['from']->id], $conv->id);
+            }
+            if (!\core_message\api::is_user_in_conversation($data['to']->id, $conv->id)) {
+                 \core_message\api::add_members_to_conversation([$data['to']->id], $conv->id);
+            }
 
-    \core_message\api::send_message_to_conversation(
-        $victor_instructor->id,
-        $conv_id_2,
-        'Your credentials have been verified for Phase 3 asset access. Please review the security protocols at your earliest convenience.',
-        FORMAT_MOODLE
-    );
+            \core_message\api::send_message_to_conversation(
+                $data['from']->id,
+                $conv->id,
+                $data['msg'],
+                FORMAT_MOODLE
+            );
+            echo "Message seeded from {$data['from']->username} to {$data['to']->username}\n";
+        } catch (Exception $e) {
+            echo "Warning: Messaging failed for {$data['from']->username}: " . $e->getMessage() . "\n";
+        }
+    }
 
     // 3. Seed Grades (We need some courses and grade items first if they don't exist, or just use raw DB inserts for POC purposes)
     echo "Seeding Grades...\n";

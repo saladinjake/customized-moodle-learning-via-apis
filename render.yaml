@@ -10,15 +10,15 @@ services:
     envVars:
       # Paste your connection strings into these in the Render Dashboard
       - key: DATABASE_URL
-        value: postgresql://moodle_mnm7_user:wi0n2hFg025lR8V79TZGknzAjltcYcL1@dpg-d791f8lactks73ctvgag-a/moodle_mnm7
+        value: postgresql://moodle_databases_user:83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti@dpg-d7922lk50q8c73f9u2m0-a/moodle_databases
       - key: DB_USER
-        value: moodle_mnm7_user
+        value: moodle_databases_user
       - key: DB_PASS
-        value: wi0n2hFg025lR8V79TZGknzAjltcYcL1
+        value: 83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti
       - key: DB_NAME
-        value: moodle_mnm7
+        value: moodle_databases
       - key: DB_HOST
-        value: dpg-d791f8lactks73ctvgag-a
+        value: dpg-d7922lk50q8c73f9u2m0-a
       - key: MOODLE_DATA_DIR
         value: /var/moodledata
       - key: MOODLE_ADMIN_PASS

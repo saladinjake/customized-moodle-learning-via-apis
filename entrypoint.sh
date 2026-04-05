@@ -52,7 +52,7 @@ MAX_RETRIES=60
 RETRY=0
 
 # FORCED: Using new Oregon region credentials
-DB_P_HOST="dpg-d791f8lactks73ctvgag-a"
+DB_P_HOST="dpg-d7922lk50q8c73f9u2m0-a"
 DB_P_PORT="5432"
 
 echo "[Entrypoint] Probing network path to $DB_P_HOST:$DB_P_PORT..."
@@ -69,11 +69,11 @@ done
 echo "[Entrypoint] Network path is OPEN. Proceeding to credential handshake..."
 RETRY=0
 until php -r "
-  \$host = 'dpg-d791f8lactks73ctvgag-a';
+  \$host = 'dpg-d7922lk50q8c73f9u2m0-a';
   \$port = 5432;
-  \$db   = 'moodle_mnm7';
-  \$user = 'moodle_mnm7_user';
-  \$pass = 'wi0n2hFg025lR8V79TZGknzAjltcYcL1';
+  \$db   = 'moodle_databases';
+  \$user = 'moodle_databases_user';
+  \$pass = '83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti';
   
   \$con_string = \"host='\$host' port='\$port' dbname='\$db' user='\$user' password='\$pass' connect_timeout=3 sslmode=require\";
   \$conn = pg_connect(\$con_string);
@@ -101,11 +101,11 @@ echo "[Entrypoint] Database is fully ready!"
 # Check if Moodle tables already exist specifically in mdl_config
 echo "[Entrypoint] Checking if Moodle is already installed..."
 ALREADY_INSTALLED=$(php -r "
-  \$host = 'dpg-d791f8lactks73ctvgag-a';
+  \$host = 'dpg-d7922lk50q8c73f9u2m0-a';
   \$port = 5432;
-  \$db   = 'moodle_mnm7';
-  \$user = 'moodle_mnm7_user';
-  \$pass = 'wi0n2hFg025lR8V79TZGknzAjltcYcL1';
+  \$db   = 'moodle_databases';
+  \$user = 'moodle_databases_user';
+  \$pass = '83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti';
   
   \$conn = @pg_connect(\"host=\$host port=\$port dbname=\$db user=\$user password=\$pass connect_timeout=3 sslmode=require\");
   if (!\$conn) exit(0); // If can't connect yet, assume not installed
@@ -146,10 +146,10 @@ fi
 # We nuke the stale row directly via psql before touching any PHP.
 # -------------------------------------------------------------------------
 echo "[Entrypoint] Clearing any stale Moodle upgrade lock..."
-PGPASSWORD='wi0n2hFg025lR8V79TZGknzAjltcYcL1' psql \
-  -h dpg-d791f8lactks73ctvgag-a \
-  -U moodle_mnm7_user \
-  -d moodle_mnm7 \
+PGPASSWORD='83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti' psql \
+  -h dpg-d7922lk50q8c73f9u2m0-a \
+  -U moodle_databases_user \
+  -d moodle_databases \
   -c "DELETE FROM mdl_config WHERE name = 'upgraderunning';" \
   && echo "[Entrypoint] Upgrade lock cleared." \
   || echo "[Entrypoint] Warn: Could not clear upgrade lock (table may not exist yet — safe to ignore on first install)."
