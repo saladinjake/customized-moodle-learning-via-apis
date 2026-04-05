@@ -2,9 +2,8 @@
 /**
  * CATALOG AUDIT (INTERNAL)
  */
-// define('CLI_SCRIPT', true);
-define('NO_MOODLE_COOKIES', true);
-require_once(__DIR__ . '/../../../config.php');
+define('CLI_SCRIPT', true);
+require_once(__DIR__ . '/config.php');
 
 global $DB;
 
