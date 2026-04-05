@@ -1,6 +1,6 @@
 <?php
 define('CLI_SCRIPT', true);
-require(__DIR__ . '/public/config.php');
+require(__DIR__ . '/config.php');
 
 echo "Initiating Enterprise Category Provisioning: 30 Master Specialties...\n";
 

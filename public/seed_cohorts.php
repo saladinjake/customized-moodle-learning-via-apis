@@ -1,6 +1,6 @@
 <?php
 define('CLI_SCRIPT', true);
-require(__DIR__ . '/public/config.php');
+require(__DIR__ . '/config.php');
 require_once($CFG->dirroot . '/cohort/lib.php');
 
 $syscontext = context_system::instance();
