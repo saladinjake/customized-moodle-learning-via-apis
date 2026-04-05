@@ -240,6 +240,9 @@ for ($i = 1; $i <= 500; $i++) {
         $existing = $DB->get_record('course', ['shortname' => $shortname]);
         if ($existing) {
             log_seed("Updating existing node: $shortname");
+            if (!$existing->visible) {
+                $DB->set_field('course', 'visible', 1, ['id' => $existing->id]);
+            }
             $course_id = $existing->id;
         } else {
             $course_data = new stdClass();
@@ -248,6 +251,7 @@ for ($i = 1; $i <= 500; $i++) {
             $course_data->category = $cat_id;
             $course_data->format = 'topics';
             $course_data->numsections = 4;
+            $course_data->visible = 1; // FORCED VISIBILITY
             $course_data->summary = "An intensive curriculum covering $topic. Anchored in the $cat_name specialty registry.";
             
             $new_course = create_course($course_data);
