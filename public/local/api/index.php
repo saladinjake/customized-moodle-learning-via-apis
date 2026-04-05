@@ -1987,7 +1987,7 @@ try {
             require_once($CFG->dirroot . '/completion/classes/external.php');
             
             // Resolve Identity: Prioritize explicit param, fallback to token-session
-            $userid = $raw_params['userid'] ?? $USER->id;
+            $userid = $raw_params['userid'] ?? ($USER->id ?? 0);
             if (empty($userid) || $userid <= 0) {
                 http_response_code(401);
                 throw new \moodle_exception('mustbeloggedin', 'webservice', '', null, 'Synchronisation failure: Identity node not recognized.');
