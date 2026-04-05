@@ -10,8 +10,13 @@ mkdir -p "$MOODLE_DATA"
 chmod 777 "$MOODLE_DATA"
 
 # -------------------------------------------------------------------------
-# STEP 0: Environment Audit (Debugging)
+# STEP 0: Load .env if present (Sync bash with app env)
 # -------------------------------------------------------------------------
+if [ -f "/var/www/html/.env" ]; then
+  echo "[Entrypoint] Loading variables from .env..."
+  export $(grep -v '^#' /var/www/html/.env | xargs)
+fi
+
 echo "[Entrypoint] --- Environment Audit ---"
 echo "DATABASE_URL: $([ -n "$DATABASE_URL" ] && echo "PRESENT (masked)" || echo "MISSING")"
 echo "DB_HOST: ${DB_HOST:-MISSING}"
