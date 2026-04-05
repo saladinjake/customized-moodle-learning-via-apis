@@ -24,6 +24,20 @@ echo "DB_USER: ${DB_USER:-MISSING}"
 echo "RENDER_EXTERNAL_URL: ${RENDER_EXTERNAL_URL:-NOT SET}"
 echo "---------------------------------------"
 
+# -------------------------------------------------------------------------
+# STEP 0b: Configure Apache to listen on Render's dynamic $PORT
+# Render injects $PORT (usually 10000). Apache defaults to 80.
+# Without this Render's health checker never sees an open port.
+# -------------------------------------------------------------------------
+APACHE_PORT="${PORT:-80}"
+echo "[Entrypoint] Binding Apache to port $APACHE_PORT..."
+# Override the Listen directive for the main apache config
+echo "Listen $APACHE_PORT" > /etc/apache2/ports.conf
+# Rewrite the VirtualHost port in the default site
+sed -ri "s/<VirtualHost \*:[0-9]+>/<VirtualHost *:${APACHE_PORT}>/g" \
+    /etc/apache2/sites-available/000-default.conf \
+    /etc/apache2/sites-available/default-ssl.conf 2>/dev/null || true
+
 if [ -z "$DATABASE_URL" ] && [ -z "$DB_HOST" ]; then
   echo "[Entrypoint] ERROR: No database configuration found (DATABASE_URL and DB_HOST are empty)."
   echo "[Entrypoint] Please ensure the Render Blueprint has correctly linked the database."
@@ -125,25 +139,33 @@ else
 fi
 
 # -------------------------------------------------------------------------
-# STEP 3: Seed data (categories → cohorts → courses → grades/messages)
+# STEP 3: Seed data in the BACKGROUND so Apache starts immediately.
+# Render requires a port to be open within ~30s of container start.
+# Running 500-course seeding synchronously blocks exec and kills the deploy.
 # -------------------------------------------------------------------------
-echo "[Entrypoint] Running database seeders..."
+echo "[Entrypoint] Launching seeders in background. Starting Apache immediately..."
 
-if [ -f "/var/www/html/seed_categories.php" ]; then
-    php /var/www/html/seed_categories.php || echo "Warn: seed_categories failed."
-fi
+(
+  echo "[Seeder] Background seeding started at $(date)."
 
-if [ -f "/var/www/html/seed_cohorts.php" ]; then
-    php /var/www/html/seed_cohorts.php || echo "Warn: seed_cohorts failed."
-fi
+  if [ -f "/var/www/html/seed_categories.php" ]; then
+      php /var/www/html/seed_categories.php || echo "Warn: seed_categories failed."
+  fi
 
-if [ -f "/var/www/html/seed_moodle.php" ]; then
-    php /var/www/html/seed_moodle.php || echo "Warn: seed_moodle failed."
-fi
+  if [ -f "/var/www/html/seed_cohorts.php" ]; then
+      php /var/www/html/seed_cohorts.php || echo "Warn: seed_cohorts failed."
+  fi
 
-if [ -f "/var/www/html/seed_grades_messages.php" ]; then
-    php /var/www/html/seed_grades_messages.php || echo "Warn: seed_grades_messages failed."
-fi
+  if [ -f "/var/www/html/seed_moodle.php" ]; then
+      php /var/www/html/seed_moodle.php || echo "Warn: seed_moodle failed."
+  fi
 
-echo "[Entrypoint] Seeding complete. Starting Apache..."
+  if [ -f "/var/www/html/seed_grades_messages.php" ]; then
+      php /var/www/html/seed_grades_messages.php || echo "Warn: seed_grades_messages failed."
+  fi
+
+  echo "[Seeder] Background seeding complete at $(date)."
+) &
+
+echo "[Entrypoint] Seeders running in background (PID $!). Starting Apache on port $APACHE_PORT..."
 exec "$@"
