@@ -1,4 +1,5 @@
 <?php
+define('NO_MOODLE_COOKIES', true);
 require_once(__DIR__ . '/config.php');
 /**
  * Remote Seed Trigger Endpoint
