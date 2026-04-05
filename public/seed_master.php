@@ -121,6 +121,26 @@ foreach ($victors as $v) {
         $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
         $uid = user_create_user($user, false, false);
         log_m("Created user: {$v['username']} (ID: $uid)");
+    } else {
+        $uid = $DB->get_field('user', 'id', ['username' => $v['username']], MUST_EXIST);
+    }
+
+    // Pre-generate/Ensure Moodle Web Service token for this user
+    require_once($CFG->dirroot . '/lib/externallib.php');
+    $service = $DB->get_record('external_services', ['shortname' => 'moodle_mobile_app', 'enabled' => 1]);
+    if (!$service) {
+        $service = $DB->get_record_select('external_services', 'enabled = 1', [], '*', IGNORE_MULTIPLE);
+    }
+    if ($service) {
+        $context = context_system::instance();
+        if (!$DB->record_exists('external_tokens', ['userid' => $uid, 'externalserviceid' => $service->id])) {
+            try {
+                external_generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $uid, $context);
+                log_m("  ↳ Generated WS Token for {$v['username']}");
+            } catch (Exception $e) {
+                log_m("  ⚠ Could not generate token for {$v['username']}: " . $e->getMessage());
+            }
+        }
     }
 }
 
@@ -145,6 +165,26 @@ foreach ($prospects as $v) {
         $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
         $uid = user_create_user($user, false, false);
         log_m("Created prospect: {$v['username']} (ID: $uid)");
+    } else {
+        $uid = $DB->get_field('user', 'id', ['username' => $v['username']], MUST_EXIST);
+    }
+
+    // Pre-generate/Ensure Moodle Web Service token for this prospect
+    require_once($CFG->dirroot . '/lib/externallib.php');
+    $service = $DB->get_record('external_services', ['shortname' => 'moodle_mobile_app', 'enabled' => 1]);
+    if (!$service) {
+        $service = $DB->get_record_select('external_services', 'enabled = 1', [], '*', IGNORE_MULTIPLE);
+    }
+    if ($service) {
+        $context = context_system::instance();
+        if (!$DB->record_exists('external_tokens', ['userid' => $uid, 'externalserviceid' => $service->id])) {
+            try {
+                external_generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $uid, $context);
+                log_m("  ↳ Generated WS Token for {$v['username']}");
+            } catch (Exception $e) {
+                log_m("  ⚠ Could not generate token for {$v['username']}: " . $e->getMessage());
+            }
+        }
     }
 }
 

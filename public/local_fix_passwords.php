@@ -23,6 +23,25 @@ foreach ($users as $user) {
     if ($user->username === 'guest') continue;
 
     update_internal_user_password($user, 'Victor123!');
+
+    // Ensure all users (including legacy ones) have a permanent Web Service token
+    require_once($CFG->dirroot . '/lib/externallib.php');
+    $service = $DB->get_record('external_services', ['shortname' => 'moodle_mobile_app', 'enabled' => 1]);
+    if (!$service) {
+        $service = $DB->get_record_select('external_services', 'enabled = 1', [], '*', IGNORE_MULTIPLE);
+    }
+    if ($service) {
+        $context = context_system::instance();
+        if (!$DB->record_exists('external_tokens', ['userid' => $user->id, 'externalserviceid' => $service->id])) {
+            try {
+                external_generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $user->id, $context);
+                echo "  ↳ Generated WS Token for {$user->username}\n";
+            } catch (Exception $e) {
+                echo "  ⚠ Token generation failed for {$user->username}: " . $e->getMessage() . "\n";
+            }
+        }
+    }
+
     $u_count++;
 }
 echo "✓ Success: $u_count users synchronized.\n\n";
