@@ -216,6 +216,11 @@ foreach($victors as $v_username) {
         $user->lang = 'en';
         $user->timezone = '99';
         $user->calendartype = 'gregorian';
+        $user->maildisplay = 1;
+        $user->mailformat = 1;
+        $user->maildigest = 0;
+        $user->autosubscribe = 1;
+        $user->trackforums = 0;
         $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
         user_create_user($user);
     }
