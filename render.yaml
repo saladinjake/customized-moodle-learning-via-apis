@@ -25,3 +25,5 @@ services:
         value: Admin1234!
       - key: PORT
         value: 10000
+      - key: SEED_SECRET
+        value: lumina-seed-2026
