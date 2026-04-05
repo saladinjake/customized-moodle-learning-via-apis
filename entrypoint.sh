@@ -52,7 +52,7 @@ MAX_RETRIES=60
 RETRY=0
 
 # FORCED: Using new Oregon region credentials
-DB_P_HOST="dpg-d7922lk50q8c73f9u2m0-a"
+DB_P_HOST="dpg-d7922lk50q8c73f9u2m0-a.oregon-postgres.render.com"
 DB_P_PORT="5432"
 
 echo "[Entrypoint] Probing network path to $DB_P_HOST:$DB_P_PORT..."
@@ -69,7 +69,7 @@ done
 echo "[Entrypoint] Network path is OPEN. Proceeding to credential handshake..."
 RETRY=0
 until php -r "
-  \$host = 'dpg-d7922lk50q8c73f9u2m0-a';
+  \$host = 'dpg-d7922lk50q8c73f9u2m0-a.oregon-postgres.render.com';
   \$port = 5432;
   \$db   = 'moodle_databases';
   \$user = 'moodle_databases_user';
@@ -101,7 +101,7 @@ echo "[Entrypoint] Database is fully ready!"
 # Check if Moodle tables already exist specifically in mdl_config
 echo "[Entrypoint] Checking if Moodle is already installed..."
 ALREADY_INSTALLED=$(php -r "
-  \$host = 'dpg-d7922lk50q8c73f9u2m0-a';
+  \$host = 'dpg-d7922lk50q8c73f9u2m0-a.oregon-postgres.render.com';
   \$port = 5432;
   \$db   = 'moodle_databases';
   \$user = 'moodle_databases_user';
@@ -147,9 +147,7 @@ fi
 # -------------------------------------------------------------------------
 echo "[Entrypoint] Clearing any stale Moodle upgrade lock..."
 PGPASSWORD='83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti' psql \
-  -h dpg-d7922lk50q8c73f9u2m0-a \
-  -U moodle_databases_user \
-  -d moodle_databases \
+  "host=dpg-d7922lk50q8c73f9u2m0-a.oregon-postgres.render.com port=5432 dbname=moodle_databases user=moodle_databases_user sslmode=require" \
   -c "DELETE FROM mdl_config WHERE name = 'upgraderunning';" \
   && echo "[Entrypoint] Upgrade lock cleared." \
   || echo "[Entrypoint] Warn: Could not clear upgrade lock (table may not exist yet — safe to ignore on first install)."
