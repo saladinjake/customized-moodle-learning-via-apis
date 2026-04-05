@@ -1,4 +1,5 @@
-<?php
+<?php 
+require_once(__DIR__ . '/config.php');<?php
 /**
  * Remote Seed Trigger Endpoint
  *

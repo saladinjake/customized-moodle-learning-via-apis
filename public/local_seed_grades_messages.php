@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/config.php');
 /**
  * Headless Engagement Seeder (Grades & Messages Entrypoint)
  * HTTP-READY / SESSION-FREE

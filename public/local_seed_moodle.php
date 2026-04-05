@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/config.php');
 
 /**
  * Enterprise Headless Moodle Matrix Seeder (Enhanced High-Density v2)
