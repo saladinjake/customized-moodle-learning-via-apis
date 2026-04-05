@@ -36,6 +36,14 @@ $victors = [
     ['username' => 'victor_student', 'firstname' => 'Victor', 'lastname' => 'Student', 'role' => 'student']
 ];
 
+$prospects = [
+    ['username' => 'student_alpha', 'firstname' => 'Alpha', 'lastname' => 'Scholar'],
+    ['username' => 'student_zeta',  'firstname' => 'Zeta',  'lastname' => 'Scholar'],
+    ['username' => 'student_omega', 'firstname' => 'Omega', 'lastname' => 'Scholar'],
+    ['username' => 'student_theta', 'firstname' => 'Theta', 'lastname' => 'Scholar'],
+];
+
+log_m("Syncing Victor personas...");
 foreach ($victors as $v) {
     if (!$DB->record_exists('user', ['username' => $v['username']])) {
         $user = new stdClass();
@@ -48,6 +56,22 @@ foreach ($victors as $v) {
         $user->mnethostid = $CFG->mnet_localhost_id;
         $uid = user_create_user($user, false, false);
         log_m("Created user: {$v['username']} (ID: $uid)");
+    }
+}
+
+log_m("Syncing Prospect (Un-enrolled) personas...");
+foreach ($prospects as $v) {
+    if (!$DB->record_exists('user', ['username' => $v['username']])) {
+        $user = new stdClass();
+        $user->username = $v['username'];
+        $user->password = hash_internal_user_password('Victor123!');
+        $user->email = "{$v['username']}@lumina.example.com";
+        $user->firstname = $v['firstname'];
+        $user->lastname = $v['lastname'];
+        $user->confirmed = 1;
+        $user->mnethostid = $CFG->mnet_localhost_id;
+        $uid = user_create_user($user, false, false);
+        log_m("Created prospect: {$v['username']} (ID: $uid)");
     }
 }
 

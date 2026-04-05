@@ -8,6 +8,16 @@ Below are the default identities provisioned by the **Master Seeder**. These are
 | **Victor Instructor** | `victor_instructor` | `Victor123!` | `victor_instructor@lumina.example.com` |
 | **Victor Student** | `victor_student` | `Victor123!` | `victor_student@lumina.example.com` |
 
+#### 🎓 Prospect Students (Un-enrolled)
+These accounts are activated but have no course associations, useful for testing empty dashboards and enrollment flows.
+
+| Name | Username | Password | Email |
+| :--- | :--- | :--- | :--- |
+| **Alpha Scholar** | `student_alpha` | `Victor123!` | `student_alpha@lumina.example.com` |
+| **Zeta Scholar** | `student_zeta` | `Victor123!` | `student_zeta@lumina.example.com` |
+| **Omega Scholar** | `student_omega` | `Victor123!` | `student_omega@lumina.example.com` |
+| **Theta Scholar** | `student_theta` | `Victor123!` | `student_theta@lumina.example.com` |
+
 ---
 
 ### 🚀 Management Tools
