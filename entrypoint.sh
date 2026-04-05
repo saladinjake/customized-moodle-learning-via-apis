@@ -139,6 +139,22 @@ else
 fi
 
 # -------------------------------------------------------------------------
+# STEP 2b: Clear any stale Moodle upgrade lock
+# If a previous deploy was interrupted mid-install, Moodle leaves an
+# 'upgraderunning' row in mdl_config. Every subsequent CLI bootstrap then
+# throws "Site is being upgraded, please retry later." and all seeders fail.
+# We nuke the stale row directly via psql before touching any PHP.
+# -------------------------------------------------------------------------
+echo "[Entrypoint] Clearing any stale Moodle upgrade lock..."
+PGPASSWORD='wi0n2hFg025lR8V79TZGknzAjltcYcL1' psql \
+  -h dpg-d791f8lactks73ctvgag-a \
+  -U moodle_mnm7_user \
+  -d moodle_mnm7 \
+  -c "DELETE FROM mdl_config WHERE name = 'upgraderunning';" \
+  && echo "[Entrypoint] Upgrade lock cleared." \
+  || echo "[Entrypoint] Warn: Could not clear upgrade lock (table may not exist yet — safe to ignore on first install)."
+
+# -------------------------------------------------------------------------
 # STEP 3: Seed data in the BACKGROUND so Apache starts immediately.
 # Render requires a port to be open within ~30s of container start.
 # Running 500-course seeding synchronously blocks exec and kills the deploy.
