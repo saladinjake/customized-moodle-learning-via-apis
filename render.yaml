@@ -11,6 +11,14 @@ services:
       # Paste your connection strings into these in the Render Dashboard
       - key: DATABASE_URL
         value: postgresql://moodle_d4ws_user:fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b@dpg-d78vuapr0fns73e6n420-a/moodle_d4ws
+      - key: DB_USER
+        value: moodle_d4ws_user
+      - key: DB_PASS
+        value: fJrpXS36Yc2ynQmPUUC0zGMOLI5PA22b
+      - key: DB_NAME
+        value: moodle_d4ws
+      - key: DB_HOST
+        value: dpg-d78vuapr0fns73e6n420-a
       - key: MOODLE_DATA_DIR
         value: /var/moodledata
       - key: MOODLE_ADMIN_PASS
