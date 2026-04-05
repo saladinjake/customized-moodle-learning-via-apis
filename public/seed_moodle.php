@@ -8,6 +8,7 @@
  */
 
 // define('CLI_SCRIPT', true); // Removed to allow HTTP triggering
+define('NO_MOODLE_COOKIES', true); // Bypass session start
 require_once(__DIR__ . '/config.php');
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
