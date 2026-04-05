@@ -1,6 +1,12 @@
 <?php
-define('CLI_SCRIPT', true);
-require(__DIR__ . '/config.php');
+/**
+ * Headless Engagement Seeder (Grades & Messages Entrypoint)
+ * HTTP-READY / SESSION-FREE
+ */
+// // define('CLI_SCRIPT', true);
+define('NO_MOODLE_COOKIES', true);
+define('NO_MOODLE_COOKIES', true);
+require_once(__DIR__ . '/../../../config.php');
 
 echo "Initiating Grade and Message Seeding for Victor...\n";
 
@@ -20,7 +26,15 @@ foreach (['victor_student' => 'Student', 'victor_instructor' => 'Instructor'] as
         $u->firstname = 'Victor';
         $u->lastname  = $lname;
         $u->confirmed = 1;
-        $u->mnethostid = $CFG->mnet_localhost_id;
+        $u->lang = 'en';
+        $u->timezone = '99';
+        $u->calendartype = 'gregorian';
+        $u->maildisplay = 1;
+        $u->mailformat = 1;
+        $u->maildigest = 0;
+        $u->autosubscribe = 1;
+        $u->trackforums = 0;
+        $u->mnethostid = $CFG->mnet_localhost_id ?? 1;
         user_create_user($u, false, false);
     }
 }
@@ -70,11 +84,9 @@ try {
         }
     }
 
-    // 3. Seed Grades (We need some courses and grade items first if they don't exist, or just use raw DB inserts for POC purposes)
+    // 3. Seed Grades
     echo "Seeding Grades...\n";
     
-    // Check if courses exist, if not, wait for curriculum seeder or just mock grade_grades records.
-    // Since we want this to work regardless of curriculum state, let's create a fake course and grade item if none exist.
     $course = $DB->get_record('course', ['shortname' => 'MX-500-1']);
     if (!$course) {
          echo "Warning: No courses found from curriculum seeder. Creating a lightweight mock course for grades.\n";
@@ -88,20 +100,26 @@ try {
     }
 
     // Create a Grade Item
-    $grade_item = new grade_item([
-        'courseid' => $course->id,
-        'categoryid' => null,
-        'itemname' => 'Final Ledger',
-        'itemtype' => 'manual',
-        'itemmodule' => '',
-        'iteminstance' => 0,
-        'grademin' => 0,
-        'grademax' => 100
-    ]);
-    $grade_item->insert();
+    $gi = $DB->get_record('grade_items', ['courseid' => $course->id, 'itemname' => 'Final Ledger']);
+    if (!$gi) {
+        $grade_item = new grade_item([
+            'courseid' => $course->id,
+            'categoryid' => null,
+            'itemname' => 'Final Ledger',
+            'itemtype' => 'manual',
+            'itemmodule' => '',
+            'iteminstance' => 0,
+            'grademin' => 0,
+            'grademax' => 100
+        ]);
+        $grade_item->insert();
+        $gi = $grade_item;
+    } else {
+        $gi = new grade_item($gi);
+    }
 
     // Insert Grade for Student
-    $grade_item->update_final_grade($victor_student->id, 92, 'Seeder', 'Seeded via CLI', FORMAT_MOODLE);
+    $gi->update_final_grade($victor_student->id, 92, 'Seeder', 'Seeded via CLI', FORMAT_MOODLE);
 
     $transaction->allow_commit();
     echo "\nSeeding Complete. Grades and Messages injected successfully.\n";

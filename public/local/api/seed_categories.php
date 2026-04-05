@@ -1,5 +1,6 @@
 <?php
-define('CLI_SCRIPT', true);
+// define('CLI_SCRIPT', true);
+define('NO_MOODLE_COOKIES', true);
 require(__DIR__ . '/config.php');
 
 echo "Initiating Enterprise Category Provisioning: 30 Master Specialties...\n";
