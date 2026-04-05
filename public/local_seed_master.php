@@ -26,7 +26,11 @@ function log_m($msg) { echo "[MASTER SEEDER] " . $msg . PHP_EOL; flush(); }
 // --- HELPER: Provision Module ---
 function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     global $DB;
-    $module = $DB->get_record('modules', ['name' => $type], '*', MUST_EXIST);
+    $module = $DB->get_record('modules', ['name' => $type]);
+    if (!$module) {
+        log_m("  ⚠ Skipping $type '$name': Module type not enabled in database.");
+        return false;
+    }
     $cw = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $section_num]);
     if (!$cw) {
         $cw = new stdClass();
