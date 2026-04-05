@@ -146,7 +146,7 @@ foreach ($cats as $name) {
         $cat = $DB->get_record('course_categories', ['name' => $name]);
         if (!$cat->visible) {
             $DB->set_field('course_categories', 'visible', 1, ['id' => $cat->id]);
-            log_m("Repaired visibility for category: $name");
+            log_m("Repaired visibility for category: $name (WAS HIDDEN)");
         }
     }
 }
@@ -190,7 +190,9 @@ for ($i = 1; $i <= 50; $i++) { // Reduced to 50 for stability, can be increased
         $course_obj = $DB->get_record('course', ['shortname' => $shortname]);
         if (!$course_obj->visible) {
             $DB->set_field('course', 'visible', 1, ['id' => $course_obj->id]);
-            log_m("Repaired visibility for course: $shortname");
+            log_m("Repaired visibility for course: $shortname (WAS HIDDEN)");
+            // Critical: visibility changes require cache rebuild to hit API
+            rebuild_course_cache($course_obj->id, true);
         }
     }
 
