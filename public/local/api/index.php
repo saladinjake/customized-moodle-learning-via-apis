@@ -218,6 +218,32 @@ try {
                         ]);
                     }
                 }
+                // ─── PERMANENT FIX ───────────────────────────────────────────
+                // If no WS service is configured, $token_record is null and the old
+                // code returned bin2hex(random_bytes(16)) — a token NEVER saved to DB.
+                // Every subsequent call then failed: "Invalid token not found".
+                // Fix: always insert a real, permanent row into external_tokens.
+                if (!$token_record) {
+                    $new_token = bin2hex(random_bytes(20));
+                    $insert = new stdClass();
+                    $insert->token             = $new_token;
+                    $insert->userid            = $user->id;
+                    $insert->tokentype         = EXTERNAL_TOKEN_PERMANENT;
+                    $insert->externalserviceid = 0; // headless fallback — no real service needed
+                    $insert->contextid         = context_system::instance()->id;
+                    $insert->creatorid         = $user->id;
+                    $insert->timecreated       = time();
+                    $insert->validuntil        = 0;
+                    $insert->iprestriction     = null;
+                    $insert->sid               = null;
+                    $insert->lastaccess        = time();
+                    $DB->insert_record('external_tokens', $insert);
+                    $token_record = $DB->get_record('external_tokens', [
+                        'userid'    => $user->id,
+                        'tokentype' => EXTERNAL_TOKEN_PERMANENT,
+                        'externalserviceid' => 0
+                    ]);
+                }
                 $token_value = $token_record ? $token_record->token : bin2hex(random_bytes(16));
                 $is_admin = is_siteadmin($user->id);
                 $role = 'student';
