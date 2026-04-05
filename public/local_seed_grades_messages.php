@@ -7,7 +7,7 @@ require_once(__DIR__ . '/config.php');
 // // define('CLI_SCRIPT', true);
 define('NO_MOODLE_COOKIES', true);
 define('NO_MOODLE_COOKIES', true);
-require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/config.php');
 
 echo "Initiating Grade and Message Seeding for Victor...\n";
 
