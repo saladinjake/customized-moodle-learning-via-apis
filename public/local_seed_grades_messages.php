@@ -6,16 +6,21 @@ require_once(__DIR__ . '/config.php');
  */
 // // define('CLI_SCRIPT', true);
 define('NO_MOODLE_COOKIES', true);
-define('NO_MOODLE_COOKIES', true);
 require_once(__DIR__ . '/config.php');
-
-echo "Initiating Grade and Message Seeding for Victor...\n";
-
-global $DB, $CFG;
 require_once($CFG->dirroot . '/message/lib.php');
 require_once($CFG->dirroot . '/lib/gradelib.php');
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
+
+global $DB, $CFG, $PAGE;
+
+// Initialize $PAGE to prevent "get_navigation_overflow_state on null" in web context
+$PAGE->set_url(new moodle_url('/local_run_seed.php'));
+$PAGE->set_context(context_system::instance());
+$PAGE->set_pagelayout('admin'); 
+
+echo "Initiating Grade and Message Seeding for Victor...\n";
+
 
 // Defensive: ensure Victor personas exist even if seed_moodle failed mid-run
 foreach (['victor_student' => 'Student', 'victor_instructor' => 'Instructor'] as $uname => $lname) {
@@ -36,6 +41,22 @@ foreach (['victor_student' => 'Student', 'victor_instructor' => 'Instructor'] as
         $u->autosubscribe = 1;
         $u->trackforums = 0;
         $u->mnethostid = $CFG->mnet_localhost_id ?? 1;
+        // Mandatory Moodle 5.x schema fields
+        $u->city              = '';
+        $u->country           = '';
+        $u->description       = '';
+        $u->descriptionformat = FORMAT_HTML;
+        $u->picture           = 0;
+        $u->idnumber          = '';
+        $u->institution       = '';
+        $u->department        = '';
+        $u->phone1            = '';
+        $u->phone2            = '';
+        $u->address           = '';
+        $u->firstnamephonetic = '';
+        $u->lastnamephonetic  = '';
+        $u->middlename        = '';
+        $u->alternatename     = '';
         user_create_user($u, false, false);
     }
 }

@@ -1,22 +1,8 @@
 <?php
-require_once(__DIR__ . '/config.php');
 /**
  * LUMINA MASTER IDEMPOTENT SEEDER
- * 
- * Consolidates all curriculum, identity, and engagement data into one 
- * high-performance script. 
- * 
- * Features:
- * - 500 Courses with interactive modules
- * - Victor Identity Suite (Student/Instructor)
- * - Message History & Grade Ledger
- * - Cohorts & Category Registry
- * - Notifications & Calendar Events
- * - FULL IDEMPOTENCY (Safe to re-run)
  */
 
-// // define('CLI_SCRIPT', true);
-define('NO_MOODLE_COOKIES', true); // Removed to allow HTTP triggering
 define('NO_MOODLE_COOKIES', true); // Bypass session start to prevent errors in web trigger
 require_once(__DIR__ . '/config.php');
 require_once($CFG->dirroot . '/user/lib.php');
@@ -28,7 +14,12 @@ require_once($CFG->dirroot . '/enrol/manual/lib.php');
 require_once($CFG->dirroot . '/course/modlib.php');
 require_once($CFG->dirroot . '/calendar/lib.php');
 
-global $DB, $CFG;
+global $DB, $CFG, $PAGE;
+
+// Initialize $PAGE to prevent "get_navigation_overflow_state on null" in web context
+$PAGE->set_url(new moodle_url('/local_run_seed.php'));
+$PAGE->set_context(context_system::instance());
+$PAGE->set_pagelayout('admin'); 
 
 function log_m($msg) { echo "[MASTER SEEDER] " . $msg . PHP_EOL; flush(); }
 
@@ -102,27 +93,62 @@ $prospects = [
     ['username' => 'student_theta', 'firstname' => 'Theta', 'lastname' => 'Scholar'],
 ];
 
-log_m("Syncing Victor personas...");
 foreach ($victors as $v) {
     if (!$DB->record_exists('user', ['username' => $v['username']])) {
         $user = new stdClass();
-        $user->username = $v['username'];
-        $user->password = hash_internal_user_password('Victor123!');
-        $user->email = "{$v['username']}@lumina.example.com";
-        $user->firstname = $v['firstname'];
-        $user->lastname = $v['lastname'];
-        $user->confirmed = 1;
-        $user->lang = 'en';
-        $user->timezone = '99';
-        $user->calendartype = 'gregorian';
-        $user->mailformat = 1;
-        $user->maildisplay = 1;
-        $user->maildigest = 0;
-        $user->autosubscribe = 1;
-        $user->trackforums = 0;
-        $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
+        $user->username          = $v['username'];
+        $user->password          = hash_internal_user_password('Victor123!');
+        $user->email             = "{$v['username']}@lumina.example.com";
+        $user->firstname         = $v['firstname'];
+        $user->lastname          = $v['lastname'];
+        $user->confirmed         = 1;
+        $user->lang              = 'en';
+        $user->timezone          = '99';
+        $user->calendartype      = 'gregorian';
+        $user->mailformat        = 1;
+        $user->maildisplay       = 1;
+        $user->maildigest        = 0;
+        $user->autosubscribe     = 1;
+        $user->trackforums       = 0;
+        $user->mnethostid        = $CFG->mnet_localhost_id ?? 1;
+        // Mandatory Moodle 5.x schema fields
+        $user->city              = '';
+        $user->country           = '';
+        $user->description       = '';
+        $user->descriptionformat = FORMAT_HTML;
+        $user->picture           = 0;
+        $user->idnumber          = '';
+        $user->institution       = '';
+        $user->department        = '';
+        $user->phone1            = '';
+        $user->phone2            = '';
+        $user->address           = '';
+        $user->firstnamephonetic = '';
+        $user->lastnamephonetic  = '';
+        $user->middlename        = '';
+        $user->alternatename     = '';
         $uid = user_create_user($user, false, false);
         log_m("Created user: {$v['username']} (ID: $uid)");
+    } else {
+        $uid = $DB->get_field('user', 'id', ['username' => $v['username']], MUST_EXIST);
+    }
+
+    // Pre-generate/Ensure Moodle Web Service token for this user
+    require_once($CFG->dirroot . '/lib/externallib.php');
+    $service = $DB->get_record('external_services', ['shortname' => 'moodle_mobile_app', 'enabled' => 1]);
+    if (!$service) {
+        $service = $DB->get_record_select('external_services', 'enabled = 1', [], '*', IGNORE_MULTIPLE);
+    }
+    if ($service) {
+        $context = context_system::instance();
+        if (!$DB->record_exists('external_tokens', ['userid' => $uid, 'externalserviceid' => $service->id])) {
+            try {
+                external_generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $uid, $context);
+                log_m("  ↳ Generated WS Token for {$v['username']}");
+            } catch (Exception $e) {
+                log_m("  ⚠ Could not generate token for {$v['username']}: " . $e->getMessage());
+            }
+        }
     }
 }
 
@@ -130,23 +156,59 @@ log_m("Syncing Prospect (Un-enrolled) personas...");
 foreach ($prospects as $v) {
     if (!$DB->record_exists('user', ['username' => $v['username']])) {
         $user = new stdClass();
-        $user->username = $v['username'];
-        $user->password = hash_internal_user_password('Victor123!');
-        $user->email = "{$v['username']}@lumina.example.com";
-        $user->firstname = $v['firstname'];
-        $user->lastname = $v['lastname'];
-        $user->confirmed = 1;
-        $user->lang = 'en';
-        $user->timezone = '99';
-        $user->calendartype = 'gregorian';
-        $user->mailformat = 1;
-        $user->maildisplay = 1;
-        $user->maildigest = 0;
-        $user->autosubscribe = 1;
-        $user->trackforums = 0;
-        $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
+        $user->username          = $v['username'];
+        $user->password          = hash_internal_user_password('Victor123!');
+        $user->email             = "{$v['username']}@lumina.example.com";
+        $user->firstname         = $v['firstname'];
+        $user->lastname          = $v['lastname'];
+        $user->confirmed         = 1;
+        $user->lang              = 'en';
+        $user->timezone          = '99';
+        $user->calendartype      = 'gregorian';
+        $user->mailformat        = 1;
+        $user->maildisplay       = 1;
+        $user->maildigest        = 0;
+        $user->autosubscribe     = 1;
+        $user->trackforums       = 0;
+        $user->mnethostid        = $CFG->mnet_localhost_id ?? 1;
+        // Mandatory Moodle 5.x schema fields
+        $user->city              = '';
+        $user->country           = '';
+        $user->description       = '';
+        $user->descriptionformat = FORMAT_HTML;
+        $user->picture           = 0;
+        $user->idnumber          = '';
+        $user->institution       = '';
+        $user->department        = '';
+        $user->phone1            = '';
+        $user->phone2            = '';
+        $user->address           = '';
+        $user->firstnamephonetic = '';
+        $user->lastnamephonetic  = '';
+        $user->middlename        = '';
+        $user->alternatename     = '';
         $uid = user_create_user($user, false, false);
         log_m("Created prospect: {$v['username']} (ID: $uid)");
+    } else {
+        $uid = $DB->get_field('user', 'id', ['username' => $v['username']], MUST_EXIST);
+    }
+
+    // Pre-generate/Ensure Moodle Web Service token for this prospect
+    require_once($CFG->dirroot . '/lib/externallib.php');
+    $service = $DB->get_record('external_services', ['shortname' => 'moodle_mobile_app', 'enabled' => 1]);
+    if (!$service) {
+        $service = $DB->get_record_select('external_services', 'enabled = 1', [], '*', IGNORE_MULTIPLE);
+    }
+    if ($service) {
+        $context = context_system::instance();
+        if (!$DB->record_exists('external_tokens', ['userid' => $uid, 'externalserviceid' => $service->id])) {
+            try {
+                external_generate_token(EXTERNAL_TOKEN_PERMANENT, $service, $uid, $context);
+                log_m("  ↳ Generated WS Token for {$v['username']}");
+            } catch (Exception $e) {
+                log_m("  ⚠ Could not generate token for {$v['username']}: " . $e->getMessage());
+            }
+        }
     }
 }
 

@@ -52,11 +52,11 @@ if (!in_array($run, $valid_steps)) {
 
 // ─── Map step names to script files ──────────────────────────────────────────
 $scripts = [
-    'master' => __DIR__ . '/seed_master.php',
-    'categories' => __DIR__ . '/seed_categories.php',
-    'cohorts' => __DIR__ . '/seed_cohorts.php',
-    'courses' => __DIR__ . '/seed_moodle.php',
-    'grades' => __DIR__ . '/seed_grades_messages.php',
+    'master' => __DIR__ . '/local_seed_master.php',
+    'categories' => __DIR__ . '/local_seed_categories.php',
+    'cohorts' => __DIR__ . '/local_seed_cohorts.php',
+    'courses' => __DIR__ . '/local_seed_moodle.php',
+    'grades' => __DIR__ . '/local_seed_grades_messages.php',
 ];
 
 if ($run === 'all') {

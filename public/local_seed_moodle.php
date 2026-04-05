@@ -9,8 +9,7 @@ require_once(__DIR__ . '/config.php');
  */
 
 // // define('CLI_SCRIPT', true);
-define('NO_MOODLE_COOKIES', true); // Removed to allow HTTP triggering
-define('NO_MOODLE_COOKIES', true); // Bypass session start
+define('NO_MOODLE_COOKIES', true); 
 require_once(__DIR__ . '/config.php');
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
@@ -18,7 +17,13 @@ require_once($CFG->dirroot . '/lib/grouplib.php');
 require_once($CFG->dirroot . '/enrol/manual/lib.php');
 require_once($CFG->dirroot . '/course/modlib.php');
 
-global $DB, $CFG;
+global $DB, $CFG, $PAGE;
+
+// Initialize $PAGE to prevent "get_navigation_overflow_state on null" in web context
+$PAGE->set_url(new moodle_url('/local_run_seed.php'));
+$PAGE->set_context(context_system::instance());
+$PAGE->set_pagelayout('admin'); 
+
 
 // Prevent email errors during bulk actions
 $CFG->noreplyaddress = 'noreply@example.com';
@@ -210,21 +215,37 @@ foreach($victors as $v_username) {
     if (!$DB->record_exists('user', ['username' => $v_username])) {
         // Fallback: create mock users if they disappeared
         $user = new stdClass();
-        $user->username = $v_username;
-        $user->email = "$v_username@example.com";
-        $user->firstname = 'Victor';
-        $user->lastname = ($v_username == 'victor_instructor' ? 'Instructor' : 'Student');
-        $user->confirmed = 1;
-        $user->lang = 'en';
-        $user->timezone = '99';
-        $user->calendartype = 'gregorian';
-        $user->maildisplay = 1;
-        $user->mailformat = 1;
-        $user->maildigest = 0;
-        $user->autosubscribe = 1;
-        $user->trackforums = 0;
-        $user->mnethostid = $CFG->mnet_localhost_id ?? 1;
-        user_create_user($user);
+        $user->username          = $v_username;
+        $user->email             = "$v_username@lumina.example.com";
+        $user->firstname         = 'Victor';
+        $user->lastname          = ($v_username == 'victor_instructor' ? 'Instructor' : 'Student');
+        $user->confirmed         = 1;
+        $user->lang              = 'en';
+        $user->timezone          = '99';
+        $user->calendartype      = 'gregorian';
+        $user->maildisplay       = 1;
+        $user->mailformat        = 1;
+        $user->maildigest        = 0;
+        $user->autosubscribe     = 1;
+        $user->trackforums       = 0;
+        $user->mnethostid        = $CFG->mnet_localhost_id ?? 1;
+        // Mandatory Moodle 5.x schema fields
+        $user->city              = '';
+        $user->country           = '';
+        $user->description       = '';
+        $user->descriptionformat = FORMAT_HTML;
+        $user->picture           = 0;
+        $user->idnumber          = '';
+        $user->institution       = '';
+        $user->department        = '';
+        $user->phone1            = '';
+        $user->phone2            = '';
+        $user->address           = '';
+        $user->firstnamephonetic = '';
+        $user->lastnamephonetic  = '';
+        $user->middlename        = '';
+        $user->alternatename     = '';
+        user_create_user($user, false, false);
     }
 }
 

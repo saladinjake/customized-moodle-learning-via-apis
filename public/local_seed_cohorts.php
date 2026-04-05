@@ -1,9 +1,15 @@
 <?php
-require_once(__DIR__ . '/config.php');
-// define('CLI_SCRIPT', true);
 define('NO_MOODLE_COOKIES', true);
-require(__DIR__ . '/config.php');
+require_once(__DIR__ . '/config.php');
 require_once($CFG->dirroot . '/cohort/lib.php');
+
+global $DB, $CFG, $PAGE;
+
+// Initialize $PAGE to prevent "get_navigation_overflow_state on null" in web context
+$PAGE->set_url(new moodle_url('/local_run_seed.php'));
+$PAGE->set_context(context_system::instance());
+$PAGE->set_pagelayout('admin'); 
+
 
 $syscontext = context_system::instance();
 
