@@ -8,6 +8,11 @@ require_once(__DIR__ . '/config.php');
 define('NO_MOODLE_COOKIES', true);
 require_once(__DIR__ . '/config.php');
 
+global $DB, $PAGE, $CFG;
+$PAGE->set_url(new moodle_url('/local_run_seed.php'));
+$PAGE->set_context(context_system::instance());
+$PAGE->set_pagelayout('admin');
+
 global $DB;
 
 header('Content-Type: text/plain');
