@@ -199,12 +199,12 @@ $CFG->wwwroot   = rtrim(getenv('RENDER_EXTERNAL_URL') ?: 'http://localhost:8000'
 // -------------------------------------------------------------------------
 // REVERSE PROXY / SSL TERMINATION (Render-specific)
 // Render's load balancer handles HTTPS and forwards plain HTTP to the
-// container. Without these flags Moodle compares the incoming http://
-// request against the https:// wwwroot, detects a scheme mismatch, and
-// throws: "Unsupported redirect detected" (redirecterrordetected).
+// container. sslproxy=true ensures Moodle recognizes the connection as
+// HTTPS and prevents the "redirecterrordetected" loop.
 // -------------------------------------------------------------------------
 $CFG->sslproxy      = true;   // Trust that the proxy is handling HTTPS
-$CFG->reverseproxy  = true;   // We are behind a reverse proxy
+// $CFG->reverseproxy is too strict for Render and causes "reverseproxyabused".
+// Stay with sslproxy=true for correct protocol detection.
 
 //=========================================================================
 // 3. DATA FILES LOCATION
