@@ -25,7 +25,7 @@
 
 define('NO_MOODLE_COOKIES', true);
 define('AJAX_SCRIPT', true);
-require_once(__DIR__ . '/config.php');
+require_once(__DIR__ . '/../../../config.php');
 
 $identifier = required_param('identifier', PARAM_STRINGID);
 $component  = required_param('component', PARAM_COMPONENT);
