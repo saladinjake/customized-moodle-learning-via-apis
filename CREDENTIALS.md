@@ -19,49 +19,56 @@ Below are the default identities provisioned by the **Master Seeder**. These are
 
 ---
 
-
-Definitive Admin/Instructor List:
-
-admin (Pass: Admin1234!)
-victor_instructor (Pass: Victor123!)
-Definitive Student List:
-
-victor_student (enrolled)
-student_alpha, student_zeta, student_omega, student_theta (un-enrolled)
-All student passwords: Victor123!
-
-
 ### 🚀 Management Tools
 
-#### 1. Reseed Trigger (HTTP)
-If you need to re-provision the environment from scratch without a full deployment:
+#### 1. Remote Seeding (HTTP)
+Trigger the seeding pipeline via authenticated `curl`. The endpoint is located in the `local/api` folder.
 
-##### Single-Section & Full Setup (Recommended)
+**Master Suite (Recommended):**
 ```bash
-curl -X POST "https://lumina-moodle-backend.onrender.com/run_seed.php" \
-     -H "H-Seed-Token: lumina-seed-2026" \
+curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
+     -H "X-Seed-Token: lumina-seed-2026" \
      -d "run=master" \
      --no-buffer
 ```
 
-##### Audit Active Registry
-Get the absolute list of all active usernames from the live database:
+**Legacy 500-Course Matrix:**
 ```bash
-curl "https://lumina-moodle-backend.onrender.com/audit_users.php"
+curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
+     -H "X-Seed-Token: lumina-seed-2026" \
+     -d "run=courses" \
+     --no-buffer
 ```
 
-#### 2. Manual Reseed (Render Shell)
-Execute this from the Render service shell:
+**Engagement/Grades Suite:**
 ```bash
-cd /var/www/html/public
+curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
+     -H "X-Seed-Token: lumina-seed-2026" \
+     -d "run=grades" \
+     --no-buffer
+```
+
+#### 2. Audit Tools (HTTP)
+Verify live database state via these endpoints:
+```bash
+# Audit Users
+curl "https://lumina-moodle-backend.onrender.com/local/api/audit_users.php"
+
+# Audit Catalog (Visibility & Categories)
+curl "https://lumina-moodle-backend.onrender.com/local/api/audit_catalog.php"
+```
+
+#### 3. Manual Execution (Render Shell)
+If you are logged into the Render web shell:
+```bash
+cd /var/www/html/public/local/api
 php seed_master.php
 ```
 
-#### 3. Database Cleardown
-To reset all seeding nodes before a fresh run:
+#### 4. Database Reset
+To clear existing `MX-500` nodes before a fresh run:
 ```bash
-# FROM RENDER SHELL (using psql if available)
-PGPASSWORD='83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti' psql \
+PGPASSWORD='[HIDDEN]' psql \
   "host=dpg-d7922lk50q8c73f9u2m0-a.oregon-postgres.render.com port=5432 dbname=moodle_databases user=moodle_databases_user sslmode=require" \
   -c "DELETE FROM mdl_course WHERE shortname LIKE 'MX-500-%';"
 ```
