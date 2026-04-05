@@ -1,42 +1,50 @@
 <?php
 /**
- * Headless Password Repair Tool (HTTP-READY)
- * Synchronizes seeded personas with definitive passwords.
+ * Headless Global Platform Bridge & Repair (HTTP-READY)
+ * Bulk synchronizes all Identites and Catalog Visibility.
  */
-define('NO_MOODLE_COOKIES', true);
 define('NO_MOODLE_COOKIES', true);
 require_once(__DIR__ . '/config.php');
 
-echo "=== LUMINA PASSWORD REPAIR ===\n";
-echo "Syncing Vicor personas to definitive credentials...\n\n";
+echo "=== LUMINA GLOBAL PLATFORM REPAIR ===\n";
+echo "Enforcing unified credentials & catalog visibility across ALL records...\n\n";
 
-global $DB;
+global $DB, $CFG;
 require_once($CFG->dirroot . '/user/lib.php');
+require_once($CFG->dirroot . '/course/lib.php');
 
-$personas = [
-    'admin'             => 'Admin1234!',
-    'victor_instructor' => 'Victor123!',
-    'victor_student'    => 'Victor123!',
-    'student_alpha'     => 'Victor123!',
-    'student_zeta'      => 'Victor123!',
-    'student_omega'     => 'Victor123!',
-    'student_theta'     => 'Victor123!',
-];
+// ─── 1. Bulk Identity Repair ──────────────────────────────────────────────────
+echo "[1/2] Updating ALL user passwords to 'Victor123!'...\n";
+$users = $DB->get_records('user', ['deleted' => 0]);
+$u_count = 0;
 
-$success_count = 0;
-$fail_count = 0;
+foreach ($users as $user) {
+    // Skip the built-in guest user for stability
+    if ($user->username === 'guest') continue;
 
-foreach ($personas as $username => $plaintext) {
-    if ($user = $DB->get_record('user', ['username' => $username, 'mnethostid' => $CFG->mnet_localhost_id])) {
-        echo "[MATCH] Updating $username...\n";
-        update_internal_user_password($user, $plaintext);
-        $success_count++;
-    } else {
-        echo "[SKIP] User $username not found in database.\n";
-        $fail_count++;
-    }
+    update_internal_user_password($user, 'Victor123!');
+    $u_count++;
 }
+echo "✓ Success: $u_count users synchronized.\n\n";
 
-echo "\nRepair Complete.\n";
-echo "Successfully updated: $success_count\n";
-echo "Users not found: $fail_count\n";
+// ─── 2. Global Catalog Repair ─────────────────────────────────────────────────
+echo "[2/2] Forcing visibility = 1 for ALL courses...\n";
+$courses = $DB->get_records('course');
+$c_count = 0;
+
+foreach ($courses as $course) {
+    if ($course->id == SITEID) continue; // Skip site home
+
+    $update = new stdClass();
+    $update->id = $course->id;
+    $update->visible = 1;
+    $DB->update_record('course', $update);
+    
+    // Explicitly rebuild the course cache so the API catalog sees it
+    rebuild_course_cache($course->id);
+    $c_count++;
+}
+echo "✓ Success: $c_count courses visibility-repaired and cache-rebuilt.\n\n";
+
+echo "=== REPAIR COMPLETE ===\n";
+echo "Platform registry is now at parity with Victor credentials.\n";

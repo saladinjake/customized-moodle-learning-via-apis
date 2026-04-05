@@ -1,33 +1,48 @@
 <?php
 /**
- * Headless Password Repair Tool (CLI/SHELL)
- * Synchronizes seeded personas with definitive passwords.
+ * Headless Global Platform Bridge & Repair (CLI/SHELL)
+ * Bulk synchronizes all Identites and Catalog Visibility.
  */
 define('CLI_SCRIPT', true);
 require_once(__DIR__ . '/config.php');
 
-echo "=== LUMINA PASSWORD REPAIR (SHELL) ===\n";
+echo "=== LUMINA GLOBAL PLATFORM REPAIR (SHELL) ===\n";
+echo "Enforcing unified credentials & catalog visibility across ALL records...\n\n";
 
 global $DB, $CFG;
 require_once($CFG->dirroot . '/user/lib.php');
+require_once($CFG->dirroot . '/course/lib.php');
 
-$personas = [
-    'admin'             => 'Admin1234!',
-    'victor_instructor' => 'Victor123!',
-    'victor_student'    => 'Victor123!',
-    'student_alpha'     => 'Victor123!',
-    'student_zeta'      => 'Victor123!',
-    'student_omega'     => 'Victor123!',
-    'student_theta'     => 'Victor123!',
-];
+// ─── 1. Bulk Identity Repair ──────────────────────────────────────────────────
+echo "[1/2] Updating ALL user passwords to Victor123!...\n";
+$users = $DB->get_records('user', ['deleted' => 0]);
+$u_count = 0;
 
-foreach ($personas as $username => $plaintext) {
-    if ($user = $DB->get_record('user', ['username' => $username, 'mnethostid' => $CFG->mnet_localhost_id])) {
-        echo "[OK] Updating $username...\n";
-        update_internal_user_password($user, $plaintext);
-    } else {
-        echo "[!] $username not found.\n";
-    }
+foreach ($users as $user) {
+    if ($user->username === 'guest') continue;
+
+    update_internal_user_password($user, 'Victor123!');
+    $u_count++;
 }
+echo "✓ Success: $u_count users synchronized.\n\n";
 
-echo "\nDone.\n";
+// ─── 2. Global Catalog Repair ─────────────────────────────────────────────────
+echo "[2/2] Forcing visibility = 1 for ALL courses...\n";
+$courses = $DB->get_records('course');
+$c_count = 0;
+
+foreach ($courses as $course) {
+    if ($course->id == SITEID) continue;
+
+    $update = new stdClass();
+    $update->id = $course->id;
+    $update->visible = 1;
+    $DB->update_record('course', $update);
+    
+    rebuild_course_cache($course->id);
+    $c_count++;
+}
+echo "✓ Success: $c_count courses visibility-repaired and cache-rebuilt.\n\n";
+
+echo "=== REPAIR COMPLETE ===\n";
+echo "Platform registry is now at parity with Victor credentials.\n";
