@@ -1,4 +1,5 @@
 <?php
+define('NO_MOODLE_COOKIES', true);
 require_once(__DIR__ . '/config.php');
 /**
  * DEFINTIVE CREDENTIAL AUDIT (INTERNAL)
