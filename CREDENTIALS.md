@@ -24,11 +24,21 @@ Below are the default identities provisioned by the **Master Seeder**. These are
 #### 1. Remote Seeding (HTTP)
 Trigger the seeding pipeline via authenticated `curl`. The endpoint is located in the `local/api` folder.
 
+
+
 **Master Suite (Recommended):**
 ```bash
 curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
      -d "run=master" \
+     --no-buffer
+```
+
+**Engagement/Grades Suite:**
+```bash
+curl -X POST "https://lumina-moodle-backend.onrender.com/local/api/run_seed.php" \
+     -H "X-Seed-Token: lumina-seed-2026" \
+     -d "run=categories" \
      --no-buffer
 ```
 

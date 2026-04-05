@@ -4,7 +4,7 @@
  */
 // define('CLI_SCRIPT', true);
 define('NO_MOODLE_COOKIES', true);
-require_once(__DIR__ . '/../../../config.php');
+require_once(__DIR__ . '/../../config.php');
 
 global $DB;
 
