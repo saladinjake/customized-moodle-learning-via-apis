@@ -29,6 +29,62 @@ global $DB, $CFG;
 
 function log_m($msg) { echo "[MASTER SEEDER] " . $msg . PHP_EOL; flush(); }
 
+// --- HELPER: Provision Module ---
+function provision_module($course_id, $section_num, $type, $name, $extra = []) {
+    global $DB;
+    $module = $DB->get_record('modules', ['name' => $type], '*', MUST_EXIST);
+    $cw = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $section_num]);
+    if (!$cw) {
+        $cw = new stdClass();
+        $cw->course = $course_id;
+        $cw->section = $section_num;
+        $cw->summary = "Curricular Phase $section_num";
+        $cw->summaryformat = FORMAT_HTML;
+        $cw->id = $DB->insert_record('course_sections', $cw);
+    }
+    
+    // Idempotency check: look for module by name + course + section
+    $mod_record = new stdClass();
+    $mod_record->course = $course_id;
+    $mod_record->name = $name;
+    $mod_record->intro = "Machine-generated asset for Headless UX validation. Curriculum Node: $name";
+    $mod_record->introformat = FORMAT_HTML;
+    $mod_record->timemodified = time();
+
+    if ($type === 'assign') { $mod_record->grade = 100; $mod_record->assignsubmission_onlinetext_enabled = 1; }
+    if ($type === 'url' && isset($extra['url'])) { $mod_record->externalurl = $extra['url']; $mod_record->display = 0; }
+    if ($type === 'quiz') { $mod_record->sumgrades = 10; $mod_record->grade = 10; }
+    if ($type === 'page') { $mod_record->content = $extra['intro'] ?? ''; $mod_record->contentformat = FORMAT_HTML; }
+    if ($type === 'scorm') { $mod_record->scormtype = 'local'; $mod_record->maxgrade = 100; }
+    
+    if (isset($extra['intro'])) { $mod_record->intro = $extra['intro']; $mod_record->introformat = FORMAT_HTML; }
+    
+    // Check if session node already exists to avoid duplication
+    $existing_inst = $DB->get_record($type, ['course' => $course_id, 'name' => $name]);
+    if ($existing_inst) {
+        $instance_id = $existing_inst->id;
+    } else {
+        $instance_id = $DB->insert_record($type, $mod_record);
+    }
+    
+    if (!$DB->record_exists('course_modules', ['course' => $course_id, 'module' => $module->id, 'instance' => $instance_id])) {
+        $cm = new stdClass();
+        $cm->course = $course_id;
+        $cm->module = $module->id;
+        $cm->instance = $instance_id;
+        $cm->section = $cw->id;
+        $cm->visible = 1;
+        $cm->idnumber = "MX-$type-" . substr(md5($name), 0, 8);
+        $cmid = $DB->insert_record('course_modules', $cm);
+        
+        $sequence = empty($cw->sequence) ? $cmid : $cw->sequence . ',' . $cmid;
+        $DB->set_field('course_sections', 'sequence', $sequence, ['id' => $cw->id]);
+    }
+    
+    return true;
+}
+
+
 // --- 1. USERS ---
 log_m("Syncing Victor personas...");
 $victors = [
@@ -125,6 +181,25 @@ for ($i = 1; $i <= 50; $i++) { // Reduced to 50 for stability, can be increased
     } else {
         $course_obj = $DB->get_record('course', ['shortname' => $shortname]);
     }
+
+    // High-Fidelity Asset Provisioning (Multi-Section)
+    course_create_sections_if_missing($course_obj->id, [1, 2, 3, 4]);
+    
+    // SECTION 1: VIDEO
+    provision_module($course_obj->id, 1, 'url', "Phase 1: Video Introduction", ['url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ']);
+    
+    // SECTION 2: INTERACTIVE
+    provision_module($course_obj->id, 2, 'forum', "Phase 2: Community Collaboration Hub");
+    provision_module($course_obj->id, 2, 'scorm', "Phase 2: Interactive Strategy Simulator");
+    
+    // SECTION 3: KNOWLEDGE
+    provision_module($course_obj->id, 3, 'quiz', "Phase 3: Curricular Mastery Assessment");
+    
+    // SECTION 4: CAPSTONE
+    provision_module($course_obj->id, 4, 'assign', "Phase 4: Capstone Milestone");
+
+    // Rebuild cache for performance in frontend
+    rebuild_course_cache($course_obj->id, true);
 
     // Auto-Enrol Victors
     $enrol = enrol_get_plugin('manual');
