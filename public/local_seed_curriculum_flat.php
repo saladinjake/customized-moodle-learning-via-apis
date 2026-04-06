@@ -8,9 +8,9 @@
 if (!defined('MOODLE_INTERNAL')) {
     define('CLI_SCRIPT', true);
     require(__DIR__ . '/config.php');
-    require_once($CFG->dirroot . '/course/lib.php');
-    require_once($CFG->dirroot . '/course/modlib.php');
 }
+require_once($CFG->dirroot . '/course/lib.php');
+require_once($CFG->dirroot . '/course/modlib.php');
 
 global $DB;
 
