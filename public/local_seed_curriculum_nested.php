@@ -11,6 +11,13 @@ if (!defined('MOODLE_INTERNAL')) {
 }
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/course/modlib.php');
+// Ensure module libraries are loaded for add_instance calls
+require_once($CFG->dirroot . '/mod/label/lib.php');
+require_once($CFG->dirroot . '/mod/page/lib.php');
+require_once($CFG->dirroot . '/mod/url/lib.php');
+require_once($CFG->dirroot . '/mod/resource/lib.php');
+require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once($CFG->dirroot . '/mod/quiz/lib.php');
 
 global $DB;
 
@@ -73,11 +80,14 @@ function bulk_update_nested_hierarchy($offset = 100) {
                 foreach ($node->items as $item) {
                     if (($item->type ?? '') === 'subsection') {
                         $maxsec = $DB->get_field_sql("SELECT MAX(section) FROM {course_sections} WHERE course = ?", [$course->id]);
-                        $sub_sec_num = $maxsec + 1;
+                        $sub_sec_num = (int)$maxsec + 1;
+                        course_create_sections_if_missing($course->id, [$sub_sec_num]);
+                        rebuild_course_cache($course->id, true);
+                        
                         $modrec = $DB->get_record('modules', ['name' => 'label']);
                         $minfo = (object)[
                             'modulename' => 'label', 'module' => $modrec->id, 'course' => $course->id,
-                            'section' => $sectionnum, 'name' => $item->name,
+                            'section' => (int)$sectionnum, 'name' => $item->name,
                             'intro' => '<!-- subsection -->', 'introformat' => FORMAT_HTML, 'visible' => 1
                         ];
                         $anchor_cm = add_moduleinfo($minfo, $course);

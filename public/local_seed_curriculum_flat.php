@@ -11,6 +11,11 @@ if (!defined('MOODLE_INTERNAL')) {
 }
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/course/modlib.php');
+require_once($CFG->dirroot . '/mod/label/lib.php');
+require_once($CFG->dirroot . '/mod/page/lib.php');
+require_once($CFG->dirroot . '/mod/url/lib.php');
+require_once($CFG->dirroot . '/mod/forum/lib.php');
+require_once($CFG->dirroot . '/mod/quiz/lib.php');
 
 global $DB;
 
