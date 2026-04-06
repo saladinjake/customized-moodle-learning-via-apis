@@ -55,11 +55,21 @@ $CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';
 // -------------------------------------------------------------------------
 // DB connection: Hardcoded for dpg-d7922lk50q8c73f9u2m0-a instance
 // -------------------------------------------------------------------------
-$CFG->dbhost = getenv('DB_HOST') ?: 'dpg-d7922lk50q8c73f9u2m0-a.oregon-postgres.render.com';
-$CFG->dbname = getenv('DB_NAME') ?: 'moodle_databases';
-$CFG->dbuser = getenv('DB_USER') ?: 'moodle_databases_user';
-$CFG->dbpass = getenv('DB_PASS') ?: '83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti';
-$_db_port    = '5432';
+// -------------------------------------------------------------------------
+// Local Defaults with Production Switch
+// -------------------------------------------------------------------------
+if (getenv('MOODLE_ENV') === 'production') {
+    $CFG->dbhost = getenv('DB_HOST') ?: 'dpg-d7922lk50q8c73f9u2m0-a.oregon-postgres.render.com';
+    $CFG->dbname = getenv('DB_NAME') ?: 'moodle_databases';
+    $CFG->dbuser = getenv('DB_USER') ?: 'moodle_databases_user';
+    $CFG->dbpass = getenv('DB_PASS') ?: '83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti';
+} else {
+    $CFG->dbhost = getenv('DB_HOST') ?: 'localhost';
+    $CFG->dbname = getenv('DB_NAME') ?: 'moodle_local';
+    $CFG->dbuser = getenv('DB_USER') ?: 'postgres';
+    $CFG->dbpass = getenv('DB_PASS') ?: 'postgres';
+}
+$_db_port = getenv('DB_PORT') ?: '5432';
 
 $CFG->dboptions = [
     'dbpersist'        => false,
