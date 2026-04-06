@@ -91,8 +91,22 @@ flush();
 $overall_success = true;
 
 foreach ($to_run as $step => $script_path) {
-    echo "--- Running: $step ---\n";
-    flush();
+    if ($step === 'curriculum_nested') {
+        echo "--- DATABASE AUDIT (Moodle 5.1 / Postgres) ---\n";
+        try {
+            $tables = $DB->get_tables();
+            echo "Total Tables: " . count($tables) . "\n";
+            $modcount = $DB->count_records('modules');
+            echo "Module Count: $modcount\n";
+            $modules = $DB->get_records('modules', [], '', 'id, name');
+            foreach ($modules as $m) { echo "  - [{$m->id}] {$m->name}\n"; }
+            $schema = $DB->get_record_sql("SELECT current_schema()");
+            echo "Current Schema: " . ($schema ? $schema->current_schema : 'Unknown') . "\n\n";
+        } catch (Exception $e) {
+            echo "AUDIT FAIL: " . $e->getMessage() . "\n\n";
+        }
+        flush();
+    }
 
     if (!file_exists($script_path)) {
         echo "SKIP: Script not found at $script_path\n\n";
