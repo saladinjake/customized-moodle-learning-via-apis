@@ -26,7 +26,7 @@ if (!CLI_SCRIPT || defined('RUN_BULK_SEED')) {
     require_once($CFG->libdir . '/cronlib.php');
     $admin = get_admin();
     if ($admin) {
-        cron_setup_user($admin);
+        set_user_context($admin);
     }
 }
 
@@ -81,7 +81,10 @@ function bulk_update_nested_hierarchy($offset = 100) {
             $sectionnum = $index + 1;
             course_create_sections_if_missing($course->id, [(int)$sectionnum]);
             rebuild_course_cache($course->id, true);
-            $modinfo = get_fast_modinfo($course->id, 0, true); // Force cache reset
+            $modinfo = get_fast_modinfo($course->id);
+            if (!$modinfo || !is_object($modinfo)) {
+                 throw new \moodle_exception("Failed to load modinfo for Course {$course->id}");
+            }
             $section = $modinfo->get_section_info($sectionnum);
             
             if ($section && is_object($section)) {

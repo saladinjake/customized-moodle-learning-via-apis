@@ -24,7 +24,7 @@ if (!CLI_SCRIPT || defined('RUN_BULK_SEED')) {
     require_once($CFG->libdir . '/cronlib.php');
     $admin = get_admin();
     if ($admin) {
-        cron_setup_user($admin);
+        set_user_context($admin);
     }
 }
 
@@ -68,7 +68,8 @@ function bulk_update_flat_hierarchy($limit = 100) {
             $sectionnum = $index + 1;
             course_create_sections_if_missing($course->id, [(int)$sectionnum]);
             rebuild_course_cache($course->id, true);
-            $modinfo = get_fast_modinfo($course->id, 0, true);
+            $modinfo = get_fast_modinfo($course->id);
+            if (!$modinfo) continue;
             $section = $modinfo->get_section_info($sectionnum);
             
             if ($section && is_object($section)) {
