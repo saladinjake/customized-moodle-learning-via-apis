@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $run = $_POST['run'] ?? 'master';
-$valid_steps = ['all', 'master', 'categories', 'cohorts', 'courses', 'grades', 'rbac'];
+$valid_steps = ['all', 'master', 'categories', 'cohorts', 'courses', 'grades', 'rbac', 'curriculum_flat', 'curriculum_nested'];
 
 if (!in_array($run, $valid_steps)) {
     http_response_code(400);
@@ -58,6 +58,8 @@ $scripts = [
     'courses'    => __DIR__ . '/local_seed_moodle.php',
     'grades'     => __DIR__ . '/local_seed_grades_messages.php',
     'rbac'       => __DIR__ . '/local_seed_rbac.php',
+    'curriculum_flat' => __DIR__ . '/local_seed_curriculum_flat.php',
+    'curriculum_nested' => __DIR__ . '/local_seed_curriculum_nested.php',
 ];
 
 if ($run === 'all') {
@@ -72,6 +74,7 @@ if ($run === 'all') {
 @ini_set('zlib.output_compression', false);
 set_time_limit(0);   // allow long-running seeder
 ignore_user_abort(true);
+define('RUN_BULK_SEED', true); // Signal to batch scripts to execute on inclusion
 
 header('Content-Type: text/plain; charset=UTF-8');
 header('X-Accel-Buffering: no'); // disable Nginx buffering if present

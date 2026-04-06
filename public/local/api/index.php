@@ -2195,6 +2195,16 @@ try {
                     }
 
                     $item['_d_sec_id'] = $delegated_sec_id;
+                    
+                    // NEW: Persistent Completion Tracking (Lumina Studio Sync)
+                    $item['completionstate'] = 0;
+                    if ($is_enrolled && $cm->cmid) {
+                        $completion = new \completion_info($course);
+                        $cm_for_completion = $modinfo->get_cm($cm->cmid);
+                        $data = $completion->get_data($cm_for_completion, true, $USER->id);
+                        $item['completionstate'] = (int)($data->completionstate ?? 0);
+                    }
+
                     $sec_entry['items'][] = $item;
                     if (!$delegated_sec_id) {
                         $unit_count++;
@@ -2504,6 +2514,29 @@ try {
             ];
 
             $_api_response['data'] = $checks;
+            break;
+
+        case 'admin_bulk_update_flat':
+            if (!is_siteadmin()) throw new \moodle_exception('nopermissiontoadmin');
+            require_once(__DIR__ . '/../../local_seed_curriculum_flat.php');
+            $limit = optional_param('limit', 100, PARAM_INT);
+            // Capture output to return as message/data
+            ob_start();
+            bulk_update_flat_hierarchy($limit);
+            $output = ob_get_clean();
+            $_api_response['message'] = "Bulk flat synchronization complete.";
+            $_api_response['data'] = $output;
+            break;
+
+        case 'admin_bulk_update_nested':
+            if (!is_siteadmin()) throw new \moodle_exception('nopermissiontoadmin');
+            require_once(__DIR__ . '/../../local_seed_curriculum_nested.php');
+            $offset = optional_param('offset', 100, PARAM_INT);
+            ob_start();
+            bulk_update_nested_hierarchy($offset);
+            $output = ob_get_clean();
+            $_api_response['message'] = "Bulk nested synchronization complete.";
+            $_api_response['data'] = $output;
             break;
 
         case 'admin_get_cohorts':

@@ -1,0 +1,149 @@
+<?php
+/**
+ * Bulk Nested Hierarchy Provisioner (Remaining Courses)
+ * 
+ * Reuses logic from test_nested_api.php to apply a nested
+ * curriculum to courses 101+ in the database.
+ */
+if (!defined('MOODLE_INTERNAL')) {
+    define('CLI_SCRIPT', true);
+    require(__DIR__ . '/config.php');
+    require_once($CFG->dirroot . '/course/lib.php');
+    require_once($CFG->dirroot . '/course/modlib.php');
+}
+
+global $DB;
+
+function bulk_update_nested_hierarchy($offset = 100) {
+    global $DB;
+    echo "Fetching courses starting from offset $offset...\n";
+    $courses = $DB->get_records('course', [], 'id ASC', 'id, fullname, shortname', $offset, 1000);
+    
+    if (empty($courses)) {
+        echo "No courses found to update.\n";
+        return;
+    }
+
+    $tree = [
+        (object)[
+            'name' => 'Module 1: Engine Foundation',
+            'items' => [
+                (object)[
+                    'type' => 'page',
+                    'name' => 'Introduction Page',
+                    'indent' => 0,
+                    'content' => 'Welcome to the core.'
+                ],
+                (object)[
+                    'type' => 'subsection',
+                    'name' => 'Deep Dive: Core Mechanics',
+                    'items' => [
+                        (object)[
+                            'type' => 'url',
+                            'name' => 'External Architecture Reference',
+                            'url' => 'https://moodle.org'
+                        ],
+                        (object)[
+                            'type' => 'page',
+                            'name' => 'Internal Matrix Documentation',
+                            'content' => 'Sub-layer page active.'
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ];
+    $json_tree = json_encode($tree);
+
+    foreach ($courses as $course) {
+        if ($course->id == SITEID) continue;
+        echo "Updating Course [{$course->id}] {$course->fullname} (Nested)...\n";
+        
+        // Mock API request bridge logic manually to avoid full inclusion for performance
+        // This is the core of sync_course_structure action
+        foreach ($tree as $index => $node) {
+            $sectionnum = $index + 1;
+            course_create_sections_if_missing($course->id, [(int)$sectionnum]);
+            $modinfo = get_fast_modinfo($course);
+            $section = $modinfo->get_section_info($sectionnum);
+            
+            if ($section && is_object($section)) {
+                $DB->set_field('course_sections', 'name', $node->name, ['id' => $section->id]);
+                $new_sequence = [];
+                foreach ($node->items as $item) {
+                    if (($item->type ?? '') === 'subsection') {
+                        $maxsec = $DB->get_field_sql("SELECT MAX(section) FROM {course_sections} WHERE course = ?", [$course->id]);
+                        $sub_sec_num = $maxsec + 1;
+                        $modrec = $DB->get_record('modules', ['name' => 'label']);
+                        $minfo = (object)[
+                            'modulename' => 'label', 'module' => $modrec->id, 'course' => $course->id,
+                            'section' => $sectionnum, 'name' => $item->name,
+                            'intro' => '<!-- subsection -->', 'introformat' => FORMAT_HTML, 'visible' => 1
+                        ];
+                        $anchor_cm = add_moduleinfo($minfo, $course);
+                        if ($anchor_cm && isset($anchor_cm->coursemodule)) {
+                            $new_sequence[] = $anchor_cm->coursemodule;
+                            $delegated = (object)[
+                                "course" => $course->id,
+                                "section" => $sub_sec_num,
+                                "name" => $item->name,
+                                "summary" => "",
+                                "summaryformat" => FORMAT_HTML,
+                                "sequence" => "",
+                                "visible" => 1,
+                                "component" => "core_subsection",
+                                "itemid" => $anchor_cm->coursemodule
+                            ];
+                            $dsid = $DB->insert_record('course_sections', $delegated);
+                            $sub_seq = [];
+                            foreach ($item->items as $subitem) {
+                                $modname = $subitem->type ?? 'label';
+                                if ($modname === 'h5p') $modname = 'h5pactivity';
+                                $submodrec = $DB->get_record('modules', ['name' => $modname]);
+                                if (!$submodrec) continue;
+                                $sminfo = (object)[
+                                    'modulename' => $modname, 'module' => $submodrec->id, 'course' => $course->id,
+                                    'section' => $sub_sec_num, 'name' => $subitem->name,
+                                    'visible' => isset($subitem->visible) ? (int)$subitem->visible : 1,
+                                    'intro' => $subitem->content ?? '', 'introformat' => FORMAT_HTML
+                                ];
+                                if ($modname === 'url') { $sminfo->externalurl = $subitem->url ?? 'http://'; $sminfo->display = 0; }
+                                if ($modname === 'page') { $sminfo->content = $subitem->content ?? ''; $sminfo->contentformat = FORMAT_HTML; }
+                                $new_subcm = add_moduleinfo($sminfo, $course);
+                                if ($new_subcm && isset($new_subcm->coursemodule)) $sub_seq[] = $new_subcm->coursemodule;
+                            }
+                            $DB->set_field('course_sections', 'sequence', implode(',', $sub_seq), ['id' => $dsid]);
+                        }
+                        continue;
+                    }
+
+                    // Standard item in nested tree
+                    $modname = $item->type ?? 'label';
+                    $modrec = $DB->get_record('modules', ['name' => $modname]);
+                    if (!$modrec) continue;
+                    $minfo = (object)[
+                        'modulename' => $modname, 'module' => $modrec->id, 'course' => $course->id,
+                        'section' => $sectionnum, 'name' => $item->name,
+                        'visible' => isset($item->visible) ? (int)$item->visible : 1,
+                        'intro' => $item->content ?? '', 'introformat' => FORMAT_HTML
+                    ];
+                    if ($modname === 'url') { $minfo->externalurl = $item->url ?? 'http://'; $minfo->display = 0; }
+                    if ($modname === 'page') { $minfo->content = $item->content ?? ''; $minfo->contentformat = FORMAT_HTML; }
+                    
+                    try {
+                        $n_cm = add_moduleinfo($minfo, $course);
+                        if ($n_cm && isset($n_cm->coursemodule)) $new_sequence[] = $n_cm->coursemodule;
+                    } catch (Exception $e) { /* ignore */ }
+                }
+                $DB->set_field('course_sections', 'sequence', implode(',', $new_sequence), ['id' => $section->id]);
+            }
+        }
+        rebuild_course_cache($course->id, true);
+        echo "Nested Hierarchy Synchronized for Course ID [{$course->id}].\n";
+    }
+    echo "Bulk Nested Integration Complete.\n";
+}
+
+if (PHP_SAPI === 'cli' || defined('RUN_BULK_SEED')) {
+    bulk_update_nested_hierarchy(100);
+}
