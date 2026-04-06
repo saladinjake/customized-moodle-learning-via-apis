@@ -8,9 +8,7 @@ require_once(__DIR__ . '/config.php');
  * for every curriculum node to validate high-fidelity media playback.
  */
 
-// // define('CLI_SCRIPT', true);
 define('NO_MOODLE_COOKIES', true); 
-require_once(__DIR__ . '/config.php');
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/grouplib.php');
@@ -30,6 +28,7 @@ $CFG->noreplyaddress = 'noreply@example.com';
 
 function log_seed($msg) {
     echo "[MATRIX SEEDER] " . $msg . PHP_EOL;
+    flush();
 }
 
 // Improved Module Provisioner with Interactive & Metadata Support
@@ -37,11 +36,22 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     global $DB;
     $module = $DB->get_record('modules', ['name' => $type]);
     if (!$module) {
-        log_seed("Skipping $name: Module plugin '$type' not installed.");
+        log_seed("Skipping '$name': Module plugin '$type' not installed.");
         return false;
     }
-    $cw = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $section_num], '*', MUST_EXIST);
-    
+    $cw = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $section_num]);
+    if (!$cw) {
+        log_seed("Section $section_num not found for course $course_id — skipping '$name'.");
+        return false;
+    }
+
+    // Idempotency: skip if module with this name already exists in this course
+    $existing_inst = $DB->get_record($type, ['course' => $course_id, 'name' => $name]);
+    if ($existing_inst) {
+        log_seed("Already exists: $type '$name' in course $course_id — skipping.");
+        return $existing_inst->id;
+    }
+
     $mod_record = new stdClass();
     $mod_record->course = $course_id;
     $mod_record->name = $name;
@@ -55,15 +65,15 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     }
     if ($type === 'url' && isset($extra['url'])) {
         $mod_record->externalurl = $extra['url'];
-        $mod_record->display = 0; // Default
+        $mod_record->display = 0;
     }
     if ($type === 'quiz') {
         $mod_record->intro = "Interactive assessment for node $name.";
         $mod_record->timeopen = time();
         $mod_record->timeclose = 0;
         $mod_record->preferredbehaviour = 'deferredfeedback';
-        $mod_record->attempts = 0; // Unlimited
-        $mod_record->grademethod = 1; // Best grade
+        $mod_record->attempts = 0;
+        $mod_record->grademethod = 1;
         $mod_record->decimalpoints = 2;
         $mod_record->questiondecimalpoints = -1;
         $mod_record->sumgrades = 10;
@@ -74,13 +84,15 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
         $mod_record->forcesubscribe = 0;
     }
     if ($type === 'page') {
-        // page table requires content + contentformat — no DB default exists
         $mod_record->content = isset($extra['intro']) ? $extra['intro'] : '';
         $mod_record->contentformat = FORMAT_HTML;
         $mod_record->displayoptions = '';
     }
+    if ($type === 'label') {
+        $mod_record->content = isset($extra['intro']) ? $extra['intro'] : '';
+        $mod_record->contentformat = FORMAT_HTML;
+    }
     if ($type === 'scorm') {
-        // All non-nullable scorm columns that have no DB default must be set explicitly
         $mod_record->scormtype     = 'local';
         $mod_record->reference     = '';
         $mod_record->version       = 'SCORM_1.2';
@@ -112,37 +124,42 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
         $mod_record->launch        = 0;
     }
     
-    // Inject custom HTML intro if provided for POC validation
     if (isset($extra['intro'])) {
         $mod_record->intro = $extra['intro'];
         $mod_record->introformat = FORMAT_HTML;
     }
     
-    $instance_id = $DB->insert_record($type, $mod_record);
-    
+    try {
+        $instance_id = $DB->insert_record($type, $mod_record);
+    } catch (Exception $e) {
+        log_seed("Could not insert '$name' ($type): " . $e->getMessage());
+        return false;
+    }
+
     $cm = new stdClass();
     $cm->course = $course_id;
     $cm->module = $module->id;
     $cm->instance = $instance_id;
-    $cm->section = $cw->id;
+    $cm->section = $cw->id;  // section row ID (Moodle standard)
     $cm->visible = 1;
-    $cm->completion = 1; // 🛡️ Enable Progress Tracking (View to Complete)
+    $cm->completion = 1;
     $cm->completionview = 1;
     $cm->idnumber = "MX-$type-" . uniqid();
     $cmid = $DB->insert_record('course_modules', $cm);
     
-    // Link to section sequence
-    $sequence = empty($cw->sequence) ? $cmid : $cw->sequence . ',' . $cmid;
+    // Re-read the current sequence from DB (not from stale $cw) before updating
+    $current_seq = $DB->get_field('course_sections', 'sequence', ['id' => $cw->id]);
+    $sequence = empty($current_seq) ? (string)$cmid : $current_seq . ',' . $cmid;
     $DB->set_field('course_sections', 'sequence', $sequence, ['id' => $cw->id]);
     
     // Specialized setup for complex modules
     if ($type === 'quiz') setup_quiz_questions($instance_id);
     if ($type === 'forum') setup_forum_discussion($instance_id, $course_id);
 
-    // rebuild_course_cache($course_id, true); // Removed from here for performance
-    log_seed("Provisioned $type: $name in $course_id S$section_num");
+    log_seed("Provisioned $type: '$name' in course $course_id S$section_num");
     return $cmid;
 }
+
 
 // Mock Question Seeder for Quizzes (Headless Metadata Injection)
 function setup_quiz_questions($quiz_id) {

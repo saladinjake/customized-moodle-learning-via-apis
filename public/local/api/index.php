@@ -2091,81 +2091,149 @@ try {
             $course   = $DB->get_record('course', ['id' => $courseid, 'visible' => 1],
                 'id, fullname, shortname, summary, category, timecreated', MUST_EXIST);
 
-            // Curriculum tree
+            // Curriculum tree builder — uses direct SQL for reliability
+            // (modinfo->sections can be stale if cache wasn't rebuilt after seeding)
             require_once($CFG->dirroot . '/course/lib.php');
             $modinfo  = get_fast_modinfo($course);
             $tree     = [];
             $unit_count = 0;
-            
+
+            // Fetch ALL course sections for this course directly from DB
+            $all_sections = $DB->get_records('course_sections', ['course' => $courseid], 'section ASC');
+
+            // Build a map: section_row_id => section_info
+            $sec_by_id = [];
+            foreach ($all_sections as $s) {
+                $sec_by_id[$s->id] = $s;
+            }
+
+            // Fetch ALL course modules with their module type name
+            $cms_sql = "
+                SELECT cm.id as cmid, cm.section as section_id, cm.instance, cm.visible,
+                       m.name as modname, cm.module as module_id
+                FROM {course_modules} cm
+                JOIN {modules} m ON m.id = cm.module
+                WHERE cm.course = ?
+                ORDER BY cm.id ASC
+            ";
+            $all_cms = $DB->get_records_sql($cms_sql, [$courseid]);
+
+            // Group cmids by section_id using the sequence order when available
+            $cms_by_section = [];
+            foreach ($all_sections as $s) {
+                $cms_by_section[$s->id] = [];
+                // Use sequence ordering if available
+                if (!empty($s->sequence)) {
+                    $ordered_ids = array_filter(array_map('intval', explode(',', $s->sequence)));
+                    foreach ($ordered_ids as $cmid) {
+                        if (isset($all_cms[$cmid])) {
+                            $cms_by_section[$s->id][] = $all_cms[$cmid];
+                        }
+                    }
+                }
+                // Add any cms not in sequence (fallback for directly inserted)
+                foreach ($all_cms as $cm) {
+                    if ($cm->section_id == $s->id) {
+                        $already = array_filter($cms_by_section[$s->id], fn($x) => $x->cmid == $cm->cmid);
+                        if (empty($already)) {
+                            $cms_by_section[$s->id][] = $cm;
+                        }
+                    }
+                }
+            }
+
+            // Build the sections_map using DB section data
             $sections_map = [];
-            foreach ($modinfo->get_section_info_all() as $snum => $s) {
+            foreach ($all_sections as $s) {
+                $snum = (int)$s->section;
                 if ($snum == 0 && empty($s->name) && empty($s->sequence)) continue;
-                $sections_map[$snum] = [
-                    'id' => 'sec-' . $s->id, 
-                    'name' => $s->name ?: "Section $snum", 
-                    'items' => [],
+                $sections_map[$s->id] = [
+                    'id'           => 'sec-' . $s->id,
+                    'snum'         => $snum,
+                    'name'         => $s->name ?: "Section $snum",
+                    'items'        => [],
                     'is_delegated' => ($s->component === 'core_subsection'),
-                    'itemid' => $s->itemid
+                    'itemid'       => (int)($s->itemid ?? 0),
+                    'sec_id'       => $s->id,
                 ];
             }
 
-            foreach ($modinfo->get_section_info_all() as $snum => $s) {
-                if (!isset($sections_map[$snum])) continue;
-                if (!empty($modinfo->sections[$snum])) {
-                    foreach ($modinfo->sections[$snum] as $cmid) {
-                        $cm = $modinfo->cms[$cmid];
-                        if ($cm->visible) {
-                            $item = [
-                                'id'   => 'unit-' . $cm->id,
-                                'name' => $cm->name,
-                                'type' => $cm->modname
-                            ];
-                            if ($cm->modname === 'url') {
-                                $urlrec = $DB->get_record('url', ['id' => $cm->instance]);
-                                if ($urlrec) $item['url'] = $urlrec->externalurl;
-                            }
-                            
-                            $delegated_snum = false;
-                            foreach ($sections_map as $d_snum => $d_sec) {
-                                if ($d_sec['is_delegated'] && $d_sec['itemid'] == $cm->id) {
-                                    $item['type'] = 'subsection';
-                                    $delegated_snum = $d_snum;
-                                    break;
-                                }
-                            }
-                            $item['_d_snum'] = $delegated_snum;
-                            $sections_map[$snum]['items'][] = $item;
-                            if (!$delegated_snum) {
-                                $unit_count++;
-                            }
+            // Populate items for each section
+            foreach ($sections_map as $sec_id => &$sec_entry) {
+                $sec_cms = $cms_by_section[$sec_id] ?? [];
+                foreach ($sec_cms as $cm) {
+                    if (!$cm->visible) continue;
+
+                    $item = [
+                        'id'   => 'unit-' . $cm->cmid,
+                        'name' => '', // resolve below
+                        'type' => $cm->modname,
+                    ];
+
+                    // Get module name from its own table
+                    try {
+                        $mod_rec = $DB->get_record($cm->modname, ['id' => $cm->instance], 'id, name');
+                        $item['name'] = $mod_rec ? ($mod_rec->name ?: ('Untitled ' . $cm->modname)) : ('Unit ' . $cm->cmid);
+                    } catch (Exception $e) {
+                        $item['name'] = 'Unit ' . $cm->cmid;
+                    }
+
+                    // Attach external URL for url-type modules
+                    if ($cm->modname === 'url') {
+                        $urlrec = $DB->get_record('url', ['id' => $cm->instance], 'id, externalurl');
+                        if ($urlrec) $item['url'] = $urlrec->externalurl;
+                    }
+
+                    // Check if this cm is the anchor for a delegated subsection
+                    $delegated_sec_id = false;
+                    foreach ($sections_map as $d_sec_id => $d_sec) {
+                        if ($d_sec['is_delegated'] && $d_sec['itemid'] == $cm->cmid) {
+                            $item['type'] = 'subsection';
+                            $delegated_sec_id = $d_sec_id;
+                            break;
                         }
+                    }
+
+                    $item['_d_sec_id'] = $delegated_sec_id;
+                    $sec_entry['items'][] = $item;
+                    if (!$delegated_sec_id) {
+                        $unit_count++;
                     }
                 }
             }
+            unset($sec_entry);
 
-            foreach ($sections_map as $snum => &$sec) {
-                foreach ($sec['items'] as &$item) {
-                    if (!empty($item['_d_snum'])) {
-                        $d_snum = $item['_d_snum'];
-                        if (isset($sections_map[$d_snum])) {
-                            $item['items'] = $sections_map[$d_snum]['items'];
+            // Nest subsection items into their parent items
+            foreach ($sections_map as &$sec_entry) {
+                foreach ($sec_entry['items'] as &$item) {
+                    if (!empty($item['_d_sec_id'])) {
+                        $d_sec_id = $item['_d_sec_id'];
+                        if (isset($sections_map[$d_sec_id])) {
+                            $item['items'] = $sections_map[$d_sec_id]['items'];
+                            // clean up nested _d_sec_id
+                            foreach ($item['items'] as &$ni) { unset($ni['_d_sec_id']); }
+                            unset($ni);
                         }
                     }
-                    unset($item['_d_snum']);
+                    unset($item['_d_sec_id']);
                 }
             }
-            unset($sec, $item);
+            unset($sec_entry, $item);
 
-            foreach ($sections_map as $snum => $sec) {
-                unset($sec['is_delegated'], $sec['itemid']);
-                $orig_s = $modinfo->get_section_info($snum);
-                if (empty($orig_s->component)) {
-                    $tree[] = $sec;
+            // Build final tree: only include non-delegated sections (top-level)
+            foreach ($sections_map as $sec_id => $sec_entry) {
+                if (!$sec_entry['is_delegated']) {
+                    $tree[] = [
+                        'id'    => $sec_entry['id'],
+                        'name'  => $sec_entry['name'],
+                        'items' => $sec_entry['items'],
+                    ];
                 }
             }
-            
+
             $course->tree       = $tree;
             $course->unit_count = $unit_count;
+
 
             // Category name
             $cat = $DB->get_record('course_categories', ['id' => $course->category]);
@@ -2916,44 +2984,77 @@ try {
                 $opts = $raw_params['options'] ?? [];
                 
                 $res = core_course_external::get_course_contents($cid, $opts);
+                $res_array = json_decode(json_encode($res), true);
                 
-                // Enrich module data with direct external URLs for Studio playback
-                foreach ($res as &$section) {
-                    $modules = is_array($section) ? ($section['modules'] ?? []) : ($section->modules ?? []);
-                    if (empty($modules)) continue;
+                $modinfo = get_fast_modinfo($cid);
+                $sections_info = $modinfo->get_section_info_all();
+                
+                $sections_dict = [];
+                foreach ($res_array as $sec) {
+                    $sections_dict[$sec['id']] = $sec;
+                }
+                
+                foreach ($sections_dict as $secid => &$sec) {
+                    $snum = $sec['section'] ?? 0;
+                    if (!isset($sections_info[$snum])) continue;
+                    $info = $sections_info[$snum];
                     
-                    foreach ($modules as &$mod) {
-                        $mname = is_array($mod) ? ($mod['modname'] ?? '') : ($mod->modname ?? '');
-                        $inst  = is_array($mod) ? ($mod['instance'] ?? 0) : ($mod->instance ?? 0);
-                        
-                        if ($mname === 'url' && $inst > 0) {
-                            $url_record = $DB->get_record('url', ['id' => $inst], 'externalurl');
-                            if ($url_record) {
-                                if (is_array($mod)) $mod['externalurl'] = $url_record->externalurl;
-                                else $mod->externalurl = $url_record->externalurl;
-                            }
-                        }
-                        if ($mname === 'page' && $inst > 0) {
-                            $page_record = $DB->get_record('page', ['id' => $inst], 'content');
-                            if ($page_record) {
-                                if (is_array($mod)) $mod['content'] = $page_record->content;
-                                else $mod->content = $page_record->content;
-                            }
-                        }
-                        if ($mname === 'resource' && $inst > 0) {
-                            $res_record = $DB->get_record('resource', ['id' => $inst], 'intro');
-                            if ($res_record) {
-                                if (is_array($mod)) $mod['content'] = $res_record->intro;
-                                else $mod->content = $res_record->intro;
+                    if (!empty($info->component) && $info->component === 'core_subsection') {
+                        $anchor_cmid = $info->itemid;
+                        foreach ($sections_dict as $p_secid => &$p_sec) {
+                            if (!isset($p_sec['modules'])) continue;
+                            foreach ($p_sec['modules'] as &$p_mod) {
+                                if ($p_mod['id'] == $anchor_cmid) {
+                                    $p_mod['is_subsection'] = true;
+                                    $p_mod['modules'] = $sec['modules'] ?? [];
+                                    $sec['_is_nested'] = true;
+                                }
                             }
                         }
                     }
-                    // Re-sync if it was an object
-                    if (is_object($section)) $section->modules = $modules;
-                    else $section['modules'] = $modules;
+                }
+                unset($sec, $p_sec, $p_mod);
+                
+                $final_res = [];
+                foreach ($sections_dict as $secid => $sec) {
+                    if (empty($sec['_is_nested'])) {
+                        $final_res[] = $sec;
+                    }
                 }
                 
-                $_api_response['data'] = $res;
+                // Recursive Enricher
+                $enrich_modules = function(&$modules) use (&$enrich_modules, $DB) {
+                    if (empty($modules)) return;
+                    foreach ($modules as &$mod) {
+                        $mname = $mod['modname'] ?? '';
+                        $inst  = $mod['instance'] ?? 0;
+                        
+                        if ($mname === 'url' && $inst > 0) {
+                            $url_record = $DB->get_record('url', ['id' => $inst], 'externalurl');
+                            if ($url_record) $mod['externalurl'] = $url_record->externalurl;
+                        }
+                        if ($mname === 'page' && $inst > 0) {
+                            $page_record = $DB->get_record('page', ['id' => $inst], 'content');
+                            if ($page_record) $mod['content'] = $page_record->content;
+                        }
+                        if ($mname === 'resource' && $inst > 0) {
+                            $res_record = $DB->get_record('resource', ['id' => $inst], 'intro');
+                            if ($res_record) $mod['content'] = $res_record->intro;
+                        }
+                        if (!empty($mod['modules'])) {
+                            $enrich_modules($mod['modules']);
+                        }
+                    }
+                };
+                
+                foreach ($final_res as &$section) {
+                    if (!empty($section['modules'])) {
+                        $enrich_modules($section['modules']);
+                    }
+                }
+                unset($section);
+                
+                $_api_response['data'] = $final_res;
                 break;
             }
             if ($wsfunction === 'core_enrol_get_users_courses') {

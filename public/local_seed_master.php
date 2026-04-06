@@ -40,7 +40,7 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     global $DB;
     $module = $DB->get_record('modules', ['name' => $type]);
     if (!$module) {
-        log_seed("Skipping $name: Module plugin '$type' not installed.");
+        log_m("Skipping '$name': Module plugin '$type' not installed.");
         return false;
     }
     $cw = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $section_num]);
@@ -50,6 +50,7 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
         $cw->section = $section_num;
         $cw->summary = "Curricular Phase $section_num";
         $cw->summaryformat = FORMAT_HTML;
+        $cw->sequence = '';
         $cw->id = $DB->insert_record('course_sections', $cw);
     }
     
@@ -66,6 +67,7 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     if ($type === 'quiz') { $mod_record->sumgrades = 10; $mod_record->grade = 10; }
     if ($type === 'page') { $mod_record->content = $extra['intro'] ?? ''; $mod_record->contentformat = FORMAT_HTML; }
     if ($type === 'scorm') { $mod_record->scormtype = 'local'; $mod_record->maxgrade = 100; }
+    if ($type === 'label') { $mod_record->content = $extra['intro'] ?? ''; $mod_record->contentformat = FORMAT_HTML; }
     
     if (isset($extra['intro'])) { $mod_record->intro = $extra['intro']; $mod_record->introformat = FORMAT_HTML; }
     
@@ -74,25 +76,38 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     if ($existing_inst) {
         $instance_id = $existing_inst->id;
     } else {
-        $instance_id = $DB->insert_record($type, $mod_record);
+        try {
+            $instance_id = $DB->insert_record($type, $mod_record);
+        } catch (Exception $e) {
+            log_m("Could not insert '$name' ($type): " . $e->getMessage());
+            return false;
+        }
     }
-    
+
+    // Re-fetch $cw fresh to get latest sequence
+    $cw = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $section_num]);
+
     if (!$DB->record_exists('course_modules', ['course' => $course_id, 'module' => $module->id, 'instance' => $instance_id])) {
         $cm = new stdClass();
         $cm->course = $course_id;
         $cm->module = $module->id;
         $cm->instance = $instance_id;
-        $cm->section = $cw->id;
+        $cm->section = $cw->id;  // section row ID (Moodle standard)
         $cm->visible = 1;
         $cm->idnumber = "MX-$type-" . substr(md5($name), 0, 8);
         $cmid = $DB->insert_record('course_modules', $cm);
         
-        $sequence = empty($cw->sequence) ? $cmid : $cw->sequence . ',' . $cmid;
+        // Update the sequence in course_sections so modinfo can find it
+        $current_seq = $DB->get_field('course_sections', 'sequence', ['id' => $cw->id]);
+        $sequence = empty($current_seq) ? (string)$cmid : $current_seq . ',' . $cmid;
         $DB->set_field('course_sections', 'sequence', $sequence, ['id' => $cw->id]);
+
+        return $cmid;
     }
-    
+
     return true;
 }
+
 
 
 // --- 1. USERS ---
