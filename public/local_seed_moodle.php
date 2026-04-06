@@ -45,95 +45,54 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
         return false;
     }
 
-    // Idempotency: skip if module with this name already exists in this course
+    // Idempotency: check for existing instance and course_module
     $existing_inst = $DB->get_record($type, ['course' => $course_id, 'name' => $name]);
     if ($existing_inst) {
-        log_seed("Already exists: $type '$name' in course $course_id — skipping.");
-        return $existing_inst->id;
-    }
-
-    $mod_record = new stdClass();
-    $mod_record->course = $course_id;
-    $mod_record->name = $name;
-    $mod_record->intro = "Machine-generated asset for Headless UX validation. Curriculum Node: $name";
-    $mod_record->introformat = FORMAT_HTML;
-    $mod_record->timemodified = time();
-
-    if ($type === 'assign') {
-        $mod_record->grade = 100;
-        $mod_record->assignsubmission_onlinetext_enabled = 1;
-    }
-    if ($type === 'url' && isset($extra['url'])) {
-        $mod_record->externalurl = $extra['url'];
-        $mod_record->display = 0;
-    }
-    if ($type === 'quiz') {
-        $mod_record->intro = "Interactive assessment for node $name.";
-        $mod_record->timeopen = time();
-        $mod_record->timeclose = 0;
-        $mod_record->preferredbehaviour = 'deferredfeedback';
-        $mod_record->attempts = 0;
-        $mod_record->grademethod = 1;
-        $mod_record->decimalpoints = 2;
-        $mod_record->questiondecimalpoints = -1;
-        $mod_record->sumgrades = 10;
-        $mod_record->grade = 10;
-    }
-    if ($type === 'forum') {
-        $mod_record->type = 'general';
-        $mod_record->forcesubscribe = 0;
-    }
-    if ($type === 'page') {
-        $mod_record->content = isset($extra['intro']) ? $extra['intro'] : '';
-        $mod_record->contentformat = FORMAT_HTML;
-        $mod_record->displayoptions = '';
-    }
-    if ($type === 'label') {
-        $mod_record->content = isset($extra['intro']) ? $extra['intro'] : '';
-        $mod_record->contentformat = FORMAT_HTML;
-    }
-    if ($type === 'scorm') {
-        $mod_record->scormtype     = 'local';
-        $mod_record->reference     = '';
-        $mod_record->version       = 'SCORM_1.2';
-        $mod_record->md5hash       = '';
-        $mod_record->sha1hash      = '';
-        $mod_record->maxgrade      = 100;
-        $mod_record->grademethod   = 0;
-        $mod_record->maxattempt    = 1;
-        $mod_record->whatgrade     = 0;
-        $mod_record->skipview      = 1;
-        $mod_record->hidebrowse    = 0;
-        $mod_record->hidetoc       = 0;
-        $mod_record->nav           = 1;
-        $mod_record->navpositionleft  = -100;
-        $mod_record->navpositiontop   = -100;
-        $mod_record->auto          = 0;
-        $mod_record->popup         = 0;
-        $mod_record->options       = '';
-        $mod_record->width         = 100;
-        $mod_record->height        = 600;
-        $mod_record->timeopen      = 0;
-        $mod_record->timeclose     = 0;
-        $mod_record->displayattemptstatus    = 1;
-        $mod_record->displaycoursestructure  = 0;
-        $mod_record->updatefreq    = 0;
-        $mod_record->forcecompleted   = 0;
-        $mod_record->forcenewattempt  = 0;
-        $mod_record->lastattemptlock  = 0;
-        $mod_record->launch        = 0;
-    }
-    
-    if (isset($extra['intro'])) {
-        $mod_record->intro = $extra['intro'];
+        $instance_id = $existing_inst->id;
+        $existing_cm = $DB->get_record('course_modules', ['course' => $course_id, 'module' => $module->id, 'instance' => $instance_id]);
+        if ($existing_cm) {
+            log_seed("Already exists: $type '$name' in course $course_id — skipping.");
+            return $existing_cm->id;
+        }
+    } else {
+        $mod_record = new stdClass();
+        $mod_record->course = $course_id;
+        $mod_record->name = $name;
+        $mod_record->intro = "Machine-generated asset for Headless UX validation. Curriculum Node: $name";
         $mod_record->introformat = FORMAT_HTML;
-    }
-    
-    try {
-        $instance_id = $DB->insert_record($type, $mod_record);
-    } catch (Exception $e) {
-        log_seed("Could not insert '$name' ($type): " . $e->getMessage());
-        return false;
+        $mod_record->timemodified = time();
+
+        if ($type === 'assign') { $mod_record->grade = 100; $mod_record->assignsubmission_onlinetext_enabled = 1; }
+        if ($type === 'url' && isset($extra['url'])) { $mod_record->externalurl = $extra['url']; $mod_record->display = 0; }
+        if ($type === 'quiz') { 
+            $mod_record->intro = "Interactive assessment for node $name."; 
+            $mod_record->timeopen = time(); $mod_record->timeclose = 0; 
+            $mod_record->preferredbehaviour = 'deferredfeedback'; $mod_record->attempts = 0; 
+            $mod_record->grademethod = 1; $mod_record->decimalpoints = 2; $mod_record->questiondecimalpoints = -1;
+            $mod_record->sumgrades = 10; $mod_record->grade = 10;
+        }
+        if ($type === 'forum') { $mod_record->type = 'general'; $mod_record->forcesubscribe = 0; }
+        if ($type === 'page') { $mod_record->content = isset($extra['intro']) ? $extra['intro'] : ''; $mod_record->contentformat = FORMAT_HTML; $mod_record->displayoptions = ''; }
+        if ($type === 'label') { $mod_record->content = isset($extra['intro']) ? $extra['intro'] : ''; $mod_record->contentformat = FORMAT_HTML; }
+        if ($type === 'scorm') {
+            $mod_record->scormtype = 'local'; $mod_record->reference = ''; $mod_record->version = 'SCORM_1.2';
+            $mod_record->md5hash = ''; $mod_record->sha1hash = ''; $mod_record->maxgrade = 100;
+            $mod_record->grademethod = 0; $mod_record->maxattempt = 1; $mod_record->whatgrade = 0;
+            $mod_record->skipview = 1; $mod_record->hidebrowse = 0; $mod_record->hidetoc = 0;
+            $mod_record->nav = 1; $mod_record->navpositionleft = -100; $mod_record->navpositiontop = -100;
+            $mod_record->auto = 0; $mod_record->popup = 0; $mod_record->options = ''; $mod_record->width = 100; $mod_record->height = 600;
+            $mod_record->timeopen = 0; $mod_record->timeclose = 0; $mod_record->displayattemptstatus = 1;
+            $mod_record->displaycoursestructure = 0; $mod_record->updatefreq = 0; $mod_record->forcecompleted = 0;
+            $mod_record->forcenewattempt = 0; $mod_record->lastattemptlock = 0; $mod_record->launch = 0;
+        }
+        if (isset($extra['intro'])) { $mod_record->intro = $extra['intro']; $mod_record->introformat = FORMAT_HTML; }
+
+        try {
+            $instance_id = $DB->insert_record($type, $mod_record);
+        } catch (Exception $e) {
+            log_seed("Could not insert '$name' ($type): " . $e->getMessage());
+            return false;
+        }
     }
 
     $cm = new stdClass();

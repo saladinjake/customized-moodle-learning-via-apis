@@ -54,28 +54,32 @@ function provision_module($course_id, $section_num, $type, $name, $extra = []) {
         $cw->id = $DB->insert_record('course_sections', $cw);
     }
     
-    // Idempotency check: look for module by name + course + section
-    $mod_record = new stdClass();
-    $mod_record->course = $course_id;
-    $mod_record->name = $name;
-    $mod_record->intro = "Machine-generated asset for Headless UX validation. Curriculum Node: $name";
-    $mod_record->introformat = FORMAT_HTML;
-    $mod_record->timemodified = time();
-
-    if ($type === 'assign') { $mod_record->grade = 100; $mod_record->assignsubmission_onlinetext_enabled = 1; }
-    if ($type === 'url' && isset($extra['url'])) { $mod_record->externalurl = $extra['url']; $mod_record->display = 0; }
-    if ($type === 'quiz') { $mod_record->sumgrades = 10; $mod_record->grade = 10; }
-    if ($type === 'page') { $mod_record->content = $extra['intro'] ?? ''; $mod_record->contentformat = FORMAT_HTML; }
-    if ($type === 'scorm') { $mod_record->scormtype = 'local'; $mod_record->maxgrade = 100; }
-    if ($type === 'label') { $mod_record->content = $extra['intro'] ?? ''; $mod_record->contentformat = FORMAT_HTML; }
-    
-    if (isset($extra['intro'])) { $mod_record->intro = $extra['intro']; $mod_record->introformat = FORMAT_HTML; }
-    
-    // Check if session node already exists to avoid duplication
+    // Idempotency: check for existing instance and course_module
     $existing_inst = $DB->get_record($type, ['course' => $course_id, 'name' => $name]);
     if ($existing_inst) {
         $instance_id = $existing_inst->id;
+        $existing_cm = $DB->get_record('course_modules', ['course' => $course_id, 'module' => $module->id, 'instance' => $instance_id]);
+        if ($existing_cm) {
+            log_m("Already exists: $type '$name' in course $course_id — skipping.");
+            return $existing_cm->id;
+        }
     } else {
+        $mod_record = new stdClass();
+        $mod_record->course = $course_id;
+        $mod_record->name = $name;
+        $mod_record->intro = "Machine-generated asset for Headless UX validation. Curriculum Node: $name";
+        $mod_record->introformat = FORMAT_HTML;
+        $mod_record->timemodified = time();
+
+        if ($type === 'assign') { $mod_record->grade = 100; $mod_record->assignsubmission_onlinetext_enabled = 1; }
+        if ($type === 'url' && isset($extra['url'])) { $mod_record->externalurl = $extra['url']; $mod_record->display = 0; }
+        if ($type === 'quiz') { $mod_record->sumgrades = 10; $mod_record->grade = 10; }
+        if ($type === 'page') { $mod_record->content = $extra['intro'] ?? ''; $mod_record->contentformat = FORMAT_HTML; }
+        if ($type === 'scorm') { $mod_record->scormtype = 'local'; $mod_record->maxgrade = 100; }
+        if ($type === 'label') { $mod_record->content = $extra['intro'] ?? ''; $mod_record->contentformat = FORMAT_HTML; }
+        
+        if (isset($extra['intro'])) { $mod_record->intro = $extra['intro']; $mod_record->introformat = FORMAT_HTML; }
+        
         try {
             $instance_id = $DB->insert_record($type, $mod_record);
         } catch (Exception $e) {
