@@ -148,15 +148,18 @@ function bulk_update_nested_hierarchy($offset = 100) {
                                 $modname = $subitem->type ?? 'label';
                                 if ($modname === 'h5p') $modname = 'h5pactivity';
                                 $submodrec = $DB->get_record('modules', ['name' => $modname]);
-                                if (!$submodrec) {
-                                    $submodrec = $DB->get_record_sql("SELECT id FROM {modules} WHERE " . $DB->sql_compare_text('name') . " = ?", [$modname]);
-                                }
-                                if (!$submodrec) continue;
+                                $actual_submod_id = ($submodrec && isset($submodrec->id)) ? (int)$submodrec->id : null;
+                                if (!$actual_submod_id) continue;
+                                
                                 $sminfo = (object)[
-                                    'modulename' => $modname, 'module' => $submodrec->id, 'course' => $course->id,
-                                    'section' => $sub_sec_num, 'name' => $subitem->name,
-                                    'visible' => isset($subitem->visible) ? (int)$subitem->visible : 1,
-                                    'intro' => $subitem->content ?? '', 'introformat' => FORMAT_HTML
+                                    'modulename' => $modname, 
+                                    'module'     => $actual_submod_id, 
+                                    'course'     => (int)$course->id,
+                                    'section'    => $sub_sec_num, 
+                                    'name'       => $subitem->name,
+                                    'visible'    => isset($subitem->visible) ? (int)$subitem->visible : 1,
+                                    'intro'      => $subitem->content ?? '', 
+                                    'introformat' => FORMAT_HTML
                                 ];
                                 if ($modname === 'url') { $sminfo->externalurl = $subitem->url ?? 'http://'; $sminfo->display = 0; }
                                 if ($modname === 'page') { $sminfo->content = $subitem->content ?? ''; $sminfo->contentformat = FORMAT_HTML; }
