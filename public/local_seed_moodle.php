@@ -8,7 +8,9 @@ require_once(__DIR__ . '/config.php');
  * for every curriculum node to validate high-fidelity media playback.
  */
 
-define('NO_MOODLE_COOKIES', true); 
+if (!defined('NO_MOODLE_COOKIES')) {
+    define('NO_MOODLE_COOKIES', true);
+}
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/grouplib.php');
