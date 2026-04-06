@@ -370,12 +370,15 @@ for ($i = 1; $i <= 500; $i++) {
             }
         }
 
-        // Rebuild cache ONCE per course for performance
-        rebuild_course_cache($course_id, true);
+        if ($i % 10 === 0) {
+            log_seed("PROVISIONED $i / 500 COURSES...");
+        }
+        @set_time_limit(120);
 
     } catch (Exception $e) {
         log_seed("ERROR in course $i loop: " . $e->getMessage());
     }
 }
+rebuild_course_cache(0, true);
 
 log_seed("MATRIX SEEDING COMPLETE: 500 CLUSTERS FULLY ANCHORED WITH BINARY PREVIEWS.");
