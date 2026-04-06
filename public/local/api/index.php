@@ -2088,8 +2088,10 @@ try {
         case 'public_get_course_detail':
             global $DB;
             $courseid = required_param('courseid', PARAM_INT);
-            $course   = $DB->get_record('course', ['id' => $courseid, 'visible' => 1],
-                'id, fullname, shortname, summary, category, timecreated', MUST_EXIST);
+            $course   = $DB->get_record('course', ['id' => $courseid]);
+            if (!$course) {
+                 die(json_encode(['error' => 'Course not found']));
+            }
 
             // Curriculum tree builder — uses direct SQL for reliability
             // (modinfo->sections can be stale if cache wasn't rebuilt after seeding)
@@ -2170,10 +2172,15 @@ try {
                         'type' => $cm->modname,
                     ];
 
-                    // Get module name from its own table
+                    // Get module name from its own table (robust for Moodle module types)
                     try {
-                        $mod_rec = $DB->get_record($cm->modname, ['id' => $cm->instance], 'id, name');
-                        $item['name'] = $mod_rec ? ($mod_rec->name ?: ('Untitled ' . $cm->modname)) : ('Unit ' . $cm->cmid);
+                        if ($cm->modname === 'label') {
+                            $mod_rec = $DB->get_record('label', ['id' => $cm->instance], 'id, intro');
+                            $item['name'] = $mod_rec ? strip_tags($mod_rec->intro) : 'Intro';
+                        } else {
+                            $mod_rec = $DB->get_record($cm->modname, ['id' => $cm->instance], 'id, name');
+                            $item['name'] = $mod_rec ? ($mod_rec->name ?: ('Untitled ' . $cm->modname)) : ('Unit ' . $cm->cmid);
+                        }
                     } catch (Exception $e) {
                         $item['name'] = 'Unit ' . $cm->cmid;
                     }
