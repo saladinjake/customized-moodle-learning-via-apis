@@ -102,7 +102,15 @@ function bulk_update_nested_hierarchy($offset = 100) {
                             'section' => (int)$sectionnum, 'name' => $item->name,
                             'intro' => '<!-- subsection -->', 'introformat' => FORMAT_HTML, 'visible' => 1
                         ];
-                        $anchor_cm = add_moduleinfo($minfo, $course);
+                        
+                        try {
+                            $anchor_cm = add_moduleinfo($minfo, $course);
+                        } catch (Exception $e) {
+                            echo "--- DB ERROR IN SEEDER ---\n";
+                            echo $e->getMessage() . "\n";
+                            if (property_exists($e, 'debuginfo')) echo "DEBUG: " . $e->debuginfo . "\n";
+                            throw $e;
+                        }
                         if ($anchor_cm && isset($anchor_cm->coursemodule)) {
                             $new_sequence[] = $anchor_cm->coursemodule;
                             $delegated = (object)[
