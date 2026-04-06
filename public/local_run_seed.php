@@ -92,18 +92,25 @@ $overall_success = true;
 
 foreach ($to_run as $step => $script_path) {
     if ($step === 'curriculum_nested') {
-        echo "--- DATABASE AUDIT (Moodle 5.1 / Postgres) ---\n";
+        echo "--- SUPER DATABASE AUDIT (Raw SQL) ---\n";
         try {
+            $prefix = $DB->get_prefix();
+            echo "Current Prefix: $prefix\n";
             $tables = $DB->get_tables();
-            echo "Total Tables: " . count($tables) . "\n";
-            $modcount = $DB->count_records('modules');
-            echo "Module Count: $modcount\n";
-            $modules = $DB->get_records('modules', [], '', 'id, name');
-            foreach ($modules as $m) { echo "  - [{$m->id}] {$m->name}\n"; }
-            $schema = $DB->get_record_sql("SELECT current_schema()");
-            echo "Current Schema: " . ($schema ? $schema->current_schema : 'Unknown') . "\n\n";
+            echo "Total Tables Visible: " . count($tables) . "\n";
+            
+            // Raw SQL check to see if the table exists
+            $mod_count_sql = (int)$DB->get_field_sql("SELECT COUNT(*) FROM {modules}");
+            echo "Modules count ({modules}): $mod_count_sql\n";
+            
+            $text_mod = $DB->get_record('modules', ['name' => 'text'], 'id');
+            echo "Text Module ID: " . ($text_mod ? $text_mod->id : 'NOT FOUND') . "\n";
+            
+            $label_mod = $DB->get_record('modules', ['name' => 'label'], 'id');
+            echo "Label Module ID: " . ($label_mod ? $label_mod->id : 'NOT FOUND') . "\n";
+            
         } catch (Exception $e) {
-            echo "AUDIT FAIL: " . $e->getMessage() . "\n\n";
+            echo "AUDIT EXCEPTION: " . $e->getMessage() . "\n";
         }
         flush();
     }

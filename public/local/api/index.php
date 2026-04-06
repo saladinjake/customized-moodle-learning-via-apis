@@ -2660,7 +2660,9 @@ try {
                     'courses_count' => (int)$DB->count_records('course') - 1,
                     'assignments_count' => (int)$DB->count_records('assign'),
                     'enrolments_count' => (int)$DB->count_records('user_enrolments'),
-                    'structural_assets_count' => (int)$DB->count_records('course_modules'), // NEW: Fixes 0 assets issue
+                    'structural_assets_count' => (int)$DB->count_records('course_modules'),
+                    'media_assets_count' => (int)$DB->count_records_select('course_modules', 'module IN (SELECT id FROM {modules} WHERE name IN (?, ?))', ['url', 'resource']), 
+                    'intelligence_nodes_count' => (int)$DB->count_records_select('course_modules', 'module IN (SELECT id FROM {modules} WHERE name IN (?, ?))', ['quiz', 'scorm']), 
                     'active_sessions' => (int)$DB->count_records_select('user', 'lastaccess > ?', [time() - 3600]),
                     'health_pulse' => $is_optimised ? 'OPTIMAL' : 'DEGRADED',
                     'security_risk' => 'MINIMAL'
