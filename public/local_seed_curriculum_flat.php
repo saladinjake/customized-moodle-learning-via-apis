@@ -24,8 +24,11 @@ if (!CLI_SCRIPT || defined('RUN_BULK_SEED')) {
     $USER = get_admin();
 }
 
+// Execution Timestamp: Mon Apr 6 15:20:00 WAT 2026
 function bulk_update_flat_hierarchy($limit = 100) {
     global $DB;
+    echo "--- [VERSION 14:31: FLAT] ---\n";
+    echo "--- [TIMESTAMP: Mon Apr 6 15:20:00 WAT 2026] ---\n";
     echo "Fetching first $limit courses...\n";
     $courses = $DB->get_records('course', [], 'id ASC', 'id, fullname, shortname', 0, $limit);
     

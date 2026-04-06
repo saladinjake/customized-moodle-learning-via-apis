@@ -28,6 +28,8 @@ if (!CLI_SCRIPT || defined('RUN_BULK_SEED')) {
 
 function bulk_update_nested_hierarchy($offset = 100) {
     global $DB;
+    echo "--- [VERSION 14:31: NESTED] ---\n";
+    echo "--- [TIMESTAMP: Mon Apr 6 15:20:00 WAT 2026] ---\n";
     echo "Fetching courses starting from offset $offset...\n";
     $courses = $DB->get_records('course', [], 'id ASC', 'id, fullname, shortname', $offset, 1000);
     
