@@ -58,7 +58,8 @@ function bulk_update_flat_hierarchy($limit = 100) {
         foreach ($tree as $index => $node) {
             $sectionnum = $index + 1;
             course_create_sections_if_missing($course->id, [(int)$sectionnum]);
-            $modinfo = get_fast_modinfo($course);
+            rebuild_course_cache($course->id, true);
+            $modinfo = get_fast_modinfo($course->id, 0, true);
             $section = $modinfo->get_section_info($sectionnum);
             
             if ($section && is_object($section)) {

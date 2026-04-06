@@ -71,7 +71,8 @@ function bulk_update_nested_hierarchy($offset = 100) {
         foreach ($tree as $index => $node) {
             $sectionnum = $index + 1;
             course_create_sections_if_missing($course->id, [(int)$sectionnum]);
-            $modinfo = get_fast_modinfo($course);
+            rebuild_course_cache($course->id, true);
+            $modinfo = get_fast_modinfo($course->id, 0, true); // Force cache reset
             $section = $modinfo->get_section_info($sectionnum);
             
             if ($section && is_object($section)) {
@@ -83,6 +84,7 @@ function bulk_update_nested_hierarchy($offset = 100) {
                         $sub_sec_num = (int)$maxsec + 1;
                         course_create_sections_if_missing($course->id, [$sub_sec_num]);
                         rebuild_course_cache($course->id, true);
+                        $modinfo = get_fast_modinfo($course->id, 0, true); // Force refresh
                         
                         $modrec = $DB->get_record('modules', ['name' => 'label']);
                         $minfo = (object)[
