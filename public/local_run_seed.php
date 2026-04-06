@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $run = $_POST['run'] ?? 'master';
-$valid_steps = ['all', 'master', 'categories', 'cohorts', 'courses', 'grades'];
+$valid_steps = ['all', 'master', 'categories', 'cohorts', 'courses', 'grades', 'rbac'];
 
 if (!in_array($run, $valid_steps)) {
     http_response_code(400);
@@ -52,11 +52,12 @@ if (!in_array($run, $valid_steps)) {
 
 // ─── Map step names to script files ──────────────────────────────────────────
 $scripts = [
-    'master' => __DIR__ . '/local_seed_master.php',
+    'master'     => __DIR__ . '/local_seed_master.php',
     'categories' => __DIR__ . '/local_seed_categories.php',
-    'cohorts' => __DIR__ . '/local_seed_cohorts.php',
-    'courses' => __DIR__ . '/local_seed_moodle.php',
-    'grades' => __DIR__ . '/local_seed_grades_messages.php',
+    'cohorts'    => __DIR__ . '/local_seed_cohorts.php',
+    'courses'    => __DIR__ . '/local_seed_moodle.php',
+    'grades'     => __DIR__ . '/local_seed_grades_messages.php',
+    'rbac'       => __DIR__ . '/local_seed_rbac.php',
 ];
 
 if ($run === 'all') {

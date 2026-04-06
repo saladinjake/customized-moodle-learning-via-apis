@@ -31,15 +31,32 @@ Below are the default identities provisioned by the **Master Seeder** and synchr
 #### 1. Remote Seeding (HTTP)
 Trigger the seeding pipeline via authenticated `curl`. These endpoints reside directly in the web root for absolute accessibility.
 
-**Master Suite (Recommended):**
+**Follow thes steps to seed Master Suite (Recommended):**
+
+#### 2. Platform Repair (Global)
+If passwords are out of sync or courses are hidden, trigger this global repair:
+
+```bash
+# Force All Passwords to Victor123! and Fix All Visibility
+curl "https://lumina-moodle-backend.onrender.com/local_fix_passwords.php"
+```
+
+## 3. rbac seeder
+```bash
+curl -X POST "https://lumina-moodle-backend.onrender.com/run_seed.php" \
+     -H "X-Seed-Token: lumina-seed-2026" \
+     -d "run=rbac"
+```
+
+## 4. categories seeder
 ```bash
 curl -X POST "https://lumina-moodle-backend.onrender.com/local_run_seed.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
-     -d "run=master" \
+     -d "run=categories" \
      --no-buffer
 ```
 
-**Legacy 500-Course Matrix:**
+## **5  Legacy 500-Course Matrix: **  courses with one directional sections
 ```bash
 curl -X POST "https://lumina-moodle-backend.onrender.com/local_seed_moodle.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
@@ -47,12 +64,17 @@ curl -X POST "https://lumina-moodle-backend.onrender.com/local_seed_moodle.php" 
      --no-buffer
 ```
 
-#### 2. Platform Repair (Global)
-If passwords are out of sync or courses are hidden, trigger this global repair:
+## **6 Legacy 500-Course Matrix:**  courses with two directional sections or nested subsection
 ```bash
-# Force All Passwords to Victor123! and Fix All Visibility
-curl "https://lumina-moodle-backend.onrender.com/local_fix_passwords.php"
+curl -X POST "https://lumina-moodle-backend.onrender.com/local_seed_moodle.php" \
+     -H "X-Seed-Token: lumina-seed-2026" \
+     -d "run=master" \
+     --no-buffer
 ```
+
+
+
+
 
 #### 3. Audit Tools (HTTP)
 Verify live database state via these endpoints:

@@ -35,7 +35,11 @@ function log_seed($msg) {
 // Improved Module Provisioner with Interactive & Metadata Support
 function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     global $DB;
-    $module = $DB->get_record('modules', ['name' => $type], '*', MUST_EXIST);
+    $module = $DB->get_record('modules', ['name' => $type]);
+    if (!$module) {
+        log_seed("Skipping $name: Module plugin '$type' not installed.");
+        return false;
+    }
     $cw = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $section_num], '*', MUST_EXIST);
     
     $mod_record = new stdClass();

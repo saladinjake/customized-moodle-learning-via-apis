@@ -38,7 +38,11 @@ function log_m($msg) { echo "[MASTER SEEDER] " . $msg . PHP_EOL; flush(); }
 // --- HELPER: Provision Module ---
 function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     global $DB;
-    $module = $DB->get_record('modules', ['name' => $type], '*', MUST_EXIST);
+    $module = $DB->get_record('modules', ['name' => $type]);
+    if (!$module) {
+        log_seed("Skipping $name: Module plugin '$type' not installed.");
+        return false;
+    }
     $cw = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $section_num]);
     if (!$cw) {
         $cw = new stdClass();
@@ -271,13 +275,23 @@ $topics = ['Cloud Architecture', 'Neural Networks', 'Quantum Logic', 'Agile Scal
 $all_cats = $DB->get_records('course_categories', [], 'id ASC');
 $cat_ids = array_keys($all_cats);
 
-for ($i = 1; $i <= 50; $i++) { // Reduced to 50 for stability, can be increased
-    $shortname = "MX-500-$i";
-    if (!$DB->record_exists('course', ['shortname' => $shortname])) {
+$existing_courses = array_values($DB->get_records_select('course', 'id != 1', null, 'id ASC', '*', 0, 150));
+for ($i = 0; $i < 150; $i++) { 
+    if (isset($existing_courses[$i])) {
+        $course_obj = $existing_courses[$i];
+        if (!$course_obj->visible) {
+            $DB->set_field('course', 'visible', 1, ['id' => $course_obj->id]);
+            log_m("Repaired visibility for course: " . $course_obj->shortname);
+            rebuild_course_cache($course_obj->id, true);
+        }
+    } else {
+        $topic = $topics[array_rand($topics)];
+        $cat_id = empty($cat_ids) ? 1 : $cat_ids[array_rand($cat_ids)];
+        $shortname = "MX-150-" . ($i+1) . "-" . time();
         $course = new stdClass();
-        $course->fullname = "[$i] " . $topics[array_rand($topics)] . " Mastery";
+        $course->fullname = "[" . ($i+1) . "] " . $topic . " Mastery";
         $course->shortname = $shortname;
-        $course->category = $cat_ids[array_rand($cat_ids)];
+        $course->category = $cat_id;
         $course->format = 'topics';
         $course->numsections = 4;
         $course->visible = 1;
@@ -287,14 +301,6 @@ for ($i = 1; $i <= 50; $i++) { // Reduced to 50 for stability, can be increased
         $course->timemodified = time();
         $course_obj = create_course($course);
         log_m("Created course: $shortname");
-    } else {
-        $course_obj = $DB->get_record('course', ['shortname' => $shortname]);
-        if (!$course_obj->visible) {
-            $DB->set_field('course', 'visible', 1, ['id' => $course_obj->id]);
-            log_m("Repaired visibility for course: $shortname (WAS HIDDEN)");
-            // Critical: visibility changes require cache rebuild to hit API
-            rebuild_course_cache($course_obj->id, true);
-        }
     }
 
     // High-Fidelity Asset Provisioning (Multi-Section)

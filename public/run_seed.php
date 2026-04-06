@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $run = $_POST['run'] ?? 'master';
-$valid_steps = ['all', 'master', 'categories', 'cohorts', 'courses', 'grades'];
+$valid_steps = ['all', 'master', 'categories', 'cohorts', 'courses', 'grades', 'rbac'];
 
 if (!in_array($run, $valid_steps)) {
     http_response_code(400);
@@ -55,6 +55,7 @@ $scripts = [
     'cohorts'    => __DIR__ . '/seed_cohorts.php',
     'courses'    => __DIR__ . '/seed_moodle.php',
     'grades'     => __DIR__ . '/seed_grades_messages.php',
+    'rbac'       => __DIR__ . '/seed_rbac.php',
 ];
 
 if ($run === 'all') {
