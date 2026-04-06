@@ -19,6 +19,15 @@ require_once($CFG->dirroot . '/mod/quiz/lib.php');
 
 global $DB;
 
+// Ensure we have an admin session if triggered via web (required for add_moduleinfo)
+if (!CLI_SCRIPT || defined('RUN_BULK_SEED')) {
+    require_once($CFG->libdir . '/cronlib.php');
+    $admin = get_admin();
+    if ($admin) {
+        cron_setup_user($admin);
+    }
+}
+
 function bulk_update_flat_hierarchy($limit = 100) {
     global $DB;
     echo "Fetching first $limit courses...\n";

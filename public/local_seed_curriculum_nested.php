@@ -21,6 +21,15 @@ require_once($CFG->dirroot . '/mod/quiz/lib.php');
 
 global $DB;
 
+// Elevate permissions for web-triggered requests (Moodle core requires admin for record creation)
+if (!CLI_SCRIPT || defined('RUN_BULK_SEED')) {
+    require_once($CFG->libdir . '/cronlib.php');
+    $admin = get_admin();
+    if ($admin) {
+        cron_setup_user($admin);
+    }
+}
+
 function bulk_update_nested_hierarchy($offset = 100) {
     global $DB;
     echo "Fetching courses starting from offset $offset...\n";
