@@ -23,7 +23,6 @@ global $DB;
 
 if (!CLI_SCRIPT || defined('RUN_BULK_SEED')) {
     global $USER;
-    require_once($CFG->libdir . '/cronlib.php');
     $USER = get_admin();
 }
 
