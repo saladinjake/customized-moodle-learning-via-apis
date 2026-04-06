@@ -97,6 +97,15 @@ function bulk_update_nested_hierarchy($offset = 100) {
                         $modinfo = get_fast_modinfo($course->id, 0, true); // Force refresh
                         
                         $modrec = $DB->get_record('modules', ['name' => 'label']);
+                        if (!$modrec) {
+                            $modrec = $DB->get_record_sql("SELECT id FROM {modules} WHERE " . $DB->sql_compare_text('name') . " = ?", ['label']);
+                        }
+                        if (!$modrec) {
+                             $fallback = $DB->get_records('modules', [], '', 'id, name');
+                             $names = array_map(function($m) { return $m->name; }, $fallback);
+                             throw new \moodle_exception("label module not found. Available: " . implode(',', $names));
+                        }
+                        
                         $minfo = (object)[
                             'modulename' => 'label', 'module' => $modrec->id, 'course' => $course->id,
                             'section' => (int)$sectionnum, 'name' => $item->name,
@@ -130,6 +139,9 @@ function bulk_update_nested_hierarchy($offset = 100) {
                                 $modname = $subitem->type ?? 'label';
                                 if ($modname === 'h5p') $modname = 'h5pactivity';
                                 $submodrec = $DB->get_record('modules', ['name' => $modname]);
+                                if (!$submodrec) {
+                                    $submodrec = $DB->get_record_sql("SELECT id FROM {modules} WHERE " . $DB->sql_compare_text('name') . " = ?", [$modname]);
+                                }
                                 if (!$submodrec) continue;
                                 $sminfo = (object)[
                                     'modulename' => $modname, 'module' => $submodrec->id, 'course' => $course->id,
@@ -150,6 +162,9 @@ function bulk_update_nested_hierarchy($offset = 100) {
                     // Standard item in nested tree
                     $modname = $item->type ?? 'label';
                     $modrec = $DB->get_record('modules', ['name' => $modname]);
+                    if (!$modrec) {
+                        $modrec = $DB->get_record_sql("SELECT id FROM {modules} WHERE " . $DB->sql_compare_text('name') . " = ?", [$modname]);
+                    }
                     if (!$modrec) continue;
                     $minfo = (object)[
                         'modulename' => $modname, 'module' => $modrec->id, 'course' => $course->id,
