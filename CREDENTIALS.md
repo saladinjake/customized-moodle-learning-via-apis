@@ -33,7 +33,14 @@ Trigger the seeding pipeline via authenticated `curl`. These endpoints reside di
 
 **Follow thes steps to seed Master Suite (Recommended):**
 
-#### 2. Platform Repair (Global)
+
+## 2. rbac seeder
+```bash
+curl -X POST "https://lumina-moodle-backend.onrender.com/run_seed.php" \
+     -H "X-Seed-Token: lumina-seed-2026" \
+     -d "run=rbac"
+```
+#### 3. Platform Repair (Global)
 If passwords are out of sync or courses are hidden, trigger this global repair:
 
 ```bash
@@ -41,12 +48,7 @@ If passwords are out of sync or courses are hidden, trigger this global repair:
 curl "https://lumina-moodle-backend.onrender.com/local_fix_passwords.php"
 ```
 
-## 3. rbac seeder
-```bash
-curl -X POST "https://lumina-moodle-backend.onrender.com/run_seed.php" \
-     -H "X-Seed-Token: lumina-seed-2026" \
-     -d "run=rbac"
-```
+
 
 ## 4. categories seeder
 ```bash

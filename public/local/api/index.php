@@ -2096,10 +2096,21 @@ try {
             $modinfo  = get_fast_modinfo($course);
             $tree     = [];
             $unit_count = 0;
-
+            
+            $sections_map = [];
             foreach ($modinfo->get_section_info_all() as $snum => $s) {
                 if ($snum == 0 && empty($s->name) && empty($s->sequence)) continue;
-                $section = ['id' => 'sec-' . $s->id, 'name' => $s->name ?: "Section $snum", 'items' => []];
+                $sections_map[$snum] = [
+                    'id' => 'sec-' . $s->id, 
+                    'name' => $s->name ?: "Section $snum", 
+                    'items' => [],
+                    'is_delegated' => ($s->component === 'core_subsection'),
+                    'itemid' => $s->itemid
+                ];
+            }
+
+            foreach ($modinfo->get_section_info_all() as $snum => $s) {
+                if (!isset($sections_map[$snum])) continue;
                 if (!empty($modinfo->sections[$snum])) {
                     foreach ($modinfo->sections[$snum] as $cmid) {
                         $cm = $modinfo->cms[$cmid];
@@ -2113,13 +2124,46 @@ try {
                                 $urlrec = $DB->get_record('url', ['id' => $cm->instance]);
                                 if ($urlrec) $item['url'] = $urlrec->externalurl;
                             }
-                            $section['items'][] = $item;
-                            $unit_count++;
+                            
+                            $delegated_snum = false;
+                            foreach ($sections_map as $d_snum => $d_sec) {
+                                if ($d_sec['is_delegated'] && $d_sec['itemid'] == $cm->id) {
+                                    $item['type'] = 'subsection';
+                                    $delegated_snum = $d_snum;
+                                    break;
+                                }
+                            }
+                            $item['_d_snum'] = $delegated_snum;
+                            $sections_map[$snum]['items'][] = $item;
+                            if (!$delegated_snum) {
+                                $unit_count++;
+                            }
                         }
                     }
                 }
-                $tree[] = $section;
             }
+
+            foreach ($sections_map as $snum => &$sec) {
+                foreach ($sec['items'] as &$item) {
+                    if (!empty($item['_d_snum'])) {
+                        $d_snum = $item['_d_snum'];
+                        if (isset($sections_map[$d_snum])) {
+                            $item['items'] = $sections_map[$d_snum]['items'];
+                        }
+                    }
+                    unset($item['_d_snum']);
+                }
+            }
+            unset($sec, $item);
+
+            foreach ($sections_map as $snum => $sec) {
+                unset($sec['is_delegated'], $sec['itemid']);
+                $orig_s = $modinfo->get_section_info($snum);
+                if (empty($orig_s->component)) {
+                    $tree[] = $sec;
+                }
+            }
+            
             $course->tree       = $tree;
             $course->unit_count = $unit_count;
 
