@@ -48,23 +48,24 @@ foreach ($users as $user) {
 echo "✓ Success: $u_count users synchronized.\n\n";
 
 // ─── 2. Global Catalog Repair ─────────────────────────────────────────────────
-// echo "[2/2] Forcing visibility = 1 for ALL courses...\n";
-// $courses = $DB->get_records('course');
-// $c_count = 0;
+echo "[2/2] Forcing visibility = 1 for ALL courses...\n";
+$courses = $DB->get_records('course');
+$c_count = 0;
 
-// foreach ($courses as $course) {
-//     if ($course->id == SITEID) continue; // Skip site home
+foreach ($courses as $course) {
+    if ($course->id == SITEID)
+        continue; // Skip site home
 
-//     $update = new stdClass();
-//     $update->id = $course->id;
-//     $update->visible = 1;
-//     $DB->update_record('course', $update);
+    $update = new stdClass();
+    $update->id = $course->id;
+    $update->visible = 1;
+    $DB->update_record('course', $update);
 
-//     // Explicitly rebuild the course cache so the API catalog sees it
-//     rebuild_course_cache($course->id);
-//     $c_count++;
-// }
-// echo "✓ Success: $c_count courses visibility-repaired and cache-rebuilt.\n\n";
+    // Explicitly rebuild the course cache so the API catalog sees it
+    rebuild_course_cache($course->id);
+    $c_count++;
+}
+echo "✓ Success: $c_count courses visibility-repaired and cache-rebuilt.\n\n";
 
 // echo "=== REPAIR COMPLETE ===\n";
 // echo "Platform registry is now at parity with Victor credentials.\n";

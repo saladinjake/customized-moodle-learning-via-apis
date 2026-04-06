@@ -99,7 +99,7 @@ function bulk_update_nested_hierarchy($offset = 1)
                         rebuild_course_cache($course->id, true);
                         $modinfo = get_fast_modinfo($course->id, 0, true); // Force refresh
 
-                        // Moodle 4.4+ (including your 5.1) renamed 'label' to 'text'
+                        // Moodle 5.1 compatibility: pivot from 'label' to 'text' if needed
                         $modname_to_use = 'text';
                         $modrec = $DB->get_record('modules', ['name' => 'text']);
                         if (!$modrec) {
@@ -108,8 +108,8 @@ function bulk_update_nested_hierarchy($offset = 1)
                         }
                         
                         if (!$modrec) {
-                             $all = $DB->get_records('modules', [], '', 'id, name');
-                             $names = array_map(function($m) { return $m->name; }, $all);
+                             $fallback = $DB->get_records('modules', [], '', 'id, name');
+                             $names = array_map(function($m) { return $m->name; }, $fallback);
                              throw new \moodle_exception("Neither 'text' nor 'label' module found. Available: " . implode(',', $names));
                         }
                         

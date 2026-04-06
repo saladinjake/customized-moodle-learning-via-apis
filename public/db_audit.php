@@ -1,5 +1,5 @@
 <?php
-define('CLI_SCRIPT', true);
+define('CLI_SCRIPT', false);
 require(__DIR__ . '/config.php');
 global $DB;
 

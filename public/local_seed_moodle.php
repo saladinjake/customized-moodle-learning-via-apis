@@ -11,6 +11,10 @@ require_once(__DIR__ . '/config.php');
 if (!defined('NO_MOODLE_COOKIES')) {
     define('NO_MOODLE_COOKIES', true);
 }
+// Set CLI_SCRIPT to false to allow web-triggered execution via local_run_seed.php
+if (!defined('CLI_SCRIPT')) {
+    define('CLI_SCRIPT', false);
+}
 require_once($CFG->dirroot . '/user/lib.php');
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/grouplib.php');
@@ -37,6 +41,15 @@ function log_seed($msg) {
 function provision_module($course_id, $section_num, $type, $name, $extra = []) {
     global $DB;
     $module = $DB->get_record('modules', ['name' => $type]);
+    // Moodle 5.1 Compatibility: pivot from 'label' to 'text' if needed
+    if (!$module && $type === 'label') {
+        $module = $DB->get_record('modules', ['name' => 'text']);
+        if ($module) {
+            $type = 'text';
+            log_seed("Pivoting 'label' -> 'text' for Moodle 5.x compatibility.");
+        }
+    }
+
     if (!$module) {
         log_seed("Skipping '$name': Module plugin '$type' not installed.");
         return false;
