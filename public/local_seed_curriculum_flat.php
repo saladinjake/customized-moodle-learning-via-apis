@@ -6,7 +6,7 @@
  * 3-phase curriculum to the first 100 courses in the database.
  */
 if (!defined('MOODLE_INTERNAL')) {
-    define('CLI_SCRIPT', true);
+    define('CLI_SCRIPT', false);
     require(__DIR__ . '/config.php');
 }
 require_once($CFG->dirroot . '/course/lib.php');
