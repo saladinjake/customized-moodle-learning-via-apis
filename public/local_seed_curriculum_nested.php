@@ -167,3 +167,4 @@ function bulk_update_nested_hierarchy($offset = 100) {
 if (PHP_SAPI === 'cli' || defined('RUN_BULK_SEED')) {
     bulk_update_nested_hierarchy(100);
 }
+// Cache bust Mon Apr  6 15:16:45 WAT 2026
