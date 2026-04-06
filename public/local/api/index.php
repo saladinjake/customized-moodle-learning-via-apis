@@ -2174,8 +2174,9 @@ try {
 
                     // Get module name from its own table (robust for Moodle module types)
                     try {
-                        if ($cm->modname === 'label') {
-                            $mod_rec = $DB->get_record('label', ['id' => $cm->instance], 'id, intro');
+                        if ($cm->modname === 'label' || $cm->modname === 'text') {
+                            $modfullname = ($cm->modname === 'text') ? 'text' : 'label';
+                            $mod_rec = $DB->get_record($modfullname, ['id' => $cm->instance], 'id, intro');
                             $item['name'] = $mod_rec ? strip_tags($mod_rec->intro) : 'Intro';
                         } else {
                             $mod_rec = $DB->get_record($cm->modname, ['id' => $cm->instance], 'id, name');
