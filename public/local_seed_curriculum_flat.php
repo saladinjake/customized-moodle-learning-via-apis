@@ -111,3 +111,4 @@ function bulk_update_flat_hierarchy($limit = 100) {
 if (PHP_SAPI === 'cli' || defined('RUN_BULK_SEED')) {
     bulk_update_flat_hierarchy(100);
 }
+// Cache bust Mon Apr  6 15:16:28 WAT 2026
