@@ -3,7 +3,7 @@ require_once(__DIR__ . '/config.php');
 global $DB;
 header('Content-Type: text/plain');
 
-$courseid = 500;
+$courseid = optional_param('courseid', 500, PARAM_INT);
 echo "AUDIT FOR COURSE $courseid\n";
 echo "========================\n\n";
 
