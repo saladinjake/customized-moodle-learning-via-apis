@@ -59,11 +59,14 @@ curl -X POST "https://lumina-moodle-backend.onrender.com/local_run_seed.php" \
 ```
 
 ## **5  Legacy 500-Course Matrix: **  courses with one directional sections
+
+
 ```bash
 curl -X POST "https://lumina-moodle-backend.onrender.com/local_seed_moodle.php" \
      -H "X-Seed-Token: lumina-seed-2026" \
      -d "run=courses" \
      --no-buffer
+
 ```
 
 ## **6 Legacy 500-Course Matrix:**  courses with two directional sections or nested subsection
