@@ -299,19 +299,91 @@ for ($i = 1; $i <= 50; $i++) { // Reduced to 50 for stability, can be increased
 
     // High-Fidelity Asset Provisioning (Multi-Section)
     course_create_sections_if_missing($course_obj->id, [1, 2, 3, 4]);
-    
-    // SECTION 1: VIDEO
-    provision_module($course_obj->id, 1, 'url', "Phase 1: Video Introduction", ['url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ']);
-    
-    // SECTION 2: INTERACTIVE
-    provision_module($course_obj->id, 2, 'forum', "Phase 2: Community Collaboration Hub");
-    provision_module($course_obj->id, 2, 'scorm', "Phase 2: Interactive Strategy Simulator");
-    
-    // SECTION 3: KNOWLEDGE
-    provision_module($course_obj->id, 3, 'quiz', "Phase 3: Curricular Mastery Assessment");
-    
-    // SECTION 4: CAPSTONE
-    provision_module($course_obj->id, 4, 'assign', "Phase 4: Capstone Milestone");
+
+    $tree = [
+        (object)[
+            'name' => 'Phase 1: Foundation',
+            'items' => [
+                (object)[
+                    'type' => 'url',
+                    'name' => 'Phase 1: Video Introduction',
+                    'url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+                ]
+            ]
+        ],
+        (object)[
+            'name' => 'Phase 2: Strategy Simulator',
+            'items' => [
+                (object)[ 'type' => 'forum', 'name' => 'Phase 2: Community Collaboration Hub' ],
+                (object)[
+                    'type' => 'subsection',
+                    'name' => 'Deep Dive: Strategy',
+                    'items' => [
+                        (object)[ 'type' => 'scorm', 'name' => 'Interactive Strategy Simulator' ]
+                    ]
+                ]
+            ]
+        ],
+        (object)[
+            'name' => 'Phase 3: Assessments',
+            'items' => [
+                (object)[ 'type' => 'quiz', 'name' => 'Phase 3: Curricular Mastery Assessment' ]
+            ]
+        ],
+        (object)[
+            'name' => 'Phase 4: Capstone',
+            'items' => [
+                 (object)[ 'type' => 'assign', 'name' => 'Phase 4: Capstone Milestone' ]
+            ]
+        ]
+    ];
+
+    foreach ($tree as $index => $node) {
+        $sectionnum = $index + 1;
+        $modinfo = get_fast_modinfo($course_obj->id);
+        $section = $modinfo->get_section_info($sectionnum);
+        if ($section && is_object($section)) {
+            $DB->set_field('course_sections', 'name', $node->name, ['id' => $section->id]);
+            foreach ($node->items as $item) {
+                if (($item->type ?? '') === 'subsection') {
+                     $maxsec = (int)$DB->get_field_sql("SELECT MAX(section) FROM {course_sections} WHERE course = ?", [$course_obj->id]);
+                     $sub_sec_num = $maxsec + 1;
+
+                     $anchor_cmid = provision_module($course_obj->id, $sectionnum, 'label', $item->name, ['intro' => '<!-- subsection -->']);
+                     
+                     if ($anchor_cmid) {
+                         $anchor_cm = get_coursemodule_from_id('label', $anchor_cmid);
+                         $delegated = new \stdClass();
+                         $delegated->course = $course_obj->id;
+                         $delegated->section = $sub_sec_num;
+                         $delegated->name = $item->name;
+                         $delegated->summary = '';
+                         $delegated->summaryformat = FORMAT_HTML;
+                         $delegated->sequence = '';
+                         $delegated->visible = 1;
+                         // This ensures the subsection logic executes identically to API nested mapper:
+                         $delegated->component = 'core_subsection';
+                         $delegated->itemid = $anchor_cm->id;
+                         $dsid = $DB->insert_record('course_sections', $delegated);
+                         
+                         if (!empty($item->items)) {
+                             foreach ($item->items as $subitem) {
+                                 $extra = [];
+                                 if (isset($subitem->url)) $extra['url'] = $subitem->url;
+                                 if (isset($subitem->content)) $extra['intro'] = $subitem->content;
+                                 provision_module($course_obj->id, $sub_sec_num, $subitem->type, $subitem->name, $extra);
+                             }
+                         }
+                     }
+                } else {
+                     $extra = [];
+                     if (isset($item->url)) $extra['url'] = $item->url;
+                     if (isset($item->content)) $extra['intro'] = $item->content;
+                     provision_module($course_obj->id, $sectionnum, $item->type, $item->name, $extra);
+                }
+            }
+        }
+    }
 
     // Rebuild cache for performance in frontend
     rebuild_course_cache($course_obj->id, true);

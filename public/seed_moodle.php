@@ -291,13 +291,10 @@ for ($i = 1; $i <= 500; $i++) {
         }
 
         // High-Fidelity Asset Provisioning
+        // High-Fidelity Asset Provisioning
         course_create_sections_if_missing($course_id, [1, 2, 3, 4]);
         
-        // SECTION 1: VIDEO PREVIEW & HTML POC
         $vid_url = $vids[array_rand($vids)];
-        provision_module($course_id, 1, 'url', "Phase 1: Curriculum Introduction (Video)", ['url' => $vid_url]);
-        
-        // HTML POC: Large Academic Syllabus Overview
         $html_content = "
             <div class='academy-poc'>
                 <h3>Academic Deep-Dive: Enterprise Orchestration v2.4</h3>
@@ -313,17 +310,50 @@ for ($i = 1; $i <= 500; $i++) {
                 <blockquote>'The future of digital learning is not just in the content, but in the immersive precision of the player surface.' - Lumina Academy Design Principles</blockquote>
             </div>
         ";
-        provision_module($course_id, 1, 'page', "Proof of Concept: Strategic Overview", ['intro' => $html_content]);
         
-        // SECTION 2: COMMUNITY & INTERACTIVE
-        provision_module($course_id, 2, 'forum', "Phase 2: Community Collaboration Hub");
-        provision_module($course_id, 2, 'scorm', "Phase 2: Interactive Strategy Simulator (Game)");
-        
-        // SECTION 3: KNOWLEDGE VALIDATION
-        provision_module($course_id, 3, 'quiz', "Phase 3: Curricular Mastery Assessment");
-        
-        // SECTION 4: CAPSTONE
-        provision_module($course_id, 4, 'assign', "Phase 4: Capstone Performance Milestone");
+        $tree = [
+            (object)[
+                'name' => 'Phase 1: Curriculum Introduction',
+                'items' => [
+                    (object)[ 'type' => 'url', 'name' => 'Phase 1: Curriculum Introduction (Video)', 'url' => $vid_url ],
+                    (object)[ 'type' => 'page', 'name' => 'Proof of Concept: Strategic Overview', 'content' => $html_content ]
+                ]
+            ],
+            (object)[
+                'name' => 'Phase 2: Community & Interactive',
+                'items' => [
+                    (object)[ 'type' => 'forum', 'name' => 'Phase 2: Community Collaboration Hub' ],
+                    (object)[ 'type' => 'scorm', 'name' => 'Phase 2: Interactive Strategy Simulator (Game)' ]
+                ]
+            ],
+            (object)[
+                'name' => 'Phase 3: Knowledge Validation',
+                'items' => [
+                    (object)[ 'type' => 'quiz', 'name' => 'Phase 3: Curricular Mastery Assessment' ]
+                ]
+            ],
+            (object)[
+                'name' => 'Phase 4: Capstone',
+                'items' => [
+                    (object)[ 'type' => 'assign', 'name' => 'Phase 4: Capstone Performance Milestone' ]
+                ]
+            ]
+        ];
+
+        foreach ($tree as $index => $node) {
+            $sectionnum = $index + 1;
+            $modinfo = get_fast_modinfo($course_id);
+            $section = $modinfo->get_section_info($sectionnum);
+            if ($section && is_object($section)) {
+                $DB->set_field('course_sections', 'name', $node->name, ['id' => $section->id]);
+                foreach ($node->items as $item) {
+                    $extra = [];
+                    if (isset($item->url)) $extra['url'] = $item->url;
+                    if (isset($item->content)) $extra['intro'] = $item->content;
+                    provision_module($course_id, $sectionnum, $item->type, $item->name, $extra);
+                }
+            }
+        }
 
         // Rebuild cache ONCE per course for performance
         rebuild_course_cache($course_id, true);
