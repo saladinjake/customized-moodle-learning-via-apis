@@ -386,9 +386,21 @@ for ($i = 1; $i <= 500; $i++) {
 
         foreach ($tree as $index => $node) {
             $sectionnum = $index + 1;
-            $modinfo = get_fast_modinfo($course_id);
-            $section = $modinfo->get_section_info($sectionnum);
-            if ($section && is_object($section)) {
+            
+            // Direct DB lookup for the section to avoid stale modinfo cache
+            $section = $DB->get_record('course_sections', ['course' => $course_id, 'section' => $sectionnum]);
+            if (!$section) {
+                // Create if missing
+                $section = new stdClass();
+                $section->course = $course_id;
+                $section->section = $sectionnum;
+                $section->summary = "";
+                $section->summaryformat = FORMAT_HTML;
+                $section->sequence = '';
+                $section->id = $DB->insert_record('course_sections', $section);
+            }
+
+            if ($section) {
                 $DB->set_field('course_sections', 'name', $node->name, ['id' => $section->id]);
                 foreach ($node->items as $item) {
                     $extra = [];

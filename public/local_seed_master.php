@@ -361,31 +361,60 @@ for ($i = 0; $i < 150; $i++) {
 
     foreach ($tree as $index => $node) {
         $sectionnum = $index + 1;
-        $modinfo = get_fast_modinfo($course_obj->id);
-        $section = $modinfo->get_section_info($sectionnum);
-        if ($section && is_object($section)) {
+        
+        // Direct DB lookup for the section to avoid stale modinfo cache
+        $section = $DB->get_record('course_sections', ['course' => $course_obj->id, 'section' => $sectionnum]);
+        if (!$section) {
+            // Create if missing (though course_create_sections_if_missing should have handled it)
+            $section = new stdClass();
+            $section->course = $course_obj->id;
+            $section->section = $sectionnum;
+            $section->summary = "";
+            $section->summaryformat = FORMAT_HTML;
+            $section->id = $DB->insert_record('course_sections', $section);
+        }
+
+        if ($section) {
             $DB->set_field('course_sections', 'name', $node->name, ['id' => $section->id]);
             foreach ($node->items as $item) {
                 if (($item->type ?? '') === 'subsection') {
-                     $maxsec = (int)$DB->get_field_sql("SELECT MAX(section) FROM {course_sections} WHERE course = ?", [$course_obj->id]);
-                     $sub_sec_num = $maxsec + 1;
+                     // Check if this subsection already exists (anchored to a label with this name)
+                     $existing_anchor = $DB->get_record_sql("
+                        SELECT cm.id 
+                        FROM {course_modules} cm
+                        JOIN {modules} m ON m.id = cm.module
+                        JOIN {label} l ON l.id = cm.instance
+                        WHERE cm.course = ? AND m.name = 'label' AND l.name = ? AND l.intro = '<!-- subsection -->'", 
+                        [$course_obj->id, $item->name]
+                     );
 
-                     $anchor_cmid = provision_module($course_obj->id, $sectionnum, 'label', $item->name, ['intro' => '<!-- subsection -->']);
+                     if ($existing_anchor) {
+                         $anchor_cmid = $existing_anchor->id;
+                         $sub_sec = $DB->get_record('course_sections', ['course' => $course_obj->id, 'component' => 'core_subsection', 'itemid' => $anchor_cmid]);
+                         $sub_sec_num = $sub_sec ? $sub_sec->section : null;
+                     } else {
+                         $maxsec = (int)$DB->get_field_sql("SELECT MAX(section) FROM {course_sections} WHERE course = ?", [$course_obj->id]);
+                         $sub_sec_num = $maxsec + 1;
+                         $anchor_cmid = provision_module($course_obj->id, $sectionnum, 'label', $item->name, ['intro' => '<!-- subsection -->']);
+                     }
                      
                      if ($anchor_cmid) {
-                         $anchor_cm = get_coursemodule_from_id('label', $anchor_cmid);
-                         $delegated = new \stdClass();
-                         $delegated->course = $course_obj->id;
-                         $delegated->section = $sub_sec_num;
-                         $delegated->name = $item->name;
-                         $delegated->summary = '';
-                         $delegated->summaryformat = FORMAT_HTML;
-                         $delegated->sequence = '';
-                         $delegated->visible = 1;
-                         // This ensures the subsection logic executes identically to API nested mapper:
-                         $delegated->component = 'core_subsection';
-                         $delegated->itemid = $anchor_cm->id;
-                         $dsid = $DB->insert_record('course_sections', $delegated);
+                         if (!$DB->record_exists('course_sections', ['course' => $course_obj->id, 'component' => 'core_subsection', 'itemid' => $anchor_cmid])) {
+                             $delegated = new \stdClass();
+                             $delegated->course = $course_obj->id;
+                             $delegated->section = $sub_sec_num;
+                             $delegated->name = $item->name;
+                             $delegated->summary = '';
+                             $delegated->summaryformat = FORMAT_HTML;
+                             $delegated->sequence = '';
+                             $delegated->visible = 1;
+                             $delegated->component = 'core_subsection';
+                             $delegated->itemid = $anchor_cmid;
+                             $dsid = $DB->insert_record('course_sections', $delegated);
+                         } else {
+                             $sub_sec = $DB->get_record('course_sections', ['course' => $course_obj->id, 'component' => 'core_subsection', 'itemid' => $anchor_cmid]);
+                             $sub_sec_num = $sub_sec->section;
+                         }
                          
                          if (!empty($item->items)) {
                              foreach ($item->items as $subitem) {
