@@ -8,7 +8,6 @@ BASE="http://localhost:8000/local/api/index.php"
 AUTH="-H \"Authorization: Bearer $TOKEN\""
 PASS=0
 FAIL=0
-
 check() {
     local label="$1"
     local result="$2"

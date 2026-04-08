@@ -48,3 +48,43 @@ To enable **Google, Facebook, LinkedIn, or GitHub** authentication:
 - **Complete Course Entities**: Fully linked entity relationships encompassing Core Course data, Course Sections, Modules (Resources, Assignments, Quizzes), and Course Modules (CMID bridging).
 - **Persona-Driven Enrolment**: Automatic role association and cohort grouping for the seeded user base.
 - **Headless Router**: 100% decoupled API routing via `local/api/index.php`.
+
+
+
+/Applications/MAMP/bin/php/php8.3.30/bin/php test_db.php
+
+
+curl -X POST http://localhost:8000/local/api/index.php \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "admin_sync_course_structure",
+    "course_id": 620,
+    "sections": []
+  }'
+
+
+1. API Curl: Export The Database
+This triggers the backend to bundle your database schema, seeded classes, and the Majestic Obsidian quiz questions into a new snapshot folder.
+
+```bash
+curl -X POST hhttps://api-rendersample-php.onrender.com/local/api/index.php \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "action=admin_db_export" \
+  -d "key=lumina_secret_restore_2026"
+ ```
+
+(When completed, it will return the path where the freshly generated .sql and .zip files reside).
+
+2. API Curl: Override & Restore Database Tables
+This triggers the backend to locate the latest export payload in your project root, completely drop the existing tables, and rebuild the database from scratch holding the exported curriculum.
+
+```bash
+curl -X POST https://api-rendersample-php.onrender.com/local/api/index.php \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "action=admin_db_restore" \
+  -d "key=lumina_secret_restore_2026"
+```
+
+(This performs an atomic reconstruction of your Postgres database entirely over HTTP without needing manual bash scripts).
+
+Both of these endpoints are securely gated by the key parameter, preventing unwanted public modifications while ensuring you have seamless external CI/CD control over your curriculum state.

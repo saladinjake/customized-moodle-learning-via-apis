@@ -31,70 +31,67 @@ unset($CFG);  // Ignore this line
 global $CFG;  // This is necessary here for PHPUnit execution
 $CFG = new stdClass();
 
-// -------------------------------------------------------------------------
-// Load .env file if it exists (prioritize Render dashboard vars)
-// -------------------------------------------------------------------------
-if (file_exists(__DIR__ . '/.env')) {
-    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+// Load environment variables from .env file
+$env_path = __DIR__ . '/.env';
+if (file_exists($env_path)) {
+    $lines = file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        $line = trim($line);
-        if (strpos($line, '#') === 0 || !strpos($line, '=')) continue;
-        list($name, $value) = explode('=', $line, 2);
-        $name = trim($name);
-        $value = trim($value);
-        if (!getenv($name)) {
+        if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') !== false) {
+            list($name, $value) = explode('=', $line, 2);
+            $name = trim($name);
+            $value = trim($value);
             putenv("$name=$value");
+            $_ENV[$name] = $value;
         }
     }
 }
 
-$CFG->dbtype    = 'pgsql';
-$CFG->dblibrary = 'native';
-$CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';
+//=========================================================================
+// 1. DATABASE SETUP
+//=========================================================================
+// First, you need to configure the database where all Moodle data       //
+// will be stored.  This database must already have been created         //
+// and a username/password created to access it.                         //
 
-// -------------------------------------------------------------------------
-// DB connection: Hardcoded for dpg-d7922lk50q8c73f9u2m0-a instance
-// -------------------------------------------------------------------------
-// -------------------------------------------------------------------------
-// Local Defaults with Production Switch
-// -------------------------------------------------------------------------
-if (getenv('MOODLE_ENV') === 'production') {
-    $CFG->dbhost = getenv('DB_HOST') ?: 'dpg-d7922lk50q8c73f9u2m0-a.oregon-postgres.render.com';
-    $CFG->dbname = getenv('DB_NAME') ?: 'moodle_databases';
-    $CFG->dbuser = getenv('DB_USER') ?: 'moodle_databases_user';
-    $CFG->dbpass = getenv('DB_PASS') ?: '83Ide1Yyu7Pg5l4T9f2YYbdO0tE81iti';
+$db_url = getenv('DATABASE_URL');
+if ($db_url && $parsed = parse_url($db_url)) {
+    $CFG->dbtype    = (isset($parsed['scheme']) && ($parsed['scheme'] === 'postgres' || $parsed['scheme'] === 'postgresql')) ? 'pgsql' : ($parsed['scheme'] ?? 'pgsql');
+    $CFG->dbhost    = $parsed['host'] ?? 'localhost';
+    $CFG->dbname    = ltrim($parsed['path'] ?? '', '/') ?: 'moodle';
+    $CFG->dbuser    = $parsed['user'] ?? 'postgres';
+    $CFG->dbpass    = $parsed['pass'] ?? 'saladin123';
+    $dbport         = $parsed['port'] ?? '5432';
 } else {
-    $CFG->dbhost = getenv('DB_HOST') ?: 'localhost';
-    $CFG->dbname = getenv('DB_NAME') ?: 'moodle_local';
-    $CFG->dbuser = getenv('DB_USER') ?: 'postgres';
-    $CFG->dbpass = getenv('DB_PASS') ?: 'postgres';
+    $CFG->dbtype    = getenv('DB_TYPE') ?: 'pgsql';           // 'pgsql', 'mariadb', 'mysqli', 'auroramysql', or 'sqlsrv'
+    $CFG->dbhost    = getenv('DB_HOST') ?: 'localhost';       // eg 'localhost' or 'db.isp.com' or IP
+    $CFG->dbname    = getenv('DB_NAME') ?: 'TestMoodleOverride';          // database name, eg moodle
+    $CFG->dbuser    = getenv('DB_USER') ?: 'postgres';        // your database username
+    $CFG->dbpass    = getenv('DB_PASS') ?: 'saladin123';      // your database password
+    $dbport         = getenv('DB_PORT') ?: '5432';
 }
-$_db_port = getenv('DB_PORT') ?: '5432';
 
+$CFG->dblibrary = 'native';                               // 'native' only at the moment
+$CFG->prefix    = getenv('DB_PREFIX') ?: 'mdl_';          // prefix to use for all table names
 $CFG->dboptions = [
-    'dbpersist'        => false,
-    'dbsocket'         => false,
-    'dbport'           => $_db_port,
-    'dbhandlesoptions' => false,
-    'ssl'              => 'require',
-];
-
-// -------------------------------------------------------------------------
-// EMAIL & OUTGOING MAIL
-// -------------------------------------------------------------------------
-// Silence email errors until Mailgun/SMTP is configured
-$CFG->noemailever = true; 
-
-/* 
-// FUTURE SMTP/MAILGUN CONFIGURATION (Uncomment and set these later)
-$CFG->noemailever = false;
-$CFG->smtphosts   = 'smtp.mailgun.org:587';
-$CFG->smtpuser    = 'postmaster@yourdomain.com';
-$CFG->smtppass    = 'your-mailgun-password';
-$CFG->smtpsecure  = 'tls';
-*/
-
-
+    'dbpersist' => false,                   // Should persistent database connections be
+                                            //   used? Set to 'false' for the most stable
+                                            //   setting, 'true' can improve performance
+                                            //   sometimes
+    'dbsocket'  => false,                   // Should connection via UNIX socket be used?
+                                            //   if you set it to 'true' or custom path
+                                            //   here set dbhost to 'localhost',
+                                            //   (please note mysql is always using socket
+                                            //   if dbhost is 'localhost' - if you need
+                                            //   local port connection use '127.0.0.1')
+    'dbport'    => $dbport,                     // The TCP port number to use when connecting
+                                            //   to the server. Keep empty string for the
+                                            //   default port
+    'dbhandlesoptions' => false,            // On PostgreSQL poolers like pgbouncer don't
+                                            //   support advanced options on connection.
+                                            //   If you set those in the database then
+                                            //   the advanced settings will not be sent.
+    'dbcollation' => 'utf8mb4_unicode_ci',  // MySQL has partial and full UTF-8
                                             //   support. If you wish to use partial UTF-8
                                             //   (three bytes) then set this option to
                                             //   'utf8_unicode_ci'. If using the recommended
@@ -190,6 +187,7 @@ $CFG->smtpsecure  = 'tls';
     More info available in lib/dml/moodle_read_replica_trait.php where the feature is implemented.
     ]
     */
+];
 
 
 //=========================================================================
@@ -203,18 +201,7 @@ $CFG->smtpsecure  = 'tls';
 // If you need both intranet and Internet access please read
 // http://docs.moodle.org/en/masquerading
 
-// Strip any accidental trailing slash from the URL
-$CFG->wwwroot   = rtrim(getenv('RENDER_EXTERNAL_URL') ?: 'http://localhost:8000', '/');
-
-// -------------------------------------------------------------------------
-// REVERSE PROXY / SSL TERMINATION (Render-specific)
-// Render's load balancer handles HTTPS and forwards plain HTTP to the
-// container. sslproxy=true ensures Moodle recognizes the connection as
-// HTTPS and prevents the "redirecterrordetected" loop.
-// -------------------------------------------------------------------------
-$CFG->sslproxy      = true;   // Trust that the proxy is handling HTTPS
-// $CFG->reverseproxy is too strict for Render and causes "reverseproxyabused".
-// Stay with sslproxy=true for correct protocol detection.
+$CFG->wwwroot   = getenv('RENDER_EXTERNAL_URL') ?: 'http://localhost:8000';
 
 //=========================================================================
 // 3. DATA FILES LOCATION
@@ -229,7 +216,11 @@ $CFG->sslproxy      = true;   // Trust that the proxy is handling HTTPS
 //
 // - On Windows systems you might specify something like 'c:\moodledata'
 
-$CFG->dataroot  = getenv('MOODLE_DATA_DIR') ?: '/var/moodledata';
+$CFG->dataroot  = getenv('MOODLE_DATA_DIR') ?: __DIR__ . '/moodledata';
+
+if (!is_dir($CFG->dataroot)) {
+    mkdir($CFG->dataroot, 02777, true);
+}
 
 // Whether the Moodle router is fully configured.
 //
@@ -463,7 +454,7 @@ $CFG->admin = 'admin';
 //
 // Enable when using external SSL appliance for performance reasons.
 // Please note that site may be accessible via http: or https:, but not both!
-//      $CFG->sslproxy = true;
+     $CFG->sslproxy = 1;
 //
 // This setting will cause the userdate() function not to fix %d in
 // date strings, and just let them show with a zero prefix.
